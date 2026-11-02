@@ -160,10 +160,10 @@ tailwind.config = { theme: { extend: {
    Isi dengan config dari Firebase Console (Project settings > Your apps > Web).
    Jika dibiarkan "ISI_...", aplikasi tetap jalan memakai penyimpanan lokal browser. */
 const MY_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAerGs2Tb7rhRJRzbWFN5jUfiL6cDTGgX8",
-  authDomain: "rekap-edelweiss.firebaseapp.com",
-  projectId: "rekap-edelweiss",
-  appId: "1:65630112521:web:8428e72dd5b789aac761d8"
+  apiKey: "ISI_API_KEY",
+  authDomain: "ISI_PROJECT.firebaseapp.com",
+  projectId: "ISI_PROJECT_ID",
+  appId: "ISI_APP_ID"
 };
 const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'edelweiss-app';
 const FB_VER = '11.6.1';
@@ -473,6 +473,68 @@ tableBody.addEventListener('click', e => {
   const p = patients.find(x => x.id === btn.dataset.id);
   if (p) copyToClipboard(tsvRow(p), `Data ${p.nama || p.bedName} berhasil disalin`);
 });
+
+/* ---------- Saran antibiotik (kolom AB / Jenis Antibiotik) ---------- */
+const ANTIBIOTIK = [
+  'AMIKACIN', 'AMOXICILLIN', 'AMOXICILLIN CLAVULANATE', 'AMPICILLIN', 'AMPICILLIN SULBACTAM',
+  'AZITHROMYCIN', 'AZITHROMYCIN (IV)', 'AZITHROMYCIN (ORAL)', 'CEFADROXIL', 'CEFAZOLIN', 'CEFIXIME',
+  'CEFOTAXIME', 'CEFTAZIDIME', 'CEFTRIAXONE', 'CEFUROXIME', 'CIPROFLOXACIN (IV)', 'CIPROFLOXACIN (ORAL)',
+  'CLINDAMYCIN', 'COTRIMOXAZOLE', 'ERYTHROMYCIN', 'GENTAMICIN', 'LEVOFLOXACIN', 'MEROPENEM',
+  'METRONIDAZOLE (IV)', 'METRONIDAZOLE (ORAL)', 'PROCAIN BENZYL PENICILLIN', 'STREPTOMYCIN'
+];
+const sug = document.createElement('div');
+sug.id = 'ab-suggest';
+sug.className = 'hidden fixed z-50 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-auto text-sm py-1 print:hidden';
+document.body.appendChild(sug);
+let sugEl = null, sugIdx = -1, sugList = [];
+
+function hideSug() { sug.classList.add('hidden'); sugEl = null; sugIdx = -1; }
+function renderSug() {
+  sug.innerHTML = sugList.map((n, i) =>
+    `<div data-i="${i}" class="px-3 py-1.5 cursor-pointer ${i === sugIdx ? 'bg-medify-100 text-medify-700' : 'hover:bg-slate-50'}">${esc(n)}</div>`).join('');
+  const act = sug.children[sugIdx];
+  if (act) act.scrollIntoView({ block: 'nearest' });
+}
+function openSug(el) {
+  const q = el.innerText.trim().toUpperCase();
+  sugList = ANTIBIOTIK.filter(n => !q || n.includes(q));
+  if (!sugList.length || (sugList.length === 1 && sugList[0] === q)) return hideSug();
+  sugEl = el; sugIdx = -1; renderSug();
+  const r = el.getBoundingClientRect();
+  sug.style.left = r.left + 'px';
+  sug.style.top = (r.bottom + 2) + 'px';
+  sug.style.minWidth = Math.max(r.width, 240) + 'px';
+  sug.classList.remove('hidden');
+}
+function pickSug(name) {
+  if (!sugEl) return;
+  const el = sugEl;
+  el.innerText = name;
+  hideSug();
+  const p = patients.find(x => x.id === el.dataset.id);
+  if (p && p.ab !== name) persist(el.dataset.id, { ab: name });
+  el.blur();
+}
+const isAB = el => el && el.dataset && el.dataset.field === 'ab' && el.isContentEditable;
+
+sug.addEventListener('mousedown', e => e.preventDefault());   // jaga fokus tetap di sel
+sug.addEventListener('click', e => {
+  const row = e.target.closest('[data-i]');
+  if (row) pickSug(sugList[+row.dataset.i]);
+});
+tableBody.addEventListener('focusin', e => { if (isAB(e.target)) openSug(e.target); });
+tableBody.addEventListener('input', e => { if (isAB(e.target)) openSug(e.target); });
+tableBody.addEventListener('focusout', e => { if (e.target === sugEl) hideSug(); });
+tableBody.addEventListener('keydown', e => {
+  if (!isAB(e.target)) return;
+  const open = !sug.classList.contains('hidden');
+  if (e.key === 'ArrowDown' && open) { e.preventDefault(); sugIdx = (sugIdx + 1) % sugList.length; renderSug(); }
+  else if (e.key === 'ArrowUp' && open) { e.preventDefault(); sugIdx = (sugIdx - 1 + sugList.length) % sugList.length; renderSug(); }
+  else if (e.key === 'Enter') { e.preventDefault(); if (open && sugIdx >= 0) pickSug(sugList[sugIdx]); else { hideSug(); e.target.blur(); } }
+  else if (e.key === 'Escape') hideSug();
+});
+document.querySelector('.table-container').addEventListener('scroll', hideSug);
+window.addEventListener('resize', hideSug);
 
 /* ---------- Mulai ---------- */
 const loginSection = $('login-section');

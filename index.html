@@ -127,6 +127,7 @@ tailwind.config = { theme: { extend: {
       <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex flex-wrap justify-between items-center gap-4 print:hidden">
         <h3 class="text-lg font-semibold flex items-center"><svg class="ic mr-2 text-medify-500"><use href="#i-table"/></svg> Rekapitulasi Data</h3>
         <div class="flex items-center gap-3 flex-wrap">
+          <button id="btn-add-manual" type="button" class="hidden bg-medify-100 hover:bg-medify-200 text-medify-700 text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-clip-plus"/></svg> Tambah Manual</button>
           <button id="btn-print" type="button" class="bg-slate-600 hover:bg-slate-700 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-printer"/></svg> Print</button>
           <button id="btn-copy-all" type="button" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-copy"/></svg> Copy Format Excel</button>
           <div class="relative">
@@ -160,22 +161,22 @@ tailwind.config = { theme: { extend: {
    Isi dengan config dari Firebase Console (Project settings > Your apps > Web).
    Jika dibiarkan "ISI_...", aplikasi tetap jalan memakai penyimpanan lokal browser. */
 const MY_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAerGs2Tb7rhRJRzbWFN5jUfiL6cDTGgX8",
-  authDomain: "rekap-edelweiss.firebaseapp.com",
-  projectId: "rekap-edelweiss",
-  storageBucket: "rekap-edelweiss.firebasestorage.app",
-  messagingSenderId: "65630112521",
-  appId: "1:65630112521:web:8428e72dd5b789aac761d8"
+  apiKey: "ISI_API_KEY",
+  authDomain: "ISI_PROJECT.firebaseapp.com",
+  projectId: "ISI_PROJECT_ID",
+  appId: "ISI_APP_ID"
 };
 const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'edelweiss-app';
 const FB_VER = '11.6.1';
 const LS_KEY = 'edelweiss_patients_v1';
+const LS_BEDS = 'edelweiss_beds_v1';
 /* =================================================================== */
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 let patients = [];
+let beds = [];               // daftar bed tetap (25), tidak bertambah
 let currentTab = 'aktif';
 let mode = 'local';          // 'local' | 'cloud'
 let fb = null;               // { setDoc, doc, colRef }
@@ -212,6 +213,22 @@ function setMode(m) {
 function saveLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(patients)); } catch (e) { console.warn('localStorage tidak tersedia', e); } }
 function loadLocal() { try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch (e) { return []; } }
 
+function loadBeds() { try { return JSON.parse(localStorage.getItem(LS_BEDS) || '[]'); } catch (e) { return []; } }
+async function saveBeds() {
+  try { localStorage.setItem(LS_BEDS, JSON.stringify(beds)); } catch (e) {}
+  if (fb) { try { await fb.setDoc(fb.doc(fb.colRef, '_beds'), { id: '_beds', isMeta: true, beds }); } catch (e) { console.error(e); } }
+}
+// Data lama (sebelum fitur bed tetap): bentuk daftar bed dari nama bed yang pernah tersimpan
+function ensureBeds() {
+  if (beds.length || !patients.length) return;
+  beds = [...new Set(patients.map(p => p.bedName).filter(Boolean))];
+  saveBeds();
+}
+async function removeRecord(id) {
+  patients = patients.filter(p => p.id !== id);
+  saveLocal();
+  if (mode === 'cloud' && fb && fb.deleteDoc) { try { await fb.deleteDoc(fb.doc(fb.colRef, id)); } catch (e) { console.error(e); } }
+}
 async function persist(id, data) {
   let p = patients.find(x => x.id === id);
   if (!p) { p = { id }; patients.push(p); }
@@ -238,9 +255,11 @@ function resetDashboard() {
   btnBack.classList.toggle('flex', patients.length > 0);
 }
 function updateCounters() {
-  $('count-total').innerText = patients.length.toLocaleString('id-ID');
-  $('count-aktif').innerText = patients.filter(p => !p.krs && p.nama).length.toLocaleString('id-ID');
-  $('count-krs').innerText = patients.filter(p => p.krs).length.toLocaleString('id-ID');
+  const real = p => p.nama || p.rm;
+  const occ = beds.filter(b => patients.some(p => !p.krs && real(p) && p.bedName === b)).length;
+  $('count-total').innerText = beds.length.toLocaleString('id-ID');
+  $('count-aktif').innerText = occ.toLocaleString('id-ID');
+  $('count-krs').innerText = patients.filter(p => p.krs && real(p)).length.toLocaleString('id-ID');
 }
 function refresh() { updateCounters(); renderTable(getFiltered()); }
 
@@ -280,9 +299,20 @@ function sortPatients(data) {
 }
 function getFiltered() {
   const term = searchInput.value.toLowerCase();
-  let d = patients.filter(p => currentTab === 'aktif' ? !p.krs : currentTab === 'krs' ? p.krs : p.kpra);
+  const real = p => p.nama || p.rm;
+  let d;
+  if (currentTab === 'aktif') {   // satu baris per bed tetap; bed kosong tetap tampil
+    d = beds.map(b => patients.find(p => !p.krs && real(p) && p.bedName === b) || { id: 'empty:' + b, bedName: b, empty: true });
+  } else {
+    d = patients.filter(p => real(p) && (currentTab === 'krs' ? p.krs : p.kpra));
+  }
   if (term) d = d.filter(p => ['nama', 'rm', 'diag', 'ksm'].some(k => p[k] && String(p[k]).toLowerCase().includes(term)));
-  return sortPatients(d);
+  sortPatients(d);
+  if (currentTab !== 'aktif') {          // KRS & KPRA bersifat log: yang baru ditambahkan di bagian bawah
+    const t = a => (currentTab === 'kpra' ? a.kpraAt || a.krsAt : a.krsAt) || 0;
+    d.sort((a, b) => t(a) - t(b));
+  }
+  return d;
 }
 
 /* ---------- Tabs & tabel ---------- */
@@ -295,6 +325,10 @@ function switchTab(tab) {
   const on = 'py-2.5 px-5 border-b-2 border-medify-600 text-medify-600 font-semibold transition-colors whitespace-nowrap';
   const off = 'py-2.5 px-5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium transition-colors whitespace-nowrap';
   ['aktif', 'krs', 'kpra'].forEach(t => $('tab-' + t).className = t === tab ? on : off);
+  
+  const btnAdd = $('btn-add-manual');
+  if (btnAdd) btnAdd.classList.toggle('hidden', tab === 'aktif');
+  
   if (tab === 'kpra') {
     tableHead.innerHTML = `<tr>${th('NO RM')}${th('LAMA RAWAT INAP (HARI)', 'w-48')}${th('JENIS ANTIBIOTIK')}${th('TOTAL PEMAKAIAN (GRAM)', 'w-48')}${th('KSM')}${th('RUANGAN')}${th('APT')}${thAksi}</tr>`;
   } else {
@@ -312,6 +346,7 @@ const td = (inner, cls = '') => `<td class="px-3 py-2 text-sm ${cls}">${inner}</
 const btnCopy = p => `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 bg-white group-hover:bg-slate-50 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden">
   <button type="button" data-id="${esc(p.id)}" class="btn-copy-row text-medify-600 hover:bg-medify-100 p-2 rounded transition-colors" title="Copy Baris Ini"><svg class="ic text-lg"><use href="#i-copy"/></svg></button></td>`;
 
+const bedCell = p => td(`<svg class="ic text-slate-400 mr-1.5" title="Bed terkunci"><use href="#i-lock"/></svg>${esc(p.bedName)}`, 'whitespace-nowrap font-medium text-medify-700 bg-medify-50/30');
 function renderTable(data) {
   tableBody.innerHTML = '';
   emptyState.classList.toggle('hidden', data.length > 0);
@@ -319,6 +354,11 @@ function renderTable(data) {
   data.forEach(p => {
     const tr = document.createElement('tr');
     tr.className = 'hover:bg-slate-50 transition-colors group';
+    if (p.empty) {
+      tr.innerHTML = bedCell(p) + `<td colspan="12" class="px-3 py-2 text-sm text-slate-400 italic">Bed kosong</td>`;
+      frag.appendChild(tr);
+      return;
+    }
     if (currentTab === 'kpra') {
       tr.innerHTML =
         td(ce(p, 'rm', p.rm, '', 'No RM...'), 'whitespace-nowrap text-slate-800 font-medium') +
@@ -333,7 +373,7 @@ function renderTable(data) {
       const kpraCol = currentTab === 'krs'
         ? `<td class="px-3 py-2 text-center bg-emerald-50/30">${chk(p, 'kpra', 'emerald-600')}</td>` : '';
       tr.innerHTML =
-        td(ce(p, 'bedName', p.bedName, '', 'Bed...'), 'whitespace-nowrap font-medium text-medify-700 bg-medify-50/30') +
+        bedCell(p) +
         td(ce(p, 'tglMRS', p.tglMRS, '', 'Tgl MRS...'), 'whitespace-nowrap text-slate-600') +
         td(`<input type="date" value="${esc(p.tglKRS)}" data-id="${esc(p.id)}" data-field="tglKRS" class="border border-transparent hover:border-slate-300 focus:border-medify-500 rounded px-2 py-1.5 text-sm bg-transparent outline-none w-full">`, 'whitespace-nowrap') +
         `<td class="px-3 py-2 text-center">${chk(p, 'ret', 'medify-600')}</td>` +
@@ -355,6 +395,7 @@ function renderTable(data) {
 
 /* ---------- Copy & Print ---------- */
 function tsvRow(p) {
+  if (p.empty) return [p.bedName, ...Array(11).fill('')].join('\t');
   if (currentTab === 'kpra')
     return [p.rm, lamaRawat(p), p.ab, p.jumlah, (p.ksm || '').toUpperCase(), p.ruangan || 'Edelweiss', p.apt || 'DEVI'].join('\t');
   return [p.bedName, p.tglMRS, p.tglKRS, p.ret ? 'TRUE' : 'FALSE', p.pto ? 'TRUE' : 'FALSE', p.krs ? 'TRUE' : 'FALSE',
@@ -399,35 +440,63 @@ async function processHTML(html) {
   showMessage('info', 'Menyimpan data...');
 
   const clean = el => el ? el.textContent.replace(/[\r\n]+/g, ' ').trim() : '';
-  const parsed = [...items].map(li => {
+  const seen = {}, fileBeds = [], fileMap = new Map();
+  items.forEach(li => {
+    let bed = clean(li.querySelector('.ruangan')) + ' - ' + clean(li.querySelector('.bed'));
+    seen[bed] = (seen[bed] || 0) + 1;
+    if (seen[bed] > 1) bed += ' (' + seen[bed] + ')';
     const small = li.querySelector('small.font-w400');
     const mrs = small ? small.textContent.match(/MRS\s*:\s*(\d{1,2}\s+[a-zA-Z]+\s+\d{4})/i) : null;
     let dpjp = clean(li.querySelector('.dpjp')) || '-';
     if (dpjp.toUpperCase().startsWith('DPJP :')) dpjp = dpjp.substring(6).trim();
-    return {
-      bedName: clean(li.querySelector('.ruangan')) + ' - ' + clean(li.querySelector('.bed')),
-      tglMRS: mrs ? mrs[1].trim() : '',
-      nama: clean(li.querySelector('.nama')),
-      rm: clean(li.querySelector('.no_rm')),
-      dpjp, ksm: getKSM(dpjp).toUpperCase(),
-      diag: clean(li.querySelector('.judul_kasus'))
-    };
+    const p = { bedName: bed, tglMRS: mrs ? mrs[1].trim() : '', nama: clean(li.querySelector('.nama')),
+      rm: clean(li.querySelector('.no_rm')), dpjp, ksm: getKSM(dpjp).toUpperCase(), diag: clean(li.querySelector('.judul_kasus')) };
+    fileBeds.push(bed);
+    fileMap.set(bed, (p.nama || p.rm) ? p : null);      // null = bed kosong di file
   });
 
-  for (const p of parsed) {
-    // Bed bentrok: pasien aktif lain di bed yang sama -> otomatis KRS
-    const clash = patients.find(x => !x.krs && x.bedName === p.bedName && x.rm !== p.rm && p.rm !== '');
-    if (clash) await persist(clash.id, { krs: true });
+  // 1. Daftar bed: ditetapkan sekali, tidak pernah bertambah
+  let ignored = 0;
+  if (!beds.length) { beds = [...fileBeds]; await saveBeds(); }
+  else ignored = fileBeds.filter(b => !beds.includes(b)).length;
+  const bedSet = new Set(beds);
+  const scope = new Set(fileBeds.filter(b => bedSet.has(b)));   // bed yang ada di file
 
-    const existing = patients.find(x => (p.rm && x.rm === p.rm) || (!p.rm && p.nama && x.nama === p.nama));
-    if (existing) {
-      await persist(existing.id, { bedName: p.bedName, tglMRS: p.tglMRS, dpjp: p.dpjp, ksm: p.ksm, diag: p.diag });
+  // 2. Bersihkan baris kosong sisa versi lama
+  for (const p of patients.filter(p => !p.nama && !p.rm)) await removeRecord(p.id);
+
+  const same = (a, b) => (b.rm && a.rm === b.rm) || (!b.rm && b.nama && a.nama === b.nama);
+  const kept = new Set();
+  let masuk = 0, keluar = 0;
+
+  // 3. Isi bed dengan pasien dari file (pasien yang pindah bed ikut dipindah)
+  for (const bed of scope) {
+    const fp = fileMap.get(bed);
+    if (!fp) continue;
+    let rec = patients.find(a => !a.krs && !kept.has(a.id) && same(a, fp));
+    if (!rec) {
+      const old = patients.find(a => a.krs && same(a, fp) && a.tglMRS === fp.tglMRS);
+      if (old && !old.krsAuto) continue;                 // sengaja dipindah ke KRS manual: dihormati
+      rec = old;                                         // KRS otomatis sebelumnya: aktifkan lagi
+    }
+    const data = { bedName: bed, tglMRS: fp.tglMRS, nama: fp.nama, rm: fp.rm, dpjp: fp.dpjp, ksm: fp.ksm, diag: fp.diag };
+    if (rec) {
+      await persist(rec.id, rec.krs ? { ...data, krs: false, krsAuto: false } : data);
+      kept.add(rec.id);
     } else {
       const id = Math.random().toString(36).slice(2, 11);
-      await persist(id, { tglKRS: '', ret: false, pto: false, krs: false, kpra: false, ab: '', jumlah: '', lamaRawat: '', apt: 'DEVI', ruangan: 'Edelweiss', ...p });
+      await persist(id, { tglKRS: '', ret: false, pto: false, krs: false, krsAuto: false, kpra: false, ab: '', jumlah: '',
+        lamaRawat: '', apt: 'DEVI', ruangan: 'Edelweiss', ...data });
+      kept.add(id); masuk++;
     }
   }
-  showToast('Sinkronisasi data selesai!');
+
+  // 4. Pasien yang bed-nya kosong / sudah diisi orang lain di file -> otomatis ke KRS
+  const leaving = sortPatients(patients.filter(a => !a.krs && (a.nama || a.rm) && !kept.has(a.id) && (!bedSet.has(a.bedName) || scope.has(a.bedName))));
+  const t0 = Date.now();
+  for (const [i, a] of leaving.entries()) { await persist(a.id, { krs: true, krsAuto: true, krsAt: t0 + i }); keluar++; }
+
+  showToast(`Selesai: ${masuk} pasien masuk, ${keluar} pindah ke KRS` + (ignored ? `. ${ignored} bed baru di file diabaikan (jumlah bed tetap ${beds.length}).` : ''));
   hideMessage();
   showDashboardOnly();
 }
@@ -444,6 +513,23 @@ btnBack.addEventListener('click', showDashboardOnly);
 $('btn-print').addEventListener('click', () => setTimeout(() => window.print(), 150));
 $('btn-copy-all').addEventListener('click', copyAll);
 $('btn-reset-dashboard').addEventListener('click', resetDashboard);
+
+const btnAddManual = $('btn-add-manual');
+if (btnAddManual) {
+  btnAddManual.addEventListener('click', async () => {
+    const id = Math.random().toString(36).slice(2, 11);
+    const data = {
+      tglMRS: '', tglKRS: '', ret: false, pto: false, krs: true, krsAuto: false, kpra: currentTab === 'kpra',
+      rm: 'RM...', nama: 'Nama Pasien...', diag: '', ksm: '', ab: '', jumlah: '', lamaRawat: '', apt: 'DEVI', ruangan: 'Edelweiss', bedName: 'Manual'
+    };
+    if (currentTab === 'kpra') data.kpraAt = Date.now();
+    else data.krsAt = Date.now();
+    await persist(id, data);
+    refresh();
+    showToast('Baris baru berhasil ditambahkan', 'success');
+  });
+}
+
 ['aktif', 'krs', 'kpra'].forEach(t => $('tab-' + t).addEventListener('click', () => switchTab(t)));
 searchInput.addEventListener('input', () => renderTable(getFiltered()));
 
@@ -462,7 +548,17 @@ tableBody.addEventListener('change', async e => {
   const id = el.dataset.id, f = el.dataset.field;
   if (!id || !f) return;
   if (el.type === 'checkbox') {
-    await persist(id, { [f]: el.checked });
+    if (f === 'krs' && !el.checked) {   // kembalikan ke Aktif hanya jika bed masih kosong
+      const p = patients.find(x => x.id === id);
+      const taken = p && patients.some(x => x.id !== id && !x.krs && (x.nama || x.rm) && x.bedName === p.bedName);
+      if (!p || !beds.includes(p.bedName) || taken) {
+        el.checked = true;
+        return showToast(`Tidak bisa dikembalikan: ${p ? p.bedName : 'bed'} sudah terisi pasien lain.`, 'error');
+      }
+    }
+    await persist(id, f === 'krs' ? { krs: el.checked, krsAuto: false, ...(el.checked ? { krsAt: Date.now() } : {}) }
+      : f === 'kpra' ? { kpra: el.checked, ...(el.checked ? { kpraAt: Date.now() } : {}) }
+      : { [f]: el.checked });
     if (f === 'krs') showToast(el.checked ? 'Pasien dipindah ke KRS' : 'Pasien dikembalikan ke Aktif');
     refresh();
   } else if (el.type === 'date') {
@@ -550,7 +646,7 @@ const hasCfg = c => !!(c && c.apiKey && !String(c.apiKey).startsWith('ISI_'));
 switchTab('aktif');
 setMode('local');
 function startLocal() {
-  patients = loadLocal();
+  patients = loadLocal(); beds = loadBeds(); ensureBeds();
   if (patients.length) showDashboardOnly(); else resetDashboard();
 }
 if (hasCfg(getCfg())) {
@@ -589,18 +685,22 @@ function onLogin(user) {
   loginSection.classList.add('hidden');
   $('btn-logout').classList.remove('hidden');
   const colRef = fsMod.collection(dbInst, 'artifacts', APP_ID, 'users', user.uid, 'patients');
-  fb = { setDoc: fsMod.setDoc, doc: fsMod.doc, colRef };
-  patients = loadLocal();
+  fb = { setDoc: fsMod.setDoc, doc: fsMod.doc, deleteDoc: fsMod.deleteDoc, colRef };
+  patients = loadLocal(); beds = loadBeds();
   let first = true;
   if (unsub) unsub();
   unsub = fsMod.onSnapshot(fsMod.query(colRef), snap => {
-    const cloud = snap.docs.map(d => d.data());
+    const all = snap.docs.map(d => d.data());
+    const meta = all.find(d => d.isMeta);
+    const cloud = all.filter(d => !d.isMeta);
+    if (meta && Array.isArray(meta.beds)) beds = meta.beds; else if (first && beds.length) saveBeds();
     if (first) {
       first = false;
       const ids = new Set(cloud.map(c => c.id));
       const localOnly = patients.filter(p => p.id && !ids.has(p.id));
       localOnly.forEach(p => fsMod.setDoc(fsMod.doc(colRef, p.id), p, { merge: true }).catch(() => {}));
       patients = [...cloud, ...localOnly];
+      ensureBeds();
       setMode('cloud');
       $('mode-text').innerText = 'Cloud: ' + (user.email || 'tersinkron');
       saveLocal();
@@ -622,7 +722,7 @@ function onLogin(user) {
 
 function onLogout() {
   if (unsub) { unsub(); unsub = null; }
-  fb = null; patients = [];
+  fb = null; patients = []; beds = [];
   setMode('local');
   $('mode-text').innerText = 'Belum masuk';
   $('btn-logout').classList.add('hidden');
@@ -650,7 +750,7 @@ $('login-form').addEventListener('submit', async e => {
 
 $('btn-logout').addEventListener('click', async () => {
   if (!authMod) return;
-  try { localStorage.removeItem(LS_KEY); } catch (e) {}   // hapus cache lokal agar tidak tertinggal di perangkat
+  try { localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_BEDS); } catch (e) {}   // hapus cache lokal agar tidak tertinggal di perangkat
   try { await authMod.signOut(authInst); } catch (e) { console.error(e); }
 });
 

@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,11 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rekap Pasien Edelweiss - Medify Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
 tailwind.config = { theme: { extend: {
-  fontFamily: { sans: ['Inter', 'sans-serif'] },
-  colors: { medify: { 50:'#eff6ff',100:'#dbeafe',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',900:'#1e3a8a' } }
+  fontFamily: { sans: ['Quicksand', 'sans-serif'] },
+  colors: { medify: { 50:'#f0f9ff',100:'#e0f2fe',200:'#bae6fd',300:'#7dd3fc',400:'#38bdf8',500:'#0ea5e9',600:'#0284c7',700:'#0369a1',900:'#0c4a6e' } }
 }}};
 </script>
 <style>
@@ -23,14 +24,14 @@ tailwind.config = { theme: { extend: {
 .table-container::-webkit-scrollbar { height: 8px; width: 8px }
 .table-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px }
 .table-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px }
-.drag-active { border-color: #3b82f6 !important; background-color: #eff6ff !important }
+.drag-active { border-color: #0ea5e9 !important; background-color: #f0f9ff !important }
 [contenteditable="true"] { padding: 4px 6px; border-radius: 4px; border: 1px solid transparent; min-height: 24px; min-width: 20px; outline: none; transition: all .2s; display: inline-block; width: 100% }
 [contenteditable="true"]:hover { border-color: #cbd5e1; background: #f8fafc }
-[contenteditable="true"]:focus { border-color: #3b82f6; background: #fff; box-shadow: 0 0 0 2px rgba(59,130,246,.1) }
+[contenteditable="true"]:focus { border-color: #0ea5e9; background: #fff; box-shadow: 0 0 0 2px rgba(14,165,233,.1) }
 [contenteditable="true"]:empty:before { content: attr(placeholder); color: #94a3b8; pointer-events: none; display: block }
 </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 antialiased font-sans">
+<body class="bg-[#f0f9ff] min-h-screen text-slate-800 antialiased font-sans">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-clip-plus" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11v6M9 14h6"/></symbol>
   <symbol id="i-clip-check" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
@@ -45,6 +46,7 @@ tailwind.config = { theme: { extend: {
   <symbol id="i-table" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M3 15h18M12 3v18"/></symbol>
   <symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+  <symbol id="i-cat" viewBox="0 0 24 24"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3.1-9-7.56c0-1.25.5-2.4 1.1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5Z"/><path d="M8 14v.5"/><path d="M16 14v.5"/><path d="M11.25 16.25h1.5L12 17l-.75-.75Z"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
   <symbol id="i-folder" viewBox="0 0 24 24"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></symbol>
@@ -140,18 +142,18 @@ tailwind.config = { theme: { extend: {
     </div>
 
     <div class="flex space-x-2 mb-4 border-b border-slate-200 print:hidden overflow-x-auto">
-      <button id="tab-aktif" type="button"><svg class="ic mr-2"><use href="#i-activity"/></svg> Lembar Kerja Aktif</button>
-      <button id="tab-krs" type="button"><svg class="ic mr-2"><use href="#i-clip-check"/></svg> Lembar Kerja KRS</button>
-      <button id="tab-kpra" type="button"><svg class="ic mr-2"><use href="#i-pill"/></svg> Lembar Kerja KPRA</button>
+      <button id="tab-aktif" type="button"><svg class="ic mr-2"><use href="#i-activity"/></svg> 🛏️ Lembar Kerja Aktif</button>
+      <button id="tab-krs" type="button"><svg class="ic mr-2"><use href="#i-clip-check"/></svg> 📝 Lembar Kerja KRS</button>
+      <button id="tab-kpra" type="button"><svg class="ic mr-2"><use href="#i-pill"/></svg> 💊 Lembar Kerja KPRA</button>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[600px] print:h-auto print:border-none print:shadow-none">
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[600px] print:h-auto print:border-none print:shadow-none">
       <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex flex-wrap justify-between items-center gap-4 print:hidden">
         <h3 class="text-lg font-semibold flex items-center"><svg class="ic mr-2 text-medify-500"><use href="#i-table"/></svg> Rekapitulasi Data</h3>
         <div class="flex items-center gap-3 flex-wrap">
           <button id="btn-add-manual" type="button" class="hidden bg-medify-100 hover:bg-medify-200 text-medify-700 text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-clip-plus"/></svg> Tambah Manual</button>
           <button id="btn-print" type="button" class="bg-slate-600 hover:bg-slate-700 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-printer"/></svg> Print</button>
-          <button id="btn-copy-all" type="button" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-copy"/></svg> Copy Format Excel</button>
+          <button id="btn-copy-all" type="button" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-copy"/></svg> Copy Format Excel</button>
           <div class="relative">
             <svg class="ic absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"><use href="#i-search"/></svg>
             <input type="text" id="search-input" placeholder="Cari nama, RM, diagnosa..." class="pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-medify-500 focus:border-medify-500 w-64">
@@ -179,9 +181,7 @@ tailwind.config = { theme: { extend: {
 <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
 
 <script type="module">
-/* ====================== KONFIGURASI FIREBASE ======================
-   Isi dengan config dari Firebase Console (Project settings > Your apps > Web).
-   Jika dibiarkan "ISI_...", aplikasi tetap jalan memakai penyimpanan lokal browser. */
+/* ====================== KONFIGURASI FIREBASE ====================== */
 const MY_FIREBASE_CONFIG = {
   apiKey: "AIzaSyAerGs2Tb7rhRJRzbWFN5jUfiL6cDTGgX8",
   authDomain: "rekap-edelweiss.firebaseapp.com",
@@ -200,10 +200,10 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 let patients = [];
-let beds = [];               // daftar bed tetap (25), tidak bertambah
+let beds = [];               
 let currentTab = 'aktif';
-let mode = 'local';          // 'local' | 'cloud'
-let fb = null;               // { setDoc, doc, colRef }
+let mode = 'local';          
+let fb = null;               
 
 const dropZone = $('drop-zone'), fileInput = $('file-upload');
 const uploadSection = $('upload-section'), dashboardSection = $('dashboard-section');
@@ -213,7 +213,7 @@ const btnBack = $('btn-back-dashboard');
 /* ---------- UI helpers ---------- */
 function showToast(message, type = 'success') {
   const t = document.createElement('div');
-  t.className = `${type === 'success' ? 'bg-emerald-600' : 'bg-red-600'} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 toast-enter`;
+  t.className = `${type === 'success' ? 'bg-emerald-500' : 'bg-red-500'} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 toast-enter`;
   t.innerHTML = `<svg class="ic text-lg"><use href="#i-${type === 'success' ? 'check' : 'alert'}"/></svg><span class="font-medium text-sm">${esc(message)}</span>`;
   $('toast-container').appendChild(t);
   setTimeout(() => { t.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => t.remove(), 300); }, 3000);
@@ -230,7 +230,7 @@ const hideMessage = () => $('message-area').classList.add('hidden');
 function setMode(m) {
   mode = m;
   $('mode-text').innerText = m === 'cloud' ? 'Tersinkron ke Cloud' : 'Mode Lokal (browser ini)';
-  $('mode-dot').className = `w-2 h-2 rounded-full inline-block ${m === 'cloud' ? 'bg-green-500' : 'bg-amber-500'}`;
+  $('mode-dot').className = `w-2 h-2 rounded-full inline-block ${m === 'cloud' ? 'bg-emerald-500' : 'bg-amber-500'}`;
 }
 
 /* ---------- Penyimpanan ---------- */
@@ -242,7 +242,6 @@ async function saveBeds() {
   try { localStorage.setItem(LS_BEDS, JSON.stringify(beds)); } catch (e) {}
   if (fb) { try { await fb.setDoc(fb.doc(fb.colRef, '_beds'), { id: '_beds', isMeta: true, beds }); } catch (e) { console.error(e); } }
 }
-// Data lama (sebelum fitur bed tetap): bentuk daftar bed dari nama bed yang pernah tersimpan
 function ensureBeds() {
   if (beds.length || !patients.length) return;
   beds = [...new Set(patients.map(p => p.bedName).filter(Boolean))];
@@ -256,8 +255,8 @@ async function removeRecord(id) {
 async function persist(id, data) {
   let p = patients.find(x => x.id === id);
   if (!p) { p = { id }; patients.push(p); }
-  Object.assign(p, data);                       // update optimistis
-  saveLocal();                                  // selalu simpan cadangan lokal
+  Object.assign(p, data);                       
+  saveLocal();                                  
   if (mode === 'cloud' && fb) {
     try { await fb.setDoc(fb.doc(fb.colRef, id), { id, ...data }, { merge: true }); }
     catch (e) { console.error(e); showToast('Gagal menyimpan ke server', 'error'); }
@@ -324,15 +323,19 @@ function sortPatients(data) {
 function getFiltered() {
   const term = searchInput.value.toLowerCase();
   const real = p => p.nama || p.rm;
-  let d;
-  if (currentTab === 'aktif') {   // satu baris per bed tetap; bed kosong tetap tampil
-    d = beds.map(b => patients.find(p => !p.krs && real(p) && p.bedName === b) || { id: 'empty:' + b, bedName: b, empty: true });
+  let d = [];
+  if (currentTab === 'aktif') {   
+    beds.forEach(b => {
+      const pts = patients.filter(p => !p.krs && real(p) && p.bedName === b);
+      if (pts.length === 0) d.push({ id: 'empty:' + b, bedName: b, empty: true });
+      else d.push(...pts);
+    });
   } else {
     d = patients.filter(p => real(p) && (currentTab === 'krs' ? p.krs : p.kpra));
   }
   if (term) d = d.filter(p => ['nama', 'rm', 'diag', 'ksm'].some(k => p[k] && String(p[k]).toLowerCase().includes(term)));
   sortPatients(d);
-  if (currentTab !== 'aktif') {          // KRS & KPRA bersifat log: yang baru ditambahkan di bagian bawah
+  if (currentTab !== 'aktif') {          
     const t = a => (currentTab === 'kpra' ? a.kpraAt || a.krsAt : a.krsAt) || 0;
     d.sort((a, b) => t(a) - t(b));
   }
@@ -346,17 +349,17 @@ const thAksi = `<th class="${TH} text-center sticky right-0 bg-slate-50 print:hi
 
 function switchTab(tab) {
   currentTab = tab;
-  const on = 'py-2.5 px-5 border-b-2 border-medify-600 text-medify-600 font-semibold transition-colors whitespace-nowrap';
-  const off = 'py-2.5 px-5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium transition-colors whitespace-nowrap';
+  const on = 'py-2.5 px-5 border-b-2 border-medify-600 text-medify-600 font-bold transition-colors whitespace-nowrap';
+  const off = 'py-2.5 px-5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-semibold transition-colors whitespace-nowrap';
   ['aktif', 'krs', 'kpra'].forEach(t => $('tab-' + t).className = t === tab ? on : off);
   
   const btnAdd = $('btn-add-manual');
   if (btnAdd) btnAdd.classList.toggle('hidden', tab === 'aktif');
   
   if (tab === 'kpra') {
-    tableHead.innerHTML = `<tr>${th('NO RM')}${th('LAMA RAWAT INAP (HARI)', 'w-48')}${th('JENIS ANTIBIOTIK')}${th('TOTAL PEMAKAIAN (GRAM)', 'w-48')}${th('KSM')}${th('RUANGAN')}${th('APT')}${thAksi}</tr>`;
+    tableHead.innerHTML = `<tr>${th('NO RM')}${th('LAMA RAWAT INAP (HARI)', 'w-48')}${th('JENIS ANTIBIOTIK')}${th('TOTAL PEMAKAIAN (GRAM)', 'w-48')}${th('KSM')}${th('RUANGAN')}${th('APT')}${th('LPD')}${th('DONE')}${thAksi}</tr>`;
   } else {
-    const kpra = tab === 'krs' ? th('KPRA', 'text-center bg-emerald-50') : '';
+    const kpra = tab === 'krs' ? th('KPRA', 'text-center bg-medify-50') : '';
     tableHead.innerHTML = `<tr>${th('Bed')}${th('Tgl MRS')}${th('Tgl KRS', 'w-40')}${th('R/E/T')}${th('PTO')}${th('KRS')}${kpra}${th('RM')}${th('Nama Pasien')}${th('Diagnosa')}${th('KSM (DPJP)')}${th('AB')}${th('Jumlah')}${thAksi}</tr>`;
   }
   refresh();
@@ -368,10 +371,11 @@ const chk = (p, field, color, title = '') =>
   `<input type="checkbox" class="w-4 h-4 text-${color} rounded border-slate-300 cursor-pointer" ${p[field] ? 'checked' : ''} data-id="${esc(p.id)}" data-field="${field}" ${title ? `title="${title}"` : ''}>`;
 const td = (inner, cls = '') => `<td class="px-3 py-2 text-sm ${cls}">${inner}</td>`;
 
-const actionBtns = p => `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 bg-white group-hover:bg-slate-50 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden">
+const actionBtns = p => `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 ${p.isCopied ? 'bg-indigo-50' : 'bg-white'} group-hover:bg-slate-50 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden">
   <div class="flex items-center justify-center gap-1">
-    <button type="button" data-id="${esc(p.id)}" class="btn-copy-row text-medify-600 hover:bg-medify-100 p-1.5 rounded transition-colors" title="Copy"><svg class="ic text-lg"><use href="#i-copy"/></svg></button>
-    <button type="button" data-id="${esc(p.id)}" class="btn-delete-row text-red-500 hover:bg-red-50 p-1.5 rounded transition-colors" title="Hapus"><svg class="ic text-lg"><use href="#i-trash"/></svg></button>
+    <button type="button" data-id="${esc(p.id)}" class="btn-add-ab text-medify-500 hover:bg-medify-100 p-1.5 rounded-full transition-colors" title="Tambah Antibiotik (Salin Baris ke Bawah)"><svg class="ic text-lg"><use href="#i-clip-plus"/></svg></button>
+    <button type="button" data-id="${esc(p.id)}" class="btn-copy-row ${p.isCopied ? 'text-indigo-600 bg-indigo-100' : 'text-slate-400 hover:bg-slate-100'} p-1.5 rounded-full transition-colors" title="${p.isCopied ? 'Tercopy Meow!' : 'Copy Baris'}"><svg class="ic text-lg"><use href="${p.isCopied ? '#i-cat' : '#i-copy'}"/></svg></button>
+    <button type="button" data-id="${esc(p.id)}" class="btn-delete-row text-red-400 hover:bg-red-50 p-1.5 rounded-full transition-colors" title="${currentTab === 'kpra' ? 'Hapus dari KPRA' : 'Hapus Pasien'}"><svg class="ic text-lg"><use href="#i-trash"/></svg></button>
   </div>
 </td>`;
 
@@ -382,7 +386,7 @@ function renderTable(data) {
   const frag = document.createDocumentFragment();
   data.forEach(p => {
     const tr = document.createElement('tr');
-    tr.className = 'hover:bg-slate-50 transition-colors group';
+    tr.className = `hover:bg-medify-50/50 transition-colors group ${p.isCopied ? 'bg-indigo-50/40' : 'bg-white'}`;
     if (p.empty) {
       tr.innerHTML = bedCell(p) + `<td colspan="12" class="px-3 py-2 text-sm text-slate-400 italic">Bed kosong</td>`;
       frag.appendChild(tr);
@@ -390,17 +394,19 @@ function renderTable(data) {
     }
     if (currentTab === 'kpra') {
       tr.innerHTML =
-        td(ce(p, 'rm', p.rm, '', 'No RM...'), 'whitespace-nowrap text-slate-800 font-medium') +
+        td(ce(p, 'rm', p.rm, '', 'No RM...') + `<div class="text-[10px] text-slate-400 mt-0.5 truncate max-w-[120px]" title="${esc(p.nama)}">${esc(p.nama)}</div>`, 'whitespace-nowrap text-slate-800 font-medium') +
         td(ce(p, 'lamaRawat', lamaRawat(p), '', 'Lama hari...'), 'whitespace-nowrap text-slate-600') +
         td(ce(p, 'ab', p.ab, '', 'Jenis AB...'), 'whitespace-nowrap text-slate-600') +
         td(ce(p, 'jumlah', p.jumlah, '', 'Total (Gram)...'), 'whitespace-nowrap text-slate-600') +
-        td(ce(p, 'ksm', (p.ksm || '').toUpperCase(), '', 'KSM...'), 'text-slate-600 font-semibold') +
+        td(ce(p, 'ksm', (p.ksm || '').toUpperCase(), '', 'KSM...'), 'text-slate-600 font-bold') +
         td(ce(p, 'ruangan', p.ruangan || 'Edelweiss', '', 'Ruangan...'), 'whitespace-nowrap text-slate-600') +
         td(ce(p, 'apt', p.apt || 'DEVI', '', 'APT...'), 'whitespace-nowrap text-slate-600') +
+        `<td class="px-3 py-2 text-center">${chk(p, 'adaLpd', 'medify-600', 'LPD')}</td>` +
+        `<td class="px-3 py-2 text-center">${chk(p, 'printLpd', 'medify-600', 'DONE')}</td>` +
         actionBtns(p);
     } else {
       const kpraCol = currentTab === 'krs'
-        ? `<td class="px-3 py-2 text-center bg-emerald-50/30">${chk(p, 'kpra', 'emerald-600')}</td>` : '';
+        ? `<td class="px-3 py-2 text-center bg-medify-50/30">${chk(p, 'kpra', 'medify-600')}</td>` : '';
       tr.innerHTML =
         bedCell(p) +
         td(ce(p, 'tglMRS', p.tglMRS, '', 'Tgl MRS...'), 'whitespace-nowrap text-slate-600') +
@@ -412,7 +418,7 @@ function renderTable(data) {
         td(ce(p, 'rm', p.rm, '', 'No RM...'), 'whitespace-nowrap text-slate-600 font-mono') +
         td(ce(p, 'nama', p.nama, '', 'Nama Pasien...'), 'font-medium') +
         td(ce(p, 'diag', p.diag, '', 'Diagnosa...'), 'text-slate-600') +
-        `<td class="px-3 py-2 text-sm text-slate-600" title="${esc(p.dpjp || '-')}">${ce(p, 'ksm', (p.ksm || '').toUpperCase(), 'font-semibold', 'KSM...')}</td>` +
+        `<td class="px-3 py-2 text-sm text-slate-600" title="${esc(p.dpjp || '-')}">${ce(p, 'ksm', (p.ksm || '').toUpperCase(), 'font-bold', 'KSM...')}</td>` +
         td(ce(p, 'ab', p.ab, '', 'AB...'), 'whitespace-nowrap text-slate-600') +
         td(ce(p, 'jumlah', p.jumlah, '', 'Jumlah...'), 'whitespace-nowrap text-slate-600') +
         actionBtns(p);
@@ -449,6 +455,11 @@ function copyAll() {
   const headers = currentTab === 'kpra'
     ? ['NO RM', 'LAMA RAWAT INAP (HARI)', 'JENIS ANTIBIOTIK', 'TOTAL PEMAKAIAN (GRAM)', 'KSM', 'RUANGAN', 'APT']
     : ['Bed', 'Tanggal MRS', 'Tanggal KRS', 'R/E/T', 'PTO', 'KRS', ...(currentTab === 'krs' ? ['KPRA'] : []), 'RM', 'Nama Pasien', 'Diagnosa', 'KSM', 'AB', 'Jumlah'];
+  
+  // Tandai seluruh baris sebagai tersalin
+  data.forEach(p => { if (!p.empty) persist(p.id, { isCopied: true }) });
+  refresh();
+
   copyToClipboard([headers.join('\t'), ...data.map(tsvRow)].join('\n'), `${data.length} pasien berhasil disalin (siap paste ke Excel)`);
 }
 
@@ -481,34 +492,29 @@ async function processHTML(html) {
     const p = { bedName: bed, tglMRS: mrs ? mrs[1].trim() : '', nama: clean(li.querySelector('.nama')),
       rm: clean(li.querySelector('.no_rm')), dpjp, ksm: getKSM(dpjp).toUpperCase(), diag: clean(li.querySelector('.judul_kasus')) };
     fileBeds.push(bed);
-    fileMap.set(bed, (p.nama || p.rm) ? p : null);      // null = bed kosong di file
+    fileMap.set(bed, (p.nama || p.rm) ? p : null);      
   });
 
-  // 1. Daftar bed: ditetapkan sekali, tidak pernah bertambah
   let ignored = 0;
   if (!beds.length) { beds = [...fileBeds]; await saveBeds(); }
   else ignored = fileBeds.filter(b => !beds.includes(b)).length;
   const bedSet = new Set(beds);
-  const scope = new Set(fileBeds.filter(b => bedSet.has(b)));   // bed yang ada di file
+  const scope = new Set(fileBeds.filter(b => bedSet.has(b)));   
 
-  // 2. Bersihkan baris kosong sisa versi lama
   for (const p of patients.filter(p => !p.nama && !p.rm)) await removeRecord(p.id);
 
   const same = (a, b) => (b.rm && a.rm === b.rm) || (!b.rm && b.nama && a.nama === b.nama);
   const kept = new Set();
   let masuk = 0, keluar = 0;
 
-  // 3. Isi bed dengan pasien dari file (pasien yang pindah bed ikut dipindah)
   for (const bed of scope) {
     const fp = fileMap.get(bed);
     if (!fp) continue;
     let rec = patients.find(a => !a.krs && !kept.has(a.id) && same(a, fp));
     
-    // Perbaikan Penting: Jika tidak ada di lembar aktif, cek apakah sudah masuk log KRS.
-    // Jika sudah ada di KRS, JANGAN ditarik lagi menjadi aktif.
     if (!rec) {
       const alreadyKRS = patients.some(a => a.krs && same(a, fp) && a.tglMRS === fp.tglMRS);
-      if (alreadyKRS) continue; // Biarkan pasien tersebut tetap di tab KRS secara permanen
+      if (alreadyKRS) continue; 
     }
     
     const data = { bedName: bed, tglMRS: fp.tglMRS, nama: fp.nama, rm: fp.rm, dpjp: fp.dpjp, ksm: fp.ksm, diag: fp.diag };
@@ -523,7 +529,6 @@ async function processHTML(html) {
     }
   }
 
-  // 4. Pasien yang bed-nya kosong / sudah diisi orang lain di file -> otomatis ke KRS
   const leaving = sortPatients(patients.filter(a => !a.krs && (a.nama || a.rm) && !kept.has(a.id) && (!bedSet.has(a.bedName) || scope.has(a.bedName))));
   const t0 = Date.now();
   for (const [i, a] of leaving.entries()) { await persist(a.id, { krs: true, krsAuto: true, krsAt: t0 + i }); keluar++; }
@@ -580,7 +585,7 @@ tableBody.addEventListener('change', async e => {
   const id = el.dataset.id, f = el.dataset.field;
   if (!id || !f) return;
   if (el.type === 'checkbox') {
-    if (f === 'krs' && !el.checked) {   // kembalikan ke Aktif hanya jika bed masih kosong
+    if (f === 'krs' && !el.checked) {   
       const p = patients.find(x => x.id === id);
       const taken = p && patients.some(x => x.id !== id && !x.krs && (x.nama || x.rm) && x.bedName === p.bedName);
       if (!p || !beds.includes(p.bedName) || taken) {
@@ -591,7 +596,10 @@ tableBody.addEventListener('change', async e => {
     await persist(id, f === 'krs' ? { krs: el.checked, krsAuto: false, ...(el.checked ? { krsAt: Date.now() } : {}) }
       : f === 'kpra' ? { kpra: el.checked, ...(el.checked ? { kpraAt: Date.now() } : {}) }
       : { [f]: el.checked });
+    
     if (f === 'krs') showToast(el.checked ? 'Pasien dipindah ke KRS' : 'Pasien dikembalikan ke Aktif');
+    if (f === 'kpra' && el.checked) showToast('Pasien ditambahkan ke tab KPRA');
+    
     refresh();
   } else if (el.type === 'date') {
     await persist(id, { [f]: el.value });
@@ -601,16 +609,46 @@ tableBody.addEventListener('click', async e => {
   const btnCopy = e.target.closest('.btn-copy-row');
   if (btnCopy) {
     const p = patients.find(x => x.id === btnCopy.dataset.id);
-    if (p) copyToClipboard(tsvRow(p), `Data ${p.nama || p.bedName} berhasil disalin`);
+    if (p) {
+      copyToClipboard(tsvRow(p), `Data ${p.nama || p.bedName} berhasil disalin`);
+      await persist(p.id, { isCopied: true });
+      refresh();
+    }
     return;
   }
   
+  const btnAddAb = e.target.closest('.btn-add-ab');
+  if (btnAddAb) {
+    const orig = patients.find(x => x.id === btnAddAb.dataset.id);
+    if (orig) {
+      const newId = Math.random().toString(36).slice(2, 11);
+      const newData = { ...orig, id: newId, ab: '', jumlah: '', isCopied: false };
+      // Tempatkan persis di bawah baris asli dengan memanipulasi timestamp
+      if (currentTab === 'kpra') newData.kpraAt = (parseFloat(orig.kpraAt) || Date.now()) + 0.001;
+      else if (currentTab === 'krs') newData.krsAt = (parseFloat(orig.krsAt) || Date.now()) + 0.001;
+      else newData.krsAt = (parseFloat(orig.krsAt) || Date.now()) + 0.001;
+      await persist(newId, newData);
+      refresh();
+      showToast('Baris antibiotik baru berhasil ditambahkan', 'success');
+    }
+    return;
+  }
+
   const btnDel = e.target.closest('.btn-delete-row');
   if (btnDel) {
-    if (confirm('Yakin ingin menghapus data pasien ini secara permanen?')) {
-      await removeRecord(btnDel.dataset.id);
-      refresh();
-      showToast('Data berhasil dihapus', 'success');
+    const pId = btnDel.dataset.id;
+    if (currentTab === 'kpra') {
+      if (confirm('Yakin ingin menghapus pasien ini dari lembar KPRA?\n(Data pasien di tab KRS tetap aman)')) {
+        await persist(pId, { kpra: false });
+        refresh();
+        showToast('Data dihapus dari KPRA', 'success');
+      }
+    } else {
+      if (confirm('Yakin ingin menghapus data ini secara permanen?')) {
+        await removeRecord(pId);
+        refresh();
+        showToast('Data berhasil dihapus', 'success');
+      }
     }
   }
 });
@@ -658,7 +696,7 @@ function pickSug(name) {
 }
 const isAB = el => el && el.dataset && el.dataset.field === 'ab' && el.isContentEditable;
 
-sug.addEventListener('mousedown', e => e.preventDefault());   // jaga fokus tetap di sel
+sug.addEventListener('mousedown', e => e.preventDefault());   
 sug.addEventListener('click', e => {
   const row = e.target.closest('[data-i]');
   if (row) pickSug(sugList[+row.dataset.i]);
@@ -693,7 +731,7 @@ function startLocal() {
   if (patients.length) showDashboardOnly(); else resetDashboard();
 }
 if (hasCfg(getCfg())) {
-  uploadSection.classList.add('hidden');            // tunggu status login
+  uploadSection.classList.add('hidden');            
   $('mode-text').innerText = 'Memeriksa login...';
 } else {
   startLocal();
@@ -793,13 +831,13 @@ $('login-form').addEventListener('submit', async e => {
 
 $('btn-logout').addEventListener('click', async () => {
   if (!authMod) return;
-  try { localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_BEDS); } catch (e) {}   // hapus cache lokal agar tidak tertinggal di perangkat
+  try { localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_BEDS); } catch (e) {}   
   try { await authMod.signOut(authInst); } catch (e) { console.error(e); }
 });
 
 async function initFirebase() {
   const cfg = getCfg();
-  if (!hasCfg(cfg)) return;                       // mode lokal
+  if (!hasCfg(cfg)) return;                       
   try {
     const base = `https://www.gstatic.com/firebasejs/${FB_VER}/`;
     const [{ initializeApp }, A, F] = await Promise.all([
@@ -822,3 +860,4 @@ initFirebase();
 </script>
 </body>
 </html>
+```

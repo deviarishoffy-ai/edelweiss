@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rekap Pasien Edelweiss - Medify Dashboard</title>
+<title>Edelweiss Symbiosis - Medify Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
@@ -22,16 +21,16 @@ tailwind.config = { theme: { extend: {
 .toast-enter { animation: slideInUp .3s ease-out forwards }
 .toast-exit { animation: fadeOut .3s ease-out forwards }
 .table-container::-webkit-scrollbar { height: 8px; width: 8px }
-.table-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px }
+.table-container::-webkit-scrollbar-track { background: transparent; border-radius: 4px }
 .table-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px }
-.drag-active { border-color: #0ea5e9 !important; background-color: #f0f9ff !important }
+.drag-active { border-color: #0ea5e9 !important; background-color: rgba(240,249,255,0.8) !important }
 [contenteditable="true"] { padding: 4px 6px; border-radius: 4px; border: 1px solid transparent; min-height: 24px; min-width: 20px; outline: none; transition: all .2s; display: inline-block; width: 100% }
-[contenteditable="true"]:hover { border-color: #cbd5e1; background: #f8fafc }
-[contenteditable="true"]:focus { border-color: #0ea5e9; background: #fff; box-shadow: 0 0 0 2px rgba(14,165,233,.1) }
+[contenteditable="true"]:hover { border-color: #cbd5e1; background: rgba(255,255,255,0.7) }
+[contenteditable="true"]:focus { border-color: #0ea5e9; background: #fff; box-shadow: 0 0 0 2px rgba(14,165,233,.2) }
 [contenteditable="true"]:empty:before { content: attr(placeholder); color: #94a3b8; pointer-events: none; display: block }
 </style>
 </head>
-<body class="bg-[#f0f9ff] min-h-screen text-slate-800 antialiased font-sans">
+<body class="bg-[url('https://i.postimg.cc/bvCK4q7V/1793889711112.jpg')] bg-cover bg-center bg-fixed min-h-screen text-slate-800 antialiased font-sans flex flex-col before:content-[''] before:absolute before:inset-0 before:bg-white/30 before:-z-10 relative z-0">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-clip-plus" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11v6M9 14h6"/></symbol>
   <symbol id="i-clip-check" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
@@ -57,123 +56,141 @@ tailwind.config = { theme: { extend: {
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m22 4-10 10-3-3"/></symbol>
 </svg>
 
-<nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm print:hidden">
+<nav class="bg-white/80 backdrop-blur-md border-b border-white/50 sticky top-0 z-30 shadow-sm print:hidden">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded bg-medify-600 flex items-center justify-center text-white font-bold text-xl shadow-md"><svg class="ic"><use href="#i-clip-plus"/></svg></div>
+        <div class="w-10 h-10 rounded bg-medify-600 flex items-center justify-center text-white font-bold text-xl shadow-md"><svg class="ic"><use href="#i-cat"/></svg></div>
         <div>
-          <h1 class="text-xl font-bold text-slate-800 leading-tight">Rekap Pasien Edelweiss</h1>
-          <p class="text-xs text-slate-500 font-medium">Dashboard Ekstraksi Data Otomatis</p>
+          <h1 class="text-xl font-bold text-slate-800 leading-tight">Edelweiss Symbiosis</h1>
+          <p class="text-[10px] text-slate-500 font-medium">Dashboard Ekstraksi Data Otomatis</p>
         </div>
       </div>
       <div class="flex items-center">
-        <span id="mode-badge" class="bg-medify-100 text-medify-700 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-2">
+        <span id="mode-badge" class="bg-medify-100/80 text-medify-700 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-2">
           <span id="mode-dot" class="w-2 h-2 rounded-full inline-block bg-amber-500"></span> <span id="mode-text">Menyiapkan...</span>
         </span>
-        <button id="btn-logout" type="button" class="hidden inline-flex items-center gap-2 ml-3 text-sm font-medium text-slate-500 hover:text-slate-800 border border-slate-300 rounded-lg px-3 py-1.5 transition-colors"><svg class="ic"><use href="#i-log-out"/></svg> Keluar</button>
+        <button id="btn-logout" type="button" class="hidden inline-flex items-center gap-2 ml-3 text-sm font-medium text-slate-500 hover:text-slate-800 border border-slate-300 rounded-lg px-3 py-1.5 transition-colors bg-white/50"><svg class="ic"><use href="#i-log-out"/></svg> Keluar</button>
       </div>
     </div>
   </div>
 </nav>
 
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col justify-center">
 
   <!-- Login -->
-  <section id="login-section" class="hidden mb-8">
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 max-w-md mx-auto">
+  <section id="login-section" class="hidden my-auto fade-in w-full">
+    <div class="bg-white/70 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full mx-auto overflow-hidden border border-white/60 p-8">
+      
+      <!-- Logo & Titles -->
       <div class="text-center mb-6">
-        <div class="w-16 h-16 bg-medify-50 text-medify-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><svg class="ic"><use href="#i-lock"/></svg></div>
-        <h2 class="text-lg font-semibold text-slate-800">Masuk untuk melanjutkan</h2>
-        <p class="text-sm text-slate-500 mt-1">Gunakan akun yang sama di semua perangkat agar data tersinkron.</p>
+        <!-- Logo yang sudah diperbarui -->
+        <img src="https://i.postimg.cc/Z5nV96Bs/IMG-20261105-211548.jpg" alt="Logo" class="w-20 h-20 mx-auto mb-4 object-cover drop-shadow-sm rounded-full bg-white/50 p-1">
+        
+        <h2 class="text-2xl font-bold text-slate-800 drop-shadow-sm">Edelweiss Symbiosis</h2>
+        <p class="text-xs text-slate-600 mt-2 px-2 leading-relaxed italic font-medium">"PPRA Kualitatif-Kuantitatif. Yo disambati, yo diikhtiari, nek revisi yo dilakoni"</p>
       </div>
+      
       <form id="login-form" class="space-y-4">
         <div>
-          <label for="login-email" class="block text-sm font-medium text-slate-600 mb-1">Email</label>
-          <input id="login-email" type="email" autocomplete="username" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-medify-500 focus:border-medify-500">
+          <label for="login-email" class="block text-xs font-bold text-slate-700 mb-1">Email</label>
+          <input id="login-email" type="email" autocomplete="username" required class="w-full px-3 py-2 border border-white/60 bg-white/80 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-medify-400 focus:bg-white transition-all shadow-inner">
         </div>
         <div>
-          <label for="login-pass" class="block text-sm font-medium text-slate-600 mb-1">Password</label>
-          <input id="login-pass" type="password" autocomplete="current-password" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-medify-500 focus:border-medify-500">
+          <label for="login-pass" class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+          <input id="login-pass" type="password" autocomplete="current-password" required class="w-full px-3 py-2 border border-white/60 bg-white/80 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-medify-400 focus:bg-white transition-all shadow-inner">
         </div>
-        <div id="login-error" class="hidden p-3 rounded-lg bg-red-50 text-red-700 text-sm font-medium"></div>
-        <button id="btn-login" type="submit" class="w-full bg-medify-600 hover:bg-medify-700 text-white font-medium py-2.5 rounded-lg shadow-sm transition-colors">Masuk</button>
+        <div id="login-error" class="hidden p-3 rounded-md bg-red-50/90 text-red-700 text-xs font-bold border border-red-200 backdrop-blur-sm"></div>
+        
+        <div class="pt-3 flex justify-center">
+          <button id="btn-login" type="submit" class="bg-medify-500 hover:bg-medify-600 text-white font-bold py-2.5 px-6 rounded-full shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm w-full">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+            Gass in
+          </button>
+        </div>
       </form>
+      
+      <hr class="my-6 border-slate-300/50">
+      
+      <div class="text-center">
+        <p class="text-xs text-slate-600 font-semibold mb-2">powered by <span class="font-extrabold text-slate-800 text-sm">Meow<span class="text-medify-500">dive</span></span> 🐱</p>
+        <span class="inline-block bg-medify-500 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm tracking-wide">Versi 1.3</span>
+      </div>
     </div>
   </section>
 
   <!-- Upload -->
-  <section id="upload-section" class="mb-8">
-    <div id="drop-zone" class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center transition-all duration-200">
+  <section id="upload-section" class="mb-8 hidden">
+    <div id="drop-zone" class="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/60 p-8 text-center transition-all duration-200">
       <input type="file" id="file-upload" accept=".html,.htm" class="hidden">
       <div class="max-w-md mx-auto">
-        <div class="w-20 h-20 bg-medify-50 text-medify-500 rounded-full flex items-center justify-center mx-auto mb-4"><svg class="ic text-3xl"><use href="#i-file-code"/></svg></div>
-        <h2 class="text-lg font-semibold text-slate-800 mb-2">Upload Web File Medify</h2>
-        <p class="text-sm text-slate-500 mb-6">Pilih atau seret file .html (Save as Webpage dari sistem Medify) ke area ini. Sistem akan otomatis mengekstrak data pasien di ruangan.</p>
-        <button id="btn-upload-trigger" type="button" class="bg-medify-600 hover:bg-medify-700 text-white font-medium py-2.5 px-6 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 mx-auto">
+        <div class="w-20 h-20 bg-medify-100/80 text-medify-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm"><svg class="ic text-3xl"><use href="#i-file-code"/></svg></div>
+        <h2 class="text-lg font-bold text-slate-800 mb-2">Upload Web File Medify</h2>
+        <p class="text-sm text-slate-600 mb-6 font-medium">Pilih atau seret file .html (Save as Webpage dari sistem Medify) ke area ini. Sistem akan otomatis mengekstrak data pasien di ruangan.</p>
+        <button id="btn-upload-trigger" type="button" class="bg-medify-600 hover:bg-medify-700 text-white font-bold py-2.5 px-6 rounded-full shadow-md transition-colors flex items-center justify-center gap-2 mx-auto">
           <svg class="ic"><use href="#i-upload"/></svg> Pilih File HTML
         </button>
-        <button id="btn-back-dashboard" type="button" class="mt-6 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors mx-auto items-center justify-center gap-2 hidden">
+        <button id="btn-back-dashboard" type="button" class="mt-6 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors mx-auto items-center justify-center gap-2 hidden">
           <svg class="ic"><use href="#i-arrow-left"/></svg> Kembali ke Lembar Kerja
         </button>
       </div>
     </div>
-    <div id="message-area" class="mt-4 p-4 rounded-lg flex items-start gap-3 bg-blue-50 text-blue-700 hidden">
+    <div id="message-area" class="mt-4 p-4 rounded-xl flex items-start gap-3 bg-blue-50/90 backdrop-blur-sm border border-blue-100 text-blue-700 hidden shadow-sm">
       <svg id="message-icon" class="ic mt-0.5"><use href="#i-info"/></svg>
-      <div id="message-text" class="text-sm font-medium"></div>
+      <div id="message-text" class="text-sm font-bold"></div>
     </div>
   </section>
 
   <!-- Dashboard -->
   <section id="dashboard-section" class="hidden fade-in">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 print:hidden">
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex items-center gap-4">
-        <div class="w-14 h-14 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-2xl"><svg class="ic"><use href="#i-bed"/></svg></div>
-        <div><p class="text-sm font-medium text-slate-500">Total Bed Terdata</p><h3 class="text-3xl font-bold" id="count-total">0</h3></div>
+      <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 p-6 flex items-center gap-4">
+        <div class="w-14 h-14 rounded-xl bg-blue-100/80 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><svg class="ic"><use href="#i-bed"/></svg></div>
+        <div><p class="text-sm font-bold text-slate-500">Total Bed Terdata</p><h3 class="text-3xl font-extrabold text-slate-700" id="count-total">0</h3></div>
       </div>
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex items-center gap-4">
-        <div class="w-14 h-14 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl"><svg class="ic"><use href="#i-user-check"/></svg></div>
-        <div><p class="text-sm font-medium text-slate-500">Pasien Aktif</p><h3 class="text-3xl font-bold" id="count-aktif">0</h3></div>
+      <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 p-6 flex items-center gap-4">
+        <div class="w-14 h-14 rounded-xl bg-emerald-100/80 text-emerald-600 flex items-center justify-center text-2xl shadow-sm"><svg class="ic"><use href="#i-user-check"/></svg></div>
+        <div><p class="text-sm font-bold text-slate-500">Pasien Aktif</p><h3 class="text-3xl font-extrabold text-slate-700" id="count-aktif">0</h3></div>
       </div>
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex items-center gap-4">
-        <div class="w-14 h-14 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-2xl"><svg class="ic"><use href="#i-log-out"/></svg></div>
-        <div><p class="text-sm font-medium text-slate-500">Pasien Sudah KRS</p><h3 class="text-3xl font-bold" id="count-krs">0</h3></div>
+      <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 p-6 flex items-center gap-4">
+        <div class="w-14 h-14 rounded-xl bg-amber-100/80 text-amber-600 flex items-center justify-center text-2xl shadow-sm"><svg class="ic"><use href="#i-log-out"/></svg></div>
+        <div><p class="text-sm font-bold text-slate-500">Pasien Sudah KRS</p><h3 class="text-3xl font-extrabold text-slate-700" id="count-krs">0</h3></div>
       </div>
     </div>
 
-    <div class="flex space-x-2 mb-4 border-b border-slate-200 print:hidden overflow-x-auto">
-      <button id="tab-aktif" type="button"><svg class="ic mr-2"><use href="#i-activity"/></svg> 🛏️ Lembar Kerja Aktif</button>
-      <button id="tab-krs" type="button"><svg class="ic mr-2"><use href="#i-clip-check"/></svg> 📝 Lembar Kerja KRS</button>
-      <button id="tab-kpra" type="button"><svg class="ic mr-2"><use href="#i-pill"/></svg> 💊 Lembar Kerja KPRA</button>
+    <div class="flex space-x-2 mb-4 border-b border-white/50 print:hidden overflow-x-auto pb-1">
+      <button id="tab-aktif" type="button" class="bg-white/60 backdrop-blur-sm rounded-t-lg"><svg class="ic mr-2"><use href="#i-activity"/></svg> 🛏️ Lembar Kerja Aktif</button>
+      <button id="tab-krs" type="button" class="bg-white/60 backdrop-blur-sm rounded-t-lg"><svg class="ic mr-2"><use href="#i-clip-check"/></svg> 📝 Lembar Kerja KRS</button>
+      <button id="tab-kpra" type="button" class="bg-white/60 backdrop-blur-sm rounded-t-lg"><svg class="ic mr-2"><use href="#i-pill"/></svg> 💊 Lembar Kerja KPRA</button>
     </div>
 
-    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[600px] print:h-auto print:border-none print:shadow-none">
-      <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex flex-wrap justify-between items-center gap-4 print:hidden">
-        <h3 class="text-lg font-semibold flex items-center"><svg class="ic mr-2 text-medify-500"><use href="#i-table"/></svg> Rekapitulasi Data</h3>
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg border border-white/60 overflow-hidden flex flex-col h-[600px] print:h-auto print:border-none print:shadow-none print:bg-white">
+      <div class="px-6 py-4 border-b border-slate-200/60 bg-white/50 flex flex-wrap justify-between items-center gap-4 print:hidden">
+        <h3 class="text-lg font-bold flex items-center text-slate-700"><svg class="ic mr-2 text-medify-500"><use href="#i-table"/></svg> Rekapitulasi Data</h3>
         <div class="flex items-center gap-3 flex-wrap">
-          <button id="btn-add-manual" type="button" class="hidden bg-medify-100 hover:bg-medify-200 text-medify-700 text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-clip-plus"/></svg> Tambah Manual</button>
-          <button id="btn-print" type="button" class="bg-slate-600 hover:bg-slate-700 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-printer"/></svg> Print</button>
-          <button id="btn-copy-all" type="button" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-copy"/></svg> Copy Format Excel</button>
+          <button id="btn-add-manual" type="button" class="hidden bg-medify-100 hover:bg-medify-200 text-medify-700 text-sm font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-clip-plus"/></svg> Tambah Manual</button>
+          <button id="btn-print" type="button" class="bg-slate-600 hover:bg-slate-700 text-white text-sm font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-printer"/></svg> Print</button>
+          <button id="btn-copy-all" type="button" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2"><svg class="ic"><use href="#i-copy"/></svg> Copy Format Excel</button>
           <div class="relative">
             <svg class="ic absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"><use href="#i-search"/></svg>
-            <input type="text" id="search-input" placeholder="Cari nama, RM, diagnosa..." class="pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-medify-500 focus:border-medify-500 w-64">
+            <input type="text" id="search-input" placeholder="Cari nama, RM, diagnosa..." class="pl-9 pr-4 py-2 border border-slate-300/80 bg-white/80 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-medify-500 focus:border-medify-500 w-64 shadow-inner">
           </div>
         </div>
       </div>
-      <div class="flex-1 overflow-auto table-container print:overflow-visible">
+      <div class="flex-1 overflow-auto table-container print:overflow-visible bg-white/60">
         <table class="w-full text-left border-collapse min-w-[1300px] print:min-w-full">
-          <thead id="table-head" class="bg-slate-50 sticky top-0 z-10 shadow-sm print:static"></thead>
-          <tbody id="table-body" class="divide-y divide-slate-200 bg-white"></tbody>
+          <thead id="table-head" class="bg-white/90 backdrop-blur-md sticky top-0 z-10 shadow-sm print:static"></thead>
+          <tbody id="table-body" class="divide-y divide-slate-200/50"></tbody>
         </table>
         <div id="empty-state" class="py-12 text-center hidden">
           <svg class="ic text-4xl text-slate-300 mb-3"><use href="#i-folder"/></svg>
-          <p class="text-slate-500 font-medium">Tidak ada data pada tab ini atau tidak cocok dengan pencarian.</p>
+          <p class="text-slate-500 font-bold">Tidak ada data pada tab ini atau tidak cocok dengan pencarian.</p>
         </div>
       </div>
     </div>
 
     <div class="mt-4 text-right print:hidden">
-      <button id="btn-reset-dashboard" type="button" class="text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors"><svg class="ic mr-1"><use href="#i-undo"/></svg> Upload File Baru</button>
+      <button id="btn-reset-dashboard" type="button" class="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-bold text-slate-600 hover:text-slate-800 hover:bg-white shadow-sm transition-all"><svg class="ic mr-1"><use href="#i-undo"/></svg> Upload File Baru</button>
     </div>
   </section>
 </main>
@@ -213,15 +230,15 @@ const btnBack = $('btn-back-dashboard');
 /* ---------- UI helpers ---------- */
 function showToast(message, type = 'success') {
   const t = document.createElement('div');
-  t.className = `${type === 'success' ? 'bg-emerald-500' : 'bg-red-500'} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 toast-enter`;
-  t.innerHTML = `<svg class="ic text-lg"><use href="#i-${type === 'success' ? 'check' : 'alert'}"/></svg><span class="font-medium text-sm">${esc(message)}</span>`;
+  t.className = `${type === 'success' ? 'bg-emerald-500' : 'bg-red-500'} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 toast-enter backdrop-blur-md bg-opacity-90`;
+  t.innerHTML = `<svg class="ic text-lg"><use href="#i-${type === 'success' ? 'check' : 'alert'}"/></svg><span class="font-bold text-sm">${esc(message)}</span>`;
   $('toast-container').appendChild(t);
   setTimeout(() => { t.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => t.remove(), 300); }, 3000);
 }
 function showMessage(type, text) {
   const area = $('message-area');
-  area.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-blue-50', 'text-blue-700');
-  area.classList.add(...(type === 'error' ? ['bg-red-50', 'text-red-700'] : ['bg-blue-50', 'text-blue-700']));
+  area.classList.remove('hidden', 'bg-red-50/90', 'text-red-700', 'bg-blue-50/90', 'text-blue-700');
+  area.classList.add(...(type === 'error' ? ['bg-red-50/90', 'text-red-700'] : ['bg-blue-50/90', 'text-blue-700']));
   $('message-icon').firstElementChild.setAttribute('href', type === 'error' ? '#i-alert' : '#i-info');
   $('message-text').innerText = text;
 }
@@ -279,10 +296,14 @@ function resetDashboard() {
 }
 function updateCounters() {
   const real = p => p.nama || p.rm;
-  const occ = beds.filter(b => patients.some(p => !p.krs && real(p) && p.bedName === b)).length;
+  
+  // Hitung jumlah pasien unik berdasarkan nama/rm (mengabaikan baris antibotik tambahan)
+  const activePatients = new Set(patients.filter(p => !p.krs && real(p)).map(p => (p.rm || p.nama).toLowerCase())).size;
+  const krsPatients = new Set(patients.filter(p => p.krs && real(p)).map(p => (p.rm || p.nama).toLowerCase())).size;
+
   $('count-total').innerText = beds.length.toLocaleString('id-ID');
-  $('count-aktif').innerText = occ.toLocaleString('id-ID');
-  $('count-krs').innerText = patients.filter(p => p.krs && real(p)).length.toLocaleString('id-ID');
+  $('count-aktif').innerText = activePatients.toLocaleString('id-ID');
+  $('count-krs').innerText = krsPatients.toLocaleString('id-ID');
 }
 function refresh() { updateCounters(); renderTable(getFiltered()); }
 
@@ -328,30 +349,46 @@ function getFiltered() {
     beds.forEach(b => {
       const pts = patients.filter(p => !p.krs && real(p) && p.bedName === b);
       if (pts.length === 0) d.push({ id: 'empty:' + b, bedName: b, empty: true });
-      else d.push(...pts);
+      else d.push(...pts); 
     });
   } else {
     d = patients.filter(p => real(p) && (currentTab === 'krs' ? p.krs : p.kpra));
   }
   if (term) d = d.filter(p => ['nama', 'rm', 'diag', 'ksm'].some(k => p[k] && String(p[k]).toLowerCase().includes(term)));
-  sortPatients(d);
-  if (currentTab !== 'aktif') {          
+  
+  if (currentTab === 'aktif') {
+    sortPatients(d);
+    d.sort((a, b) => {
+      if (a.bedName === b.bedName && !a.empty && !b.empty) {
+        return (a.tambahAbAt || 0) - (b.tambahAbAt || 0);
+      }
+      return 0;
+    });
+  } else {          
     const t = a => (currentTab === 'kpra' ? a.kpraAt || a.krsAt : a.krsAt) || 0;
-    d.sort((a, b) => t(a) - t(b));
+    d.sort((a, b) => {
+       const timeDiff = t(a) - t(b);
+       if (timeDiff === 0) return (a.tambahAbAt || 0) - (b.tambahAbAt || 0);
+       return timeDiff;
+    });
   }
   return d;
 }
 
 /* ---------- Tabs & tabel ---------- */
-const TH = 'px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider border-y border-slate-200';
+const TH = 'px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider border-y border-slate-200/60';
 const th = (t, extra = '') => `<th class="${TH} ${extra}">${t}</th>`;
-const thAksi = `<th class="${TH} text-center sticky right-0 bg-slate-50 print:hidden">Aksi</th>`;
+const thAksi = `<th class="${TH} text-center sticky right-0 bg-white/90 backdrop-blur-md print:hidden">Aksi</th>`;
 
 function switchTab(tab) {
   currentTab = tab;
-  const on = 'py-2.5 px-5 border-b-2 border-medify-600 text-medify-600 font-bold transition-colors whitespace-nowrap';
-  const off = 'py-2.5 px-5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-semibold transition-colors whitespace-nowrap';
-  ['aktif', 'krs', 'kpra'].forEach(t => $('tab-' + t).className = t === tab ? on : off);
+  const on = 'py-2.5 px-6 bg-white/90 backdrop-blur-xl border-t-2 border-medify-500 text-medify-600 font-bold transition-all whitespace-nowrap shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]';
+  const off = 'py-2.5 px-6 border-t-2 border-transparent text-slate-600 hover:text-slate-900 hover:bg-white/70 font-bold transition-all whitespace-nowrap';
+  
+  ['aktif', 'krs', 'kpra'].forEach(t => {
+    const el = $('tab-' + t);
+    el.className = `rounded-t-xl ${t === tab ? on : off}`;
+  });
   
   const btnAdd = $('btn-add-manual');
   if (btnAdd) btnAdd.classList.toggle('hidden', tab === 'aktif');
@@ -359,7 +396,7 @@ function switchTab(tab) {
   if (tab === 'kpra') {
     tableHead.innerHTML = `<tr>${th('NO RM')}${th('LAMA RAWAT INAP (HARI)', 'w-48')}${th('JENIS ANTIBIOTIK')}${th('TOTAL PEMAKAIAN (GRAM)', 'w-48')}${th('KSM')}${th('RUANGAN')}${th('APT')}${th('LPD')}${th('DONE')}${thAksi}</tr>`;
   } else {
-    const kpra = tab === 'krs' ? th('KPRA', 'text-center bg-medify-50') : '';
+    const kpra = tab === 'krs' ? th('KPRA', 'text-center bg-medify-50/50') : '';
     tableHead.innerHTML = `<tr>${th('Bed')}${th('Tgl MRS')}${th('Tgl KRS', 'w-40')}${th('R/E/T')}${th('PTO')}${th('KRS')}${kpra}${th('RM')}${th('Nama Pasien')}${th('Diagnosa')}${th('KSM (DPJP)')}${th('AB')}${th('Jumlah')}${thAksi}</tr>`;
   }
   refresh();
@@ -368,59 +405,59 @@ function switchTab(tab) {
 const ce = (p, field, val, cls = '', ph = '') =>
   `<div contenteditable="true" data-id="${esc(p.id)}" data-field="${field}" class="${cls}" placeholder="${ph}">${esc(val)}</div>`;
 const chk = (p, field, color, title = '') =>
-  `<input type="checkbox" class="w-4 h-4 text-${color} rounded border-slate-300 cursor-pointer" ${p[field] ? 'checked' : ''} data-id="${esc(p.id)}" data-field="${field}" ${title ? `title="${title}"` : ''}>`;
+  `<input type="checkbox" class="w-4 h-4 text-${color} rounded border-slate-300 cursor-pointer bg-white/50 focus:ring-${color}" ${p[field] ? 'checked' : ''} data-id="${esc(p.id)}" data-field="${field}" ${title ? `title="${title}"` : ''}>`;
 const td = (inner, cls = '') => `<td class="px-3 py-2 text-sm ${cls}">${inner}</td>`;
 
-const actionBtns = p => `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 ${p.isCopied ? 'bg-indigo-50' : 'bg-white'} group-hover:bg-slate-50 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden">
+const actionBtns = p => `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 ${p.isCopied ? 'bg-indigo-50/80 backdrop-blur-md' : 'bg-white/80 backdrop-blur-md'} group-hover:bg-slate-50/90 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden">
   <div class="flex items-center justify-center gap-1">
-    <button type="button" data-id="${esc(p.id)}" class="btn-add-ab text-medify-500 hover:bg-medify-100 p-1.5 rounded-full transition-colors" title="Tambah Antibiotik (Salin Baris ke Bawah)"><svg class="ic text-lg"><use href="#i-clip-plus"/></svg></button>
+    <button type="button" data-id="${esc(p.id)}" class="btn-add-ab text-medify-500 hover:bg-medify-100 p-1.5 rounded-full transition-colors" title="Tambah Antibiotik (Satu Pasien)"><svg class="ic text-lg"><use href="#i-clip-plus"/></svg></button>
     <button type="button" data-id="${esc(p.id)}" class="btn-copy-row ${p.isCopied ? 'text-indigo-600 bg-indigo-100' : 'text-slate-400 hover:bg-slate-100'} p-1.5 rounded-full transition-colors" title="${p.isCopied ? 'Tercopy Meow!' : 'Copy Baris'}"><svg class="ic text-lg"><use href="${p.isCopied ? '#i-cat' : '#i-copy'}"/></svg></button>
     <button type="button" data-id="${esc(p.id)}" class="btn-delete-row text-red-400 hover:bg-red-50 p-1.5 rounded-full transition-colors" title="${currentTab === 'kpra' ? 'Hapus dari KPRA' : 'Hapus Pasien'}"><svg class="ic text-lg"><use href="#i-trash"/></svg></button>
   </div>
 </td>`;
 
-const bedCell = p => td(`<svg class="ic text-slate-400 mr-1.5" title="Bed terkunci"><use href="#i-lock"/></svg>${esc(p.bedName)}`, 'whitespace-nowrap font-medium text-medify-700 bg-medify-50/30');
+const bedCell = p => td(`<svg class="ic text-slate-400 mr-1.5" title="Bed terkunci"><use href="#i-lock"/></svg>${esc(p.bedName)}`, 'whitespace-nowrap font-bold text-medify-700 bg-medify-50/50');
 function renderTable(data) {
   tableBody.innerHTML = '';
   emptyState.classList.toggle('hidden', data.length > 0);
   const frag = document.createDocumentFragment();
   data.forEach(p => {
     const tr = document.createElement('tr');
-    tr.className = `hover:bg-medify-50/50 transition-colors group ${p.isCopied ? 'bg-indigo-50/40' : 'bg-white'}`;
+    tr.className = `hover:bg-white/80 transition-colors group ${p.isCopied ? 'bg-indigo-50/60' : 'bg-white/40'}`;
     if (p.empty) {
-      tr.innerHTML = bedCell(p) + `<td colspan="12" class="px-3 py-2 text-sm text-slate-400 italic">Bed kosong</td>`;
+      tr.innerHTML = bedCell(p) + `<td colspan="12" class="px-3 py-2 text-sm text-slate-500 italic font-medium">Bed kosong</td>`;
       frag.appendChild(tr);
       return;
     }
     if (currentTab === 'kpra') {
       tr.innerHTML =
-        td(ce(p, 'rm', p.rm, '', 'No RM...') + `<div class="text-[10px] text-slate-400 mt-0.5 truncate max-w-[120px]" title="${esc(p.nama)}">${esc(p.nama)}</div>`, 'whitespace-nowrap text-slate-800 font-medium') +
-        td(ce(p, 'lamaRawat', lamaRawat(p), '', 'Lama hari...'), 'whitespace-nowrap text-slate-600') +
-        td(ce(p, 'ab', p.ab, '', 'Jenis AB...'), 'whitespace-nowrap text-slate-600') +
-        td(ce(p, 'jumlah', p.jumlah, '', 'Total (Gram)...'), 'whitespace-nowrap text-slate-600') +
-        td(ce(p, 'ksm', (p.ksm || '').toUpperCase(), '', 'KSM...'), 'text-slate-600 font-bold') +
-        td(ce(p, 'ruangan', p.ruangan || 'Edelweiss', '', 'Ruangan...'), 'whitespace-nowrap text-slate-600') +
-        td(ce(p, 'apt', p.apt || 'DEVI', '', 'APT...'), 'whitespace-nowrap text-slate-600') +
+        td(ce(p, 'rm', p.rm, '', 'No RM...') + `<div class="text-[10px] text-slate-400/80 mt-0.5 truncate max-w-[120px] font-medium" title="${esc(p.nama)}">${esc(p.nama)}</div>`, 'whitespace-nowrap text-slate-800 font-bold') +
+        td(ce(p, 'lamaRawat', lamaRawat(p), '', 'Lama hari...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(ce(p, 'ab', p.ab, '', 'Jenis AB...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(ce(p, 'jumlah', p.jumlah, '', 'Total (Gram)...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(ce(p, 'ksm', (p.ksm || '').toUpperCase(), '', 'KSM...'), 'text-slate-700 font-bold') +
+        td(ce(p, 'ruangan', p.ruangan || 'Edelweiss', '', 'Ruangan...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(ce(p, 'apt', p.apt || 'DEVI', '', 'APT...'), 'whitespace-nowrap text-slate-700 font-medium') +
         `<td class="px-3 py-2 text-center">${chk(p, 'adaLpd', 'medify-600', 'LPD')}</td>` +
         `<td class="px-3 py-2 text-center">${chk(p, 'printLpd', 'medify-600', 'DONE')}</td>` +
         actionBtns(p);
     } else {
       const kpraCol = currentTab === 'krs'
-        ? `<td class="px-3 py-2 text-center bg-medify-50/30">${chk(p, 'kpra', 'medify-600')}</td>` : '';
+        ? `<td class="px-3 py-2 text-center bg-medify-50/50">${chk(p, 'kpra', 'medify-600')}</td>` : '';
       tr.innerHTML =
         bedCell(p) +
-        td(ce(p, 'tglMRS', p.tglMRS, '', 'Tgl MRS...'), 'whitespace-nowrap text-slate-600') +
-        td(`<input type="date" value="${esc(p.tglKRS)}" data-id="${esc(p.id)}" data-field="tglKRS" class="border border-transparent hover:border-slate-300 focus:border-medify-500 rounded px-2 py-1.5 text-sm bg-transparent outline-none w-full">`, 'whitespace-nowrap') +
+        td(ce(p, 'tglMRS', p.tglMRS, '', 'Tgl MRS...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(`<input type="date" value="${esc(p.tglKRS)}" data-id="${esc(p.id)}" data-field="tglKRS" class="border border-transparent hover:border-slate-300 focus:border-medify-500 rounded px-2 py-1.5 text-sm bg-transparent outline-none w-full text-slate-700 font-medium">`, 'whitespace-nowrap') +
         `<td class="px-3 py-2 text-center">${chk(p, 'ret', 'medify-600')}</td>` +
         `<td class="px-3 py-2 text-center">${chk(p, 'pto', 'medify-600')}</td>` +
         `<td class="px-3 py-2 text-center">${chk(p, 'krs', 'amber-500', 'Tandai KRS')}</td>` +
         kpraCol +
-        td(ce(p, 'rm', p.rm, '', 'No RM...'), 'whitespace-nowrap text-slate-600 font-mono') +
-        td(ce(p, 'nama', p.nama, '', 'Nama Pasien...'), 'font-medium') +
-        td(ce(p, 'diag', p.diag, '', 'Diagnosa...'), 'text-slate-600') +
-        `<td class="px-3 py-2 text-sm text-slate-600" title="${esc(p.dpjp || '-')}">${ce(p, 'ksm', (p.ksm || '').toUpperCase(), 'font-bold', 'KSM...')}</td>` +
-        td(ce(p, 'ab', p.ab, '', 'AB...'), 'whitespace-nowrap text-slate-600') +
-        td(ce(p, 'jumlah', p.jumlah, '', 'Jumlah...'), 'whitespace-nowrap text-slate-600') +
+        td(ce(p, 'rm', p.rm, '', 'No RM...'), 'whitespace-nowrap text-slate-800 font-mono font-bold') +
+        td(ce(p, 'nama', p.nama, '', 'Nama Pasien...'), 'font-bold text-slate-800') +
+        td(ce(p, 'diag', p.diag, '', 'Diagnosa...'), 'text-slate-700 font-medium') +
+        `<td class="px-3 py-2 text-sm text-slate-700" title="${esc(p.dpjp || '-')}">${ce(p, 'ksm', (p.ksm || '').toUpperCase(), 'font-bold', 'KSM...')}</td>` +
+        td(ce(p, 'ab', p.ab, '', 'AB...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(ce(p, 'jumlah', p.jumlah, '', 'Jumlah...'), 'whitespace-nowrap text-slate-700 font-medium') +
         actionBtns(p);
     }
     frag.appendChild(tr);
@@ -456,11 +493,10 @@ function copyAll() {
     ? ['NO RM', 'LAMA RAWAT INAP (HARI)', 'JENIS ANTIBIOTIK', 'TOTAL PEMAKAIAN (GRAM)', 'KSM', 'RUANGAN', 'APT']
     : ['Bed', 'Tanggal MRS', 'Tanggal KRS', 'R/E/T', 'PTO', 'KRS', ...(currentTab === 'krs' ? ['KPRA'] : []), 'RM', 'Nama Pasien', 'Diagnosa', 'KSM', 'AB', 'Jumlah'];
   
-  // Tandai seluruh baris sebagai tersalin
   data.forEach(p => { if (!p.empty) persist(p.id, { isCopied: true }) });
   refresh();
 
-  copyToClipboard([headers.join('\t'), ...data.map(tsvRow)].join('\n'), `${data.length} pasien berhasil disalin (siap paste ke Excel)`);
+  copyToClipboard([headers.join('\t'), ...data.map(tsvRow)].join('\n'), `${data.length} baris berhasil disalin (siap paste ke Excel)`);
 }
 
 /* ---------- Upload & parsing Medify ---------- */
@@ -505,35 +541,46 @@ async function processHTML(html) {
 
   const same = (a, b) => (b.rm && a.rm === b.rm) || (!b.rm && b.nama && a.nama === b.nama);
   const kept = new Set();
-  let masuk = 0, keluar = 0;
+  let masukSet = new Set();
+  let keluarSet = new Set();
 
   for (const bed of scope) {
     const fp = fileMap.get(bed);
     if (!fp) continue;
-    let rec = patients.find(a => !a.krs && !kept.has(a.id) && same(a, fp));
     
-    if (!rec) {
-      const alreadyKRS = patients.some(a => a.krs && same(a, fp) && a.tglMRS === fp.tglMRS);
-      if (alreadyKRS) continue; 
+    let recs = patients.filter(a => !a.krs && !kept.has(a.id) && same(a, fp));
+    
+    if (recs.length === 0) {
+      const olds = patients.filter(a => a.krs && same(a, fp) && a.tglMRS === fp.tglMRS);
+      if (olds.length > 0 && olds.every(o => o.krsAuto)) {
+        recs = olds; 
+      }
     }
     
     const data = { bedName: bed, tglMRS: fp.tglMRS, nama: fp.nama, rm: fp.rm, dpjp: fp.dpjp, ksm: fp.ksm, diag: fp.diag };
-    if (rec) {
-      await persist(rec.id, data);
-      kept.add(rec.id);
+    
+    if (recs.length > 0) {
+      for (const rec of recs) {
+        await persist(rec.id, rec.krs ? { ...data, krs: false, krsAuto: false } : data);
+        kept.add(rec.id);
+      }
     } else {
       const id = Math.random().toString(36).slice(2, 11);
       await persist(id, { tglKRS: '', ret: false, pto: false, krs: false, krsAuto: false, kpra: false, ab: '', jumlah: '',
-        lamaRawat: '', apt: 'DEVI', ruangan: 'Edelweiss', ...data });
-      kept.add(id); masuk++;
+        lamaRawat: '', apt: 'DEVI', ruangan: 'Edelweiss', adaLpd: false, printLpd: false, ...data });
+      kept.add(id); 
+      masukSet.add(fp.rm || fp.nama);
     }
   }
 
   const leaving = sortPatients(patients.filter(a => !a.krs && (a.nama || a.rm) && !kept.has(a.id) && (!bedSet.has(a.bedName) || scope.has(a.bedName))));
   const t0 = Date.now();
-  for (const [i, a] of leaving.entries()) { await persist(a.id, { krs: true, krsAuto: true, krsAt: t0 + i }); keluar++; }
+  for (const [i, a] of leaving.entries()) { 
+    await persist(a.id, { krs: true, krsAuto: true, krsAt: t0 + i }); 
+    keluarSet.add(a.rm || a.nama);
+  }
 
-  showToast(`Selesai: ${masuk} pasien masuk, ${keluar} dipindah otomatis ke KRS` + (ignored ? `. ${ignored} bed baru diabaikan.` : ''));
+  showToast(`Selesai: ${masukSet.size} pasien masuk, ${keluarSet.size} dipindah otomatis ke KRS` + (ignored ? `. ${ignored} bed baru diabaikan.` : ''));
   hideMessage();
   showDashboardOnly();
 }
@@ -623,13 +670,15 @@ tableBody.addEventListener('click', async e => {
     if (orig) {
       const newId = Math.random().toString(36).slice(2, 11);
       const newData = { ...orig, id: newId, ab: '', jumlah: '', isCopied: false };
-      // Tempatkan persis di bawah baris asli dengan memanipulasi timestamp
-      if (currentTab === 'kpra') newData.kpraAt = (parseFloat(orig.kpraAt) || Date.now()) + 0.001;
-      else if (currentTab === 'krs') newData.krsAt = (parseFloat(orig.krsAt) || Date.now()) + 0.001;
-      else newData.krsAt = (parseFloat(orig.krsAt) || Date.now()) + 0.001;
+      
+      const currentTimestamp = Date.now();
+      if (currentTab === 'kpra') newData.tambahAbAt = currentTimestamp;
+      else if (currentTab === 'krs') newData.tambahAbAt = currentTimestamp;
+      else newData.tambahAbAt = currentTimestamp;
+
       await persist(newId, newData);
       refresh();
-      showToast('Baris antibiotik baru berhasil ditambahkan', 'success');
+      showToast('Baris antibiotik tambahan berhasil ditambahkan (Pasien yang sama)', 'success');
     }
     return;
   }
@@ -644,7 +693,7 @@ tableBody.addEventListener('click', async e => {
         showToast('Data dihapus dari KPRA', 'success');
       }
     } else {
-      if (confirm('Yakin ingin menghapus data ini secara permanen?')) {
+      if (confirm('Yakin ingin menghapus baris data ini secara permanen?')) {
         await removeRecord(pId);
         refresh();
         showToast('Data berhasil dihapus', 'success');
@@ -670,7 +719,7 @@ let sugEl = null, sugIdx = -1, sugList = [];
 function hideSug() { sug.classList.add('hidden'); sugEl = null; sugIdx = -1; }
 function renderSug() {
   sug.innerHTML = sugList.map((n, i) =>
-    `<div data-i="${i}" class="px-3 py-1.5 cursor-pointer ${i === sugIdx ? 'bg-medify-100 text-medify-700' : 'hover:bg-slate-50'}">${esc(n)}</div>`).join('');
+    `<div data-i="${i}" class="px-3 py-1.5 cursor-pointer font-medium ${i === sugIdx ? 'bg-medify-100 text-medify-700' : 'hover:bg-slate-50 text-slate-700'}">${esc(n)}</div>`).join('');
   const act = sug.children[sugIdx];
   if (act) act.scrollIntoView({ block: 'nearest' });
 }
@@ -816,7 +865,7 @@ $('login-form').addEventListener('submit', async e => {
   e.preventDefault();
   if (!authMod) return showLoginError('Firebase belum siap. Tunggu sebentar lalu coba lagi.');
   const btn = $('btn-login');
-  btn.disabled = true; btn.textContent = 'Memproses...';
+  btn.disabled = true; btn.innerHTML = 'Memproses...';
   showLoginError('');
   try {
     await authMod.signInWithEmailAndPassword(authInst, $('login-email').value.trim(), $('login-pass').value);
@@ -825,7 +874,8 @@ $('login-form').addEventListener('submit', async e => {
     console.error(err);
     showLoginError(authMsg(err));
   } finally {
-    btn.disabled = false; btn.textContent = 'Masuk';
+    btn.disabled = false; 
+    btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg> Gass in`;
   }
 });
 

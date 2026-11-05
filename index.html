@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edelweiss Symbiosis - Medify Dashboard</title>
+<!-- Menambahkan Favicon (Ikon pada Tab Browser) -->
+<link rel="icon" href="https://i.postimg.cc/Z5nV96Bs/IMG-20261105-211548.jpg" type="image/jpeg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
@@ -84,7 +86,6 @@ tailwind.config = { theme: { extend: {
       
       <!-- Logo & Titles -->
       <div class="text-center mb-6">
-        <!-- Logo yang sudah diperbarui -->
         <img src="https://i.postimg.cc/Z5nV96Bs/IMG-20261105-211548.jpg" alt="Logo" class="w-20 h-20 mx-auto mb-4 object-cover drop-shadow-sm rounded-full bg-white/50 p-1">
         
         <h2 class="text-2xl font-bold text-slate-800 drop-shadow-sm">Edelweiss Symbiosis</h2>
@@ -150,7 +151,7 @@ tailwind.config = { theme: { extend: {
       </div>
       <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 p-6 flex items-center gap-4">
         <div class="w-14 h-14 rounded-xl bg-emerald-100/80 text-emerald-600 flex items-center justify-center text-2xl shadow-sm"><svg class="ic"><use href="#i-user-check"/></svg></div>
-        <div><p class="text-sm font-bold text-slate-500">Pasien Aktif</p><h3 class="text-3xl font-extrabold text-slate-700" id="count-aktif">0</h3></div>
+        <div><p class="text-sm font-bold text-slate-500">Bed Terisi</p><h3 class="text-3xl font-extrabold text-slate-700" id="count-aktif">0</h3></div>
       </div>
       <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 p-6 flex items-center gap-4">
         <div class="w-14 h-14 rounded-xl bg-amber-100/80 text-amber-600 flex items-center justify-center text-2xl shadow-sm"><svg class="ic"><use href="#i-log-out"/></svg></div>
@@ -158,10 +159,11 @@ tailwind.config = { theme: { extend: {
       </div>
     </div>
 
+    <!-- TABS -->
     <div class="flex space-x-2 mb-4 border-b border-white/50 print:hidden overflow-x-auto pb-1">
-      <button id="tab-aktif" type="button" class="bg-white/60 backdrop-blur-sm rounded-t-lg"><svg class="ic mr-2"><use href="#i-activity"/></svg> 🛏️ Lembar Kerja Aktif</button>
-      <button id="tab-krs" type="button" class="bg-white/60 backdrop-blur-sm rounded-t-lg"><svg class="ic mr-2"><use href="#i-clip-check"/></svg> 📝 Lembar Kerja KRS</button>
-      <button id="tab-kpra" type="button" class="bg-white/60 backdrop-blur-sm rounded-t-lg"><svg class="ic mr-2"><use href="#i-pill"/></svg> 💊 Lembar Kerja KPRA</button>
+      <button id="tab-aktif" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl text-slate-700 font-bold px-6 py-2.5 shadow-sm transition-all"><svg class="ic mr-2"><use href="#i-activity"/></svg> 🛏️ Lembar Kerja Aktif</button>
+      <button id="tab-krs" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl text-slate-700 font-bold px-6 py-2.5 shadow-sm transition-all"><svg class="ic mr-2"><use href="#i-clip-check"/></svg> 📝 Lembar Kerja KRS</button>
+      <button id="tab-kpra" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl text-slate-700 font-bold px-6 py-2.5 shadow-sm transition-all"><svg class="ic mr-2"><use href="#i-pill"/></svg> 💊 Lembar Kerja KPRA</button>
     </div>
 
     <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg border border-white/60 overflow-hidden flex flex-col h-[600px] print:h-auto print:border-none print:shadow-none print:bg-white">
@@ -382,8 +384,8 @@ const thAksi = `<th class="${TH} text-center sticky right-0 bg-white/90 backdrop
 
 function switchTab(tab) {
   currentTab = tab;
-  const on = 'py-2.5 px-6 bg-white/90 backdrop-blur-xl border-t-2 border-medify-500 text-medify-600 font-bold transition-all whitespace-nowrap shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]';
-  const off = 'py-2.5 px-6 border-t-2 border-transparent text-slate-600 hover:text-slate-900 hover:bg-white/70 font-bold transition-all whitespace-nowrap';
+  const on = 'py-2.5 px-6 bg-white/95 backdrop-blur-xl border-t-2 border-medify-500 text-medify-700 font-bold transition-all whitespace-nowrap shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]';
+  const off = 'py-2.5 px-6 bg-white/75 backdrop-blur-md border-t-2 border-transparent text-slate-700 hover:text-slate-900 hover:bg-white/90 font-bold transition-all whitespace-nowrap shadow-sm';
   
   ['aktif', 'krs', 'kpra'].forEach(t => {
     const el = $('tab-' + t);

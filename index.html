@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -617,18 +618,27 @@ $('file-upload').addEventListener('change', async e => {
     const doc = new DOMParser().parseFromString(text, 'text/html');
     let newCount = 0, updateCount = 0;
     
-    // Parser Cerdas & Tahan Banting SIMRS Medify
+    // Parser Cerdas & Super Toleran SIMRS Medify
     const rows = doc.querySelectorAll('tr');
+    if(rows.length === 0) {
+       showToast('Format tabel tidak ditemukan di file HTML ini.', 'error');
+       return;
+    }
+
     rows.forEach(row => {
-      const cells = row.querySelectorAll('td');
-      if (cells.length < 4) return;
+      const cells = row.querySelectorAll('td, th'); // Tambahan th (header) untuk keamanan
+      if (cells.length < 3) return; // Lebih toleran terhadap kolom yang hilang
       
       const textContent = row.innerText.replace(/\s+/g, ' ');
-      const rmMatch = textContent.match(/(\d{2}-\d{2}-\d{2}-\d{2}-\d{2}|\d{2}-\d{2}-\d{2}|\b\d{6,8}\b)/);
+      // Regex yang jauh lebih sakti untuk menangkap format RM (pakai titik, strip, spasi, atau 6-8 digit nyambung)
+      const rmMatch = textContent.match(/(\b\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{6,8}\b)/);
       
       if (rmMatch) {
         let rmCellIdx = -1;
-        cells.forEach((c, idx) => { if(c.innerText.includes(rmMatch[0])) rmCellIdx = idx; });
+        cells.forEach((c, idx) => { 
+           const txt = c.innerText.trim();
+           if(txt.includes(rmMatch[0])) rmCellIdx = idx; 
+        });
         
         if (rmCellIdx !== -1) {
           const rm = rmMatch[0];
@@ -636,15 +646,15 @@ $('file-upload').addEventListener('change', async e => {
           // Memperbaiki deteksi nama pasien (Toleransi tinggi terhadap format berantakan)
           let rawNama = cells[rmCellIdx+1] ? cells[rmCellIdx+1].innerText.trim() : "";
           let nama = "Pasien Baru";
-          if (rawNama.length > 3) {
+          if (rawNama.length > 3 && rawNama.length < 50) {
             nama = rawNama;
           } else {
-            let possibleName = cells[rmCellIdx].innerText.replace(rm, '').replace(/[0-9-]/g, '').trim();
+            let possibleName = cells[rmCellIdx].innerText.replace(rm, '').replace(/[0-9-.\s]/g, '').trim();
             if(possibleName.length > 3) nama = possibleName;
           }
           
           let bedName = cells[0].innerText.trim();
-          if (bedName.length > 20 || bedName.length < 2) bedName = cells[1]?.innerText.trim() || 'Kamar Ekstra';
+          if (bedName.length > 30 || bedName.length < 2) bedName = cells[1]?.innerText.trim() || 'Kamar Ekstra';
           
           let tglMRS = '';
           cells.forEach(c => { if (c.innerText.match(/\d{1,2}\s+(Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)/i)) tglMRS = c.innerText.trim(); });
@@ -654,13 +664,13 @@ $('file-upload').addEventListener('change', async e => {
             if (existing) {
               existing.nama = nama;
               if (bedName && bedName !== 'Kamar Ekstra') existing.bedName = bedName;
-              persist(existing.id, existing);
+              persist(existing.id, existing); // Berjalan asinkron
               updateCount++;
             } else {
               const newId = Math.random().toString(36).slice(2, 11);
               const newP = { id: newId, rm, nama, bedName, tglMRS, krs: false };
               patients.push(newP);
-              persist(newId, newP);
+              persist(newId, newP); // Berjalan asinkron
               newCount++;
             }
           }
@@ -668,7 +678,8 @@ $('file-upload').addEventListener('change', async e => {
       }
     });
     
-    ensureBeds(); // PASTI MENYIMPAN KAMAR BARU!
+    ensureBeds(); // Pastikan kamar baru tersimpan
+    switchTab('aktif'); // MEMAKSA KEMBALI KE TAB AKTIF AGAR PASIEN BARU LANGSUNG MUNCUL
     refresh();
     showToast(`Berhasil! ${newCount} pasien baru, ${updateCount} diperbarui.`, 'success');
     $('upload-section').classList.add('hidden');
@@ -780,3 +791,4 @@ initFirebase();
 </script>
 </body>
 </html>
+```

@@ -199,8 +199,8 @@ const FB_VER = '11.6.1';
 const LS_KEY = 'edelweiss_patients_v1';
 const LS_BEDS = 'edelweiss_beds_v1';
 
-// ---> TEMPEL URL APPS SCRIPT ANDA DI SINI <---
-const GSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyxPWMIAOAX3zmNSKVZPRc6ep4c7GdnEafNuaKAivMFZ6M5JyBVNgUA_POTjDSTFtyE/exec"; 
+// ---> PASTIKAN ANDA MENG-COPY URL WEB APP (BUKAN LIBRARY URL) LALU PASTE DI SINI <---
+const GSHEET_WEBAPP_URL = "ISI_URL_WEB_APP_DISINI"; 
 /* ============================================================================ */
 
 const $ = id => document.getElementById(id);
@@ -564,11 +564,26 @@ async function sendToGSheet(p, btnElement) {
     return showToast('Harap masukkan URL Web App G-Sheets di dalam kode HTML!', 'error');
   }
   
+  // MENGHITUNG ULANG LAMA RAWAT SECARA OTOMATIS (AGAR BISA DI-COPY)
+  let calculatedLamaRawat = p.lamaRawat;
+  if(!calculatedLamaRawat && p.tglMRS) {
+     const mrsMatch = String(p.tglMRS).match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
+     if(mrsMatch) {
+         const aTime = parseIdnDate(mrsMatch[1], mrsMatch[2], mrsMatch[3]);
+         if(aTime) {
+             const a = new Date(aTime); a.setHours(0,0,0,0);
+             const b = p.tglKRS ? new Date(p.tglKRS) : new Date(); b.setHours(0,0,0,0);
+             calculatedLamaRawat = Math.round(Math.abs(b - a) / 86400000) + 1;
+         }
+     }
+  }
+  
   let copyData = [];
   if (currentTab === 'kpra') {
-    copyData = [p.rm, p.lamaRawat, p.ab, p.jumlah, (p.ksm||'').toUpperCase(), (p.ruangan||'Edelweiss'), (p.apt||'DEVI')];
+    // Kita gunakan calculatedLamaRawat agar nilai kosong diisi hasil hitungan
+    copyData = [p.rm, (calculatedLamaRawat || ''), p.ab, p.jumlah, (p.ksm||'').toUpperCase(), (p.ruangan||'Edelweiss'), (p.apt||'DEVI')];
   } else if (currentTab === 'kualitatif') {
-    // Memasukkan lamaAb ke dalam data yg dikirim ke Google Sheets (Kualitatif)
+    // Memasukkan lamaAb untuk Kualitatif
     copyData = [p.rm, p.nama, (p.lamaAb || ''), p.ab, p.regimen, p.rute, p.tipeTerapi, p.diag, (p.ksm||'').toUpperCase(), (p.ruangan||'Edelweiss')];
   }
   
@@ -583,10 +598,10 @@ async function sendToGSheet(p, btnElement) {
   try {
     btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i>'; 
     
-    // Sesuaikan payload agar Google Sheets menerima nilai yg benar
-    let sendPayload = { ...p };
+    // Pastikan data yang dikirim via internet juga mengemas nilai hasil hitungan tadi
+    let sendPayload = { ...p, lamaRawat: calculatedLamaRawat };
     if (currentTab === 'kualitatif') {
-        sendPayload.lamaRawat = p.lamaAb || ''; // G-Sheets membaca 'lamaRawat' di kode gs sebelumnya
+        sendPayload.lamaRawat = p.lamaAb || ''; // G-Sheets membaca 'lamaRawat' pada gs sebelumnya
     }
     
     const payload = { type: currentTab, data: sendPayload };
@@ -610,7 +625,7 @@ async function sendToGSheet(p, btnElement) {
   } catch(err) {
     console.error(err);
     btnElement.innerHTML = '<i class="fa-brands fa-google-drive text-lg"></i>';
-    showToast('Error koneksi ke G-Sheets. Pastikan URL benar.', 'error');
+    showToast('Error koneksi ke G-Sheets. Pastikan akses di-set ke Siapa Saja (Anyone).', 'error');
   }
 }
 

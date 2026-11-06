@@ -194,11 +194,10 @@ const MY_FIREBASE_CONFIG = {
   appId: "1:65630112521:web:8428e72dd5b789aac761d8"
 };
 const APP_ID = 'edelweiss-app';
-const FB_VER = '11.6.1';
 const LS_KEY = 'edelweiss_patients_v1';
 const LS_BEDS = 'edelweiss_beds_v1';
 
-// ---> PASTIKAN ANDA MENG-COPY URL WEB APP (BUKAN LIBRARY URL) LALU PASTE DI SINI <---
+// ---> URL WEB APP GSHEETS ANDA <---
 const GSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyxPWMIAOAX3zmNSKVZPRc6ep4c7GdnEafNuaKAivMFZ6M5JyBVNgUA_POTjDSTFtyE/exec"; 
 /* ============================================================================ */
 
@@ -234,10 +233,21 @@ async function saveBeds() {
   try { localStorage.setItem(LS_BEDS, JSON.stringify(beds)); } catch (e) {}
   if (fb) { try { await fb.setDoc(fb.doc(fb.colRef, '_beds'), { id: '_beds', isMeta: true, beds }); } catch (e) {} }
 }
+
+// PERBAIKAN BUG ENSURE BEDS (Memastikan kamar baru selalu masuk ke dalam memori aplikasi)
 function ensureBeds() {
-  if (beds.length || !patients.length) return;
-  beds = [...new Set(patients.map(p => p.bedName).filter(Boolean))]; saveBeds();
+  if (!patients.length) return;
+  const activeBeds = [...new Set(patients.filter(p => !p.krs && p.bedName).map(p => p.bedName))];
+  let changed = false;
+  activeBeds.forEach(b => {
+    if (!beds.includes(b)) {
+      beds.push(b);
+      changed = true;
+    }
+  });
+  if (changed) saveBeds();
 }
+
 async function removeRecord(id) {
   patients = patients.filter(p => p.id !== id); saveLocal();
   if (mode === 'cloud' && fb) { try { await fb.deleteDoc(fb.doc(fb.colRef, id)); } catch (e) {} }
@@ -371,7 +381,7 @@ function renderTable(data) {
                a.setHours(0,0,0,0);
                const b = p.tglKRS ? new Date(p.tglKRS) : new Date();
                b.setHours(0,0,0,0);
-               lr = Math.round(Math.abs(b - a) / 86400000) + 1; // +1 Untuk hitungan Inklusif
+               lr = Math.round(Math.abs(b - a) / 86400000) + 1;
            }
        }
     }
@@ -393,7 +403,6 @@ function renderTable(data) {
         td(idx + 1, 'text-center font-bold text-slate-400') +
         td(ce(p, 'rm', p.rm, '', 'No RM...'), 'whitespace-nowrap text-slate-800 font-bold') +
         td(ce(p, 'nama', p.nama, '', 'Nama Pasien...'), 'whitespace-nowrap text-slate-700 font-medium') +
-        // Menggunakan lamaAb (kolom terpisah) untuk Lembar Kualitatif
         td(ce(p, 'lamaAb', p.lamaAb || '', '', 'Hari...'), 'text-slate-700 font-bold text-center bg-purple-50/50') +
         td(ce(p, 'ab', p.ab, '', 'Jenis AB...'), 'text-slate-700 font-bold') +
         td(ce(p, 'regimen', p.regimen, '', 'Cth: 3x1g...'), 'text-slate-700 font-medium bg-slate-50/50') +
@@ -481,7 +490,6 @@ window.processAutoDetect = async function() {
          if(!detectedMap[ab.std]) detectedMap[ab.std] = { billingTotal: 0, dates: [] };
          detectedMap[ab.std].billingTotal += (doseVal * qty);
 
-         // Ekstraksi Tanggal dari blok text di antara nama obat dan harga
          let block = match[3] || "";
          let dateMatch;
          while ((dateMatch = dateRegex.exec(block)) !== null) {
@@ -497,25 +505,18 @@ window.processAutoDetect = async function() {
   let finalDetected = [];
   for (let k in detectedMap) {
       let finalJumlah = detectedMap[k].billingTotal;
-      
-      // Kalkulasi Lama Pemberian AB (Inklusif)
       let lamaABVal = "";
       let dates = detectedMap[k].dates || [];
       if(dates.length > 0) {
          let min = Math.min(...dates);
          let max = Math.max(...dates);
-         lamaABVal = Math.round((max - min) / 86400000) + 1; // +1 inklusif
+         lamaABVal = Math.round((max - min) / 86400000) + 1;
       }
-
       finalDetected.push({
           ab: k,
           jumlah: finalJumlah > 0 ? finalJumlah.toFixed(2).replace('.00','') : '',
-          lamaAb: lamaABVal, // Field baru khusus untuk Kualitatif
-          regimen: orig.regimen || '', 
-          rute: orig.rute || '',
-          tipeTerapi: orig.tipeTerapi || '',
-          diag: orig.diag || '',
-          lamaRawat: orig.lamaRawat || '' // Lama rawat kuantitatif tetap dipertahankan
+          lamaAb: lamaABVal,
+          regimen: orig.regimen || '', rute: orig.rute || '', tipeTerapi: orig.tipeTerapi || '', diag: orig.diag || '', lamaRawat: orig.lamaRawat || ''
       });
   }
 
@@ -525,43 +526,24 @@ window.processAutoDetect = async function() {
   }
 
   await persist(orig.id, { 
-    ab: finalDetected[0].ab, 
-    jumlah: finalDetected[0].jumlah,
-    lamaAb: finalDetected[0].lamaAb,
-    regimen: finalDetected[0].regimen,
-    rute: finalDetected[0].rute,
-    tipeTerapi: finalDetected[0].tipeTerapi,
-    diag: finalDetected[0].diag
+    ab: finalDetected[0].ab, jumlah: finalDetected[0].jumlah, lamaAb: finalDetected[0].lamaAb, regimen: finalDetected[0].regimen, rute: finalDetected[0].rute, tipeTerapi: finalDetected[0].tipeTerapi, diag: finalDetected[0].diag
   });
 
   for(let i=1; i<finalDetected.length; i++) {
     const newId = Math.random().toString(36).slice(2, 11);
     await persist(newId, {
-      ...orig, 
-      id: newId, 
-      ab: finalDetected[i].ab, 
-      jumlah: finalDetected[i].jumlah,
-      lamaAb: finalDetected[i].lamaAb,
-      regimen: finalDetected[i].regimen,
-      rute: finalDetected[i].rute,
-      tipeTerapi: finalDetected[i].tipeTerapi,
-      diag: finalDetected[i].diag,
-      tambahAbAt: Date.now() + i
+      ...orig, id: newId, ab: finalDetected[i].ab, jumlah: finalDetected[i].jumlah, lamaAb: finalDetected[i].lamaAb, regimen: finalDetected[i].regimen, rute: finalDetected[i].rute, tipeTerapi: finalDetected[i].tipeTerapi, diag: finalDetected[i].diag, tambahAbAt: Date.now() + i
     });
   }
 
-  closeAutoDetectModal();
-  refresh();
+  closeAutoDetectModal(); refresh();
   showToast(`${finalDetected.length} Antibiotik & Hari Terapi berhasil dideteksi!`, 'success');
 }
 
-/* ================= KIRIM & COPY (FUNGSI GANDA + ICON KUCING) ================= */
+/* ================= KIRIM & COPY ================= */
 async function sendToGSheet(p, btnElement) {
-  if (GSHEET_WEBAPP_URL === "ISI_URL_WEB_APP_DISINI") {
-    return showToast('Harap masukkan URL Web App G-Sheets di dalam kode HTML!', 'error');
-  }
+  if (GSHEET_WEBAPP_URL === "ISI_URL_WEB_APP_DISINI") { return showToast('Harap masukkan URL Web App G-Sheets di dalam kode HTML!', 'error'); }
   
-  // MENGHITUNG ULANG LAMA RAWAT SECARA OTOMATIS (AGAR BISA DI-COPY)
   let calculatedLamaRawat = p.lamaRawat;
   if(!calculatedLamaRawat && p.tglMRS) {
      const mrsMatch = String(p.tglMRS).match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
@@ -577,71 +559,55 @@ async function sendToGSheet(p, btnElement) {
   
   let copyData = [];
   if (currentTab === 'kpra') {
-    // Kita gunakan calculatedLamaRawat agar nilai kosong diisi hasil hitungan
     copyData = [p.rm, (calculatedLamaRawat || ''), p.ab, p.jumlah, (p.ksm||'').toUpperCase(), (p.ruangan||'Edelweiss'), (p.apt||'DEVI')];
   } else if (currentTab === 'kualitatif') {
-    // Memasukkan lamaAb untuk Kualitatif
     copyData = [p.rm, p.nama, (p.lamaAb || ''), p.ab, p.regimen, p.rute, p.tipeTerapi, p.diag, (p.ksm||'').toUpperCase(), (p.ruangan||'Edelweiss')];
   }
   
-  try {
-    await navigator.clipboard.writeText(copyData.join('\t'));
-  } catch (err) {
-    console.warn("Gagal auto-copy clipboard: ", err);
-  }
-
+  try { await navigator.clipboard.writeText(copyData.join('\t')); } catch (err) {}
   showToast('Mengirim & menyalin baris ini...', 'info');
   
   try {
     btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i>'; 
-    
-    // Pastikan data yang dikirim via internet juga mengemas nilai hasil hitungan tadi
     let sendPayload = { ...p, lamaRawat: calculatedLamaRawat };
-    if (currentTab === 'kualitatif') {
-        sendPayload.lamaRawat = p.lamaAb || ''; // G-Sheets membaca 'lamaRawat' pada gs sebelumnya
-    }
+    if (currentTab === 'kualitatif') sendPayload.lamaRawat = p.lamaAb || '';
     
     const payload = { type: currentTab, data: sendPayload };
-    const res = await fetch(GSHEET_WEBAPP_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    });
-    
+    const res = await fetch(GSHEET_WEBAPP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
     const json = await res.json();
+    
     if(json.result === 'success') {
        btnElement.innerHTML = '<i class="fa-solid fa-cat text-xl"></i>';
-       btnElement.classList.replace('text-emerald-500', 'text-medify-500');
-       btnElement.classList.replace('hover:bg-emerald-100', 'hover:bg-medify-100');
+       btnElement.classList.replace('text-emerald-500', 'text-medify-500'); btnElement.classList.replace('hover:bg-emerald-100', 'hover:bg-medify-100');
        btnElement.title = "Tersubmit & Tercopy!";
        showToast(`Data ${p.nama || p.rm} berhasil disubmit & disalin!`, 'success');
     } else {
-       btnElement.innerHTML = '<i class="fa-brands fa-google-drive text-lg"></i>';
-       showToast('Gagal: ' + json.message, 'error');
+       btnElement.innerHTML = '<i class="fa-brands fa-google-drive text-lg"></i>'; showToast('Gagal: ' + json.message, 'error');
     }
   } catch(err) {
-    console.error(err);
     btnElement.innerHTML = '<i class="fa-brands fa-google-drive text-lg"></i>';
     showToast('Error koneksi ke G-Sheets. Pastikan akses di-set ke Siapa Saja (Anyone).', 'error');
   }
 }
 
-
-/* ---------- Event Listeners (Table & UI) ---------- */
+/* ================== UPLOAD FILE MEDIFY (PERBAIKAN BUG) ================== */
 $('btn-reset-dashboard').addEventListener('click', () => { $('upload-section').classList.remove('hidden'); $('dashboard-section').classList.add('hidden'); });
 ['aktif', 'krs', 'kpra', 'kualitatif'].forEach(t => $('tab-' + t).addEventListener('click', () => switchTab(t)));
 searchInput.addEventListener('input', refresh);
 
-/* ========================================================================================= */
-/* ======================== BLOK KODE UPLOAD HTML YANG HILANG (RESTORED) =================== */
-/* ========================================================================================= */
-
 $('btn-upload-trigger').addEventListener('click', () => $('file-upload').click());
+$('btn-add-manual').addEventListener('click', async () => {
+  const newId = Math.random().toString(36).slice(2, 11);
+  const newPatient = { id: newId, rm: '00-00-00', nama: 'Pasien Manual', bedName: 'Bed Ekstra', krs: (currentTab === 'krs') };
+  if(currentTab === 'kpra' || currentTab === 'kualitatif') { newPatient.kpra = true; newPatient.krs = true; }
+  patients.push(newPatient);
+  await persist(newId, newPatient);
+  ensureBeds(); refresh(); showToast('Baris pasien ditambahkan', 'success');
+});
 
 $('file-upload').addEventListener('change', async e => {
   const file = e.target.files[0];
   if (!file) return;
-  
   const btn = $('btn-upload-trigger');
   const originalHtml = btn.innerHTML;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Membaca File...';
@@ -651,14 +617,13 @@ $('file-upload').addEventListener('change', async e => {
     const doc = new DOMParser().parseFromString(text, 'text/html');
     let newCount = 0, updateCount = 0;
     
-    // Parser Cerdas SIMRS Medify
+    // Parser Cerdas & Tahan Banting SIMRS Medify
     const rows = doc.querySelectorAll('tr');
     rows.forEach(row => {
       const cells = row.querySelectorAll('td');
       if (cells.length < 4) return;
       
       const textContent = row.innerText.replace(/\s+/g, ' ');
-      // Regex pintar pencari Nomor RM
       const rmMatch = textContent.match(/(\d{2}-\d{2}-\d{2}-\d{2}-\d{2}|\d{2}-\d{2}-\d{2}|\b\d{6,8}\b)/);
       
       if (rmMatch) {
@@ -667,24 +632,24 @@ $('file-upload').addEventListener('change', async e => {
         
         if (rmCellIdx !== -1) {
           const rm = rmMatch[0];
-          // Mencari Nama
-          let nama = cells[rmCellIdx+1] && cells[rmCellIdx+1].innerText.trim().length > 3 
-                     ? cells[rmCellIdx+1].innerText.trim() 
-                     : cells[rmCellIdx].innerText.replace(rm, '').replace(/[0-9-]/g, '').trim();
           
-          // Mencari Bed
+          // Memperbaiki deteksi nama pasien (Toleransi tinggi terhadap format berantakan)
+          let rawNama = cells[rmCellIdx+1] ? cells[rmCellIdx+1].innerText.trim() : "";
+          let nama = "Pasien Baru";
+          if (rawNama.length > 3) {
+            nama = rawNama;
+          } else {
+            let possibleName = cells[rmCellIdx].innerText.replace(rm, '').replace(/[0-9-]/g, '').trim();
+            if(possibleName.length > 3) nama = possibleName;
+          }
+          
           let bedName = cells[0].innerText.trim();
           if (bedName.length > 20 || bedName.length < 2) bedName = cells[1]?.innerText.trim() || 'Kamar Ekstra';
           
-          // Mencari Tgl MRS
           let tglMRS = '';
-          cells.forEach(c => {
-             if (c.innerText.match(/\d{1,2}\s+(Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)/i)) {
-                 tglMRS = c.innerText.trim();
-             }
-          });
+          cells.forEach(c => { if (c.innerText.match(/\d{1,2}\s+(Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)/i)) tglMRS = c.innerText.trim(); });
 
-          if (rm && nama) {
+          if (rm) {
             const existing = patients.find(p => p.rm === rm && !p.krs);
             if (existing) {
               existing.nama = nama;
@@ -703,33 +668,20 @@ $('file-upload').addEventListener('change', async e => {
       }
     });
     
-    ensureBeds(); refresh();
-    showToast(`Berhasil! ${newCount} pasien baru, ${updateCount} nama/bed diperbarui.`, 'success');
+    ensureBeds(); // PASTI MENYIMPAN KAMAR BARU!
+    refresh();
+    showToast(`Berhasil! ${newCount} pasien baru, ${updateCount} diperbarui.`, 'success');
     $('upload-section').classList.add('hidden');
     $('dashboard-section').classList.remove('hidden');
     
   } catch (err) {
-    console.error(err);
-    showToast('Gagal memproses file. Pastikan format HTML benar.', 'error');
+    console.error(err); showToast('Gagal memproses file. Pastikan format HTML benar.', 'error');
   } finally {
-    btn.innerHTML = originalHtml;
-    e.target.value = ''; 
+    btn.innerHTML = originalHtml; e.target.value = ''; 
   }
 });
 
-// Tombol Tambah Manual (Restored)
-$('btn-add-manual').addEventListener('click', async () => {
-  const newId = Math.random().toString(36).slice(2, 11);
-  const newPatient = { id: newId, rm: '00-00-00', nama: 'Pasien Manual', bedName: 'Bed Ekstra', krs: (currentTab === 'krs') };
-  if(currentTab === 'kpra' || currentTab === 'kualitatif') { newPatient.kpra = true; newPatient.krs = true; }
-  patients.push(newPatient);
-  await persist(newId, newPatient);
-  ensureBeds(); refresh();
-  showToast('Baris pasien ditambahkan', 'success');
-});
-
-/* ========================================================================================= */
-
+/* ================= EVENT LISTENER TABEL ================= */
 tableBody.addEventListener('focusout', e => {
   const el = e.target;
   if (el.hasAttribute('contenteditable')) {
@@ -747,23 +699,16 @@ tableBody.addEventListener('change', async e => {
       : { [f]: e.target.checked });
     refresh();
   } else if (e.target.type === 'date') {
-      await persist(id, { [f]: e.target.value });
-      refresh(); // Refresh utk hitung ulang lamaRawat inklusif
+      await persist(id, { [f]: e.target.value }); refresh();
   }
 });
 tableBody.addEventListener('click', async e => {
   const btnMagic = e.target.closest('.btn-magic');
-  if(btnMagic) {
-    $('autodetect-pid').value = btnMagic.dataset.id;
-    $('modal-autodetect').classList.remove('hidden');
-    return;
-  }
+  if(btnMagic) { $('autodetect-pid').value = btnMagic.dataset.id; $('modal-autodetect').classList.remove('hidden'); return; }
+  
   const btnSend = e.target.closest('.btn-send-gsheet');
-  if (btnSend) {
-    const p = patients.find(x => x.id === btnSend.dataset.id);
-    if(p) sendToGSheet(p, btnSend);
-    return;
-  }
+  if (btnSend) { const p = patients.find(x => x.id === btnSend.dataset.id); if(p) sendToGSheet(p, btnSend); return; }
+  
   const btnAddAb = e.target.closest('.btn-add-ab');
   if (btnAddAb) {
     const orig = patients.find(x => x.id === btnAddAb.dataset.id);
@@ -776,12 +721,11 @@ tableBody.addEventListener('click', async e => {
   }
   const btnDel = e.target.closest('.btn-delete-row');
   if (btnDel) {
-    if (confirm('Yakin ingin menghapus baris data ini?')) {
-      await removeRecord(btnDel.dataset.id); refresh(); showToast('Data dihapus', 'success');
-    }
+    if (confirm('Yakin ingin menghapus baris data ini?')) { await removeRecord(btnDel.dataset.id); refresh(); showToast('Data dihapus', 'success'); }
   }
 });
 
+/* ================= INIT FIREBASE ================= */
 async function initFirebase() {
   const btnLogin = $('btn-login');
   try {
@@ -789,8 +733,7 @@ async function initFirebase() {
     const authInst = getAuth(app); 
     const dbInst = getFirestore(app);
     
-    btnLogin.disabled = false;
-    btnLogin.innerHTML = 'Gass in';
+    btnLogin.disabled = false; btnLogin.innerHTML = 'Gass in';
     btnLogin.className = 'bg-medify-500 hover:bg-medify-600 text-white font-bold py-2.5 px-6 rounded-full shadow-md transition-all flex items-center justify-center gap-2 text-sm w-full cursor-pointer';
 
     onAuthStateChanged(authInst, user => {
@@ -813,35 +756,21 @@ async function initFirebase() {
     $('login-form').addEventListener('submit', async e => {
       e.preventDefault();
       btnLogin.disabled = true; btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
-      try { 
-        await signInWithEmailAndPassword(authInst, $('login-email').value, $('login-pass').value); 
-      }
-      catch(err) { 
-        $('login-error').innerText = 'Email atau password salah!'; 
-        $('login-error').classList.remove('hidden'); 
-        btnLogin.disabled = false; btnLogin.innerHTML = 'Gass in';
-      }
+      try { await signInWithEmailAndPassword(authInst, $('login-email').value, $('login-pass').value); }
+      catch(err) { $('login-error').innerText = 'Email atau password salah!'; $('login-error').classList.remove('hidden'); btnLogin.disabled = false; btnLogin.innerHTML = 'Gass in'; }
     });
     
-    $('btn-logout').addEventListener('click', async () => {
-      if(confirm('Keluar dari akun?')) await signOut(authInst);
-    });
+    $('btn-logout').addEventListener('click', async () => { if(confirm('Keluar dari akun?')) await signOut(authInst); });
 
   } catch (e) {
-    console.error('Firebase Blocked/Failed:', e);
-    setMode('local');
-    $('login-section').classList.remove('hidden');
-    $('dashboard-section').classList.add('hidden');
-    
-    btnLogin.disabled = false;
-    btnLogin.innerHTML = 'Masuk Mode Lokal';
+    console.error('Firebase Blocked:', e);
+    setMode('local'); $('login-section').classList.remove('hidden'); $('dashboard-section').classList.add('hidden');
+    btnLogin.disabled = false; btnLogin.innerHTML = 'Masuk Mode Lokal';
     btnLogin.className = 'bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 px-6 rounded-full shadow-md transition-all flex items-center justify-center gap-2 text-sm w-full cursor-pointer';
     
     $('login-form').onsubmit = (e) => {
-       e.preventDefault();
-       showToast('Menggunakan Mode Lokal', 'info');
-       $('login-section').classList.add('hidden');
-       $('dashboard-section').classList.remove('hidden');
+       e.preventDefault(); showToast('Menggunakan Mode Lokal', 'info');
+       $('login-section').classList.add('hidden'); $('dashboard-section').classList.remove('hidden');
        patients = loadLocal(); beds = loadBeds(); ensureBeds(); refresh();
     };
   }

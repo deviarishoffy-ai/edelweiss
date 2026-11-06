@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -7,7 +8,7 @@
 <link rel="icon" href="https://i.postimg.cc/Z5nV96Bs/IMG-20261105-211548.jpg" type="image/jpeg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script>
 tailwind.config = { theme: { extend: {
   fontFamily: { sans: ['Quicksand', 'sans-serif'] },
@@ -197,7 +198,7 @@ const APP_ID = 'edelweiss-app';
 const LS_KEY = 'edelweiss_patients_v1';
 const LS_BEDS = 'edelweiss_beds_v1';
 
-// ---> URL WEB APP GSHEETS ANDA <---
+// URL WEB APP GSHEETS YANG SUDAH ANDA MASUKKAN SEBELUMNYA
 const GSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyxPWMIAOAX3zmNSKVZPRc6ep4c7GdnEafNuaKAivMFZ6M5JyBVNgUA_POTjDSTFtyE/exec"; 
 /* ============================================================================ */
 
@@ -234,7 +235,6 @@ async function saveBeds() {
   if (fb) { try { await fb.setDoc(fb.doc(fb.colRef, '_beds'), { id: '_beds', isMeta: true, beds }); } catch (e) {} }
 }
 
-// PERBAIKAN BUG ENSURE BEDS (Memastikan kamar baru selalu masuk ke dalam memori aplikasi)
 function ensureBeds() {
   if (!patients.length) return;
   const activeBeds = [...new Set(patients.filter(p => !p.krs && p.bedName).map(p => p.bedName))];
@@ -370,17 +370,15 @@ function renderTable(data) {
       frag.appendChild(tr); return;
     }
     
-    // Perbaikan: Kalkulasi Lama Rawat Inap secara INKLUSIF (+1 hari)
+    // Kalkulasi Lama Rawat Inap secara INKLUSIF (+1 hari)
     let lr = p.lamaRawat;
     if(!lr && p.tglMRS) {
        const mrsMatch = String(p.tglMRS).match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
        if(mrsMatch) {
            const aTime = parseIdnDate(mrsMatch[1], mrsMatch[2], mrsMatch[3]);
            if(aTime) {
-               const a = new Date(aTime);
-               a.setHours(0,0,0,0);
-               const b = p.tglKRS ? new Date(p.tglKRS) : new Date();
-               b.setHours(0,0,0,0);
+               const a = new Date(aTime); a.setHours(0,0,0,0);
+               const b = p.tglKRS ? new Date(p.tglKRS) : new Date(); b.setHours(0,0,0,0);
                lr = Math.round(Math.abs(b - a) / 86400000) + 1;
            }
        }
@@ -542,8 +540,6 @@ window.processAutoDetect = async function() {
 
 /* ================= KIRIM & COPY ================= */
 async function sendToGSheet(p, btnElement) {
-  if (GSHEET_WEBAPP_URL === "ISI_URL_WEB_APP_DISINI") { return showToast('Harap masukkan URL Web App G-Sheets di dalam kode HTML!', 'error'); }
-  
   let calculatedLamaRawat = p.lamaRawat;
   if(!calculatedLamaRawat && p.tglMRS) {
      const mrsMatch = String(p.tglMRS).match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
@@ -590,7 +586,7 @@ async function sendToGSheet(p, btnElement) {
   }
 }
 
-/* ================== UPLOAD FILE MEDIFY (PERBAIKAN BUG) ================== */
+/* ================== UPLOAD FILE MEDIFY (ALGORITMA X-RAY KHUSUS KARTU) ================== */
 $('btn-reset-dashboard').addEventListener('click', () => { $('upload-section').classList.remove('hidden'); $('dashboard-section').classList.add('hidden'); });
 ['aktif', 'krs', 'kpra', 'kualitatif'].forEach(t => $('tab-' + t).addEventListener('click', () => switchTab(t)));
 searchInput.addEventListener('input', refresh);
@@ -617,67 +613,120 @@ $('file-upload').addEventListener('change', async e => {
     const doc = new DOMParser().parseFromString(text, 'text/html');
     let newCount = 0, updateCount = 0;
     
-    // Parser Cerdas & Super Toleran SIMRS Medify
-    const rows = doc.querySelectorAll('tr');
-    if(rows.length === 0) {
-       showToast('Format tabel tidak ditemukan di file HTML ini.', 'error');
-       return;
-    }
+    // FUNGSI UTAMA PENYIMPANAN PASIEN
+    const processPatient = (rm, nama, bedName, tglMRS, diag) => {
+        const existing = patients.find(p => p.rm === rm && !p.krs);
+        if (existing) {
+          existing.nama = nama;
+          if (bedName && bedName !== 'Kamar Ekstra') existing.bedName = bedName;
+          if (diag) existing.diag = diag;
+          if (tglMRS) existing.tglMRS = tglMRS;
+          persist(existing.id, existing);
+          updateCount++;
+        } else {
+          const newId = Math.random().toString(36).slice(2, 11);
+          const newP = { id: newId, rm, nama, bedName, tglMRS, diag, krs: false };
+          patients.push(newP);
+          persist(newId, newP);
+          newCount++;
+        }
+    };
 
-    rows.forEach(row => {
-      const cells = row.querySelectorAll('td, th'); // Tambahan th (header) untuk keamanan
-      if (cells.length < 3) return; // Lebih toleran terhadap kolom yang hilang
-      
-      const textContent = row.innerText.replace(/\s+/g, ' ');
-      // Regex yang jauh lebih sakti untuk menangkap format RM (pakai titik, strip, spasi, atau 6-8 digit nyambung)
-      const rmMatch = textContent.match(/(\b\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{6,8}\b)/);
-      
-      if (rmMatch) {
-        let rmCellIdx = -1;
-        cells.forEach((c, idx) => { 
-           const txt = c.innerText.trim();
-           if(txt.includes(rmMatch[0])) rmCellIdx = idx; 
+    // 0. EKSTRAK SEMUA KAMAR (Bahkan yang KOSONG tidak ada pasiennya!)
+    // Ini agar statistik "Bed Kosong / Terisi" di Dashboard jadi 100% akurat.
+    const bedHeaders = doc.querySelectorAll('h5.mb-0');
+    let newBedsFound = false;
+    bedHeaders.forEach(h5 => {
+        const ruanganEl = h5.querySelector('.ruangan');
+        const bedEl = h5.querySelector('.bed');
+        if(ruanganEl && bedEl) {
+            const bedNameText = ruanganEl.innerText.trim() + " - " + bedEl.innerText.trim();
+            if(!beds.includes(bedNameText)) {
+                beds.push(bedNameText);
+                newBedsFound = true;
+            }
+        }
+    });
+    if(newBedsFound) saveBeds(); // Simpan jika ada kamar tipe/nomor baru
+
+    // 1. ALGORITMA X-RAY (Untuk Tampilan Kartu / List di Medify Baru)
+    const rmElements = doc.querySelectorAll('.no_rm');
+    if (rmElements.length > 0) {
+        rmElements.forEach(rmEl => {
+            const container = rmEl.closest('li') || rmEl.closest('.row') || rmEl.closest('.block');
+            if(!container) return;
+            
+            const rm = rmEl.innerText.trim();
+            const namaEl = container.querySelector('.nama');
+            let nama = namaEl ? namaEl.innerText.trim() : "Pasien Baru";
+            
+            const ruanganEl = container.querySelector('.ruangan');
+            const bedEl = container.querySelector('.bed');
+            let bedName = 'Kamar Ekstra';
+            if (ruanganEl && bedEl) {
+                bedName = ruanganEl.innerText.trim() + " - " + bedEl.innerText.trim();
+            } else if (ruanganEl || bedEl) {
+                bedName = ruanganEl ? ruanganEl.innerText.trim() : bedEl.innerText.trim();
+            }
+            
+            const diagEl = container.querySelector('.judul_kasus');
+            const diag = diagEl ? diagEl.innerText.trim() : "";
+            
+            let tglMRS = "";
+            const mrsMatch = container.innerText.match(/MRS\s*:\s*(\d{1,2}\s+[a-zA-Z]+\s+\d{4})/i);
+            if(mrsMatch) tglMRS = mrsMatch[1].trim();
+            
+            if(rm && rm !== "-" && rm !== "") {
+                processPatient(rm, nama, bedName, tglMRS, diag);
+            }
         });
-        
-        if (rmCellIdx !== -1) {
-          const rm = rmMatch[0];
-          
-          // Memperbaiki deteksi nama pasien (Toleransi tinggi terhadap format berantakan)
-          let rawNama = cells[rmCellIdx+1] ? cells[rmCellIdx+1].innerText.trim() : "";
-          let nama = "Pasien Baru";
-          if (rawNama.length > 3 && rawNama.length < 50) {
-            nama = rawNama;
-          } else {
-            let possibleName = cells[rmCellIdx].innerText.replace(rm, '').replace(/[0-9-.\s]/g, '').trim();
-            if(possibleName.length > 3) nama = possibleName;
-          }
-          
-          let bedName = cells[0].innerText.trim();
-          if (bedName.length > 30 || bedName.length < 2) bedName = cells[1]?.innerText.trim() || 'Kamar Ekstra';
-          
-          let tglMRS = '';
-          cells.forEach(c => { if (c.innerText.match(/\d{1,2}\s+(Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)/i)) tglMRS = c.innerText.trim(); });
+    } 
+    // 2. FALLBACK ALGORITMA TABEL (Jika ada update kembali ke Tabel / File Laporan)
+    else {
+        const rows = doc.querySelectorAll('tr');
+        if(rows.length === 0) {
+           showToast('Format data tidak ditemukan di file HTML ini.', 'error');
+           return;
+        }
 
-          if (rm) {
-            const existing = patients.find(p => p.rm === rm && !p.krs);
-            if (existing) {
-              existing.nama = nama;
-              if (bedName && bedName !== 'Kamar Ekstra') existing.bedName = bedName;
-              persist(existing.id, existing); // Berjalan asinkron
-              updateCount++;
-            } else {
-              const newId = Math.random().toString(36).slice(2, 11);
-              const newP = { id: newId, rm, nama, bedName, tglMRS, krs: false };
-              patients.push(newP);
-              persist(newId, newP); // Berjalan asinkron
-              newCount++;
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('td, th'); 
+          if (cells.length < 3) return; 
+          
+          const textContent = row.innerText.replace(/\s+/g, ' ');
+          const rmMatch = textContent.match(/(\b\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{6,8}\b)/);
+          
+          if (rmMatch) {
+            let rmCellIdx = -1;
+            cells.forEach((c, idx) => { 
+               const txt = c.innerText.trim();
+               if(txt.includes(rmMatch[0])) rmCellIdx = idx; 
+            });
+            
+            if (rmCellIdx !== -1) {
+              const rm = rmMatch[0];
+              let rawNama = cells[rmCellIdx+1] ? cells[rmCellIdx+1].innerText.trim() : "";
+              let nama = "Pasien Baru";
+              if (rawNama.length > 3 && rawNama.length < 50) {
+                nama = rawNama;
+              } else {
+                let possibleName = cells[rmCellIdx].innerText.replace(rm, '').replace(/[0-9-.\s]/g, '').trim();
+                if(possibleName.length > 3) nama = possibleName;
+              }
+              
+              let bedName = cells[0].innerText.trim();
+              if (bedName.length > 30 || bedName.length < 2) bedName = cells[1]?.innerText.trim() || 'Kamar Ekstra';
+              
+              let tglMRS = '';
+              cells.forEach(c => { if (c.innerText.match(/\d{1,2}\s+(Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)/i)) tglMRS = c.innerText.trim(); });
+
+              processPatient(rm, nama, bedName, tglMRS, "");
             }
           }
-        }
-      }
-    });
+        });
+    }
     
-    ensureBeds(); // Pastikan kamar baru tersimpan
+    ensureBeds(); 
     switchTab('aktif'); // MEMAKSA KEMBALI KE TAB AKTIF AGAR PASIEN BARU LANGSUNG MUNCUL
     refresh();
     showToast(`Berhasil! ${newCount} pasien baru, ${updateCount} diperbarui.`, 'success');

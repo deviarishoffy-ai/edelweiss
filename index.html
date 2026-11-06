@@ -131,9 +131,8 @@ tailwind.config = { theme: { extend: {
       <div class="px-6 py-4 border-b border-slate-200/60 bg-white/50 flex flex-wrap justify-between items-center gap-4 print:hidden">
         <h3 class="text-lg font-bold flex items-center text-slate-700"><i class="fa-solid fa-table mr-2 text-medify-500"></i> Rekapitulasi Data</h3>
         <div class="flex items-center gap-3 flex-wrap">
-          <button id="btn-add-manual" type="button" class="hidden bg-medify-100 hover:bg-medify-200 text-medify-700 text-sm font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2"><i class="fa-solid fa-plus"></i> Tambah Manual</button>
+          <button id="btn-add-manual" type="button" class="bg-medify-100 hover:bg-medify-200 text-medify-700 text-sm font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2"><i class="fa-solid fa-plus"></i> Tambah Manual</button>
           
-          <button id="btn-copy-all" type="button" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2"><i class="fa-solid fa-copy"></i> Copy Excel</button>
           <div class="relative">
             <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
             <input type="text" id="search-input" placeholder="Cari nama, RM..." class="pl-9 pr-4 py-2 border border-slate-300/80 bg-white/80 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-medify-500 w-64 shadow-inner">
@@ -200,7 +199,7 @@ const LS_KEY = 'edelweiss_patients_v1';
 const LS_BEDS = 'edelweiss_beds_v1';
 
 // ---> PASTIKAN ANDA MENG-COPY URL WEB APP (BUKAN LIBRARY URL) LALU PASTE DI SINI <---
-const GSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyxPWMIAOAX3zmNSKVZPRc6ep4c7GdnEafNuaKAivMFZ6M5JyBVNgUA_POTjDSTFtyE/exec"; 
+const GSHEET_WEBAPP_URL = "ISI_URL_WEB_APP_DISINI"; 
 /* ============================================================================ */
 
 const $ = id => document.getElementById(id);
@@ -318,8 +317,6 @@ function switchTab(tab) {
     if(t === 'kualitatif' && tab !== t) el.className = `rounded-t-xl ${off} text-purple-700 border-b-2 border-purple-500`;
     else el.className = `rounded-t-xl ${t === tab ? on : off}`;
   });
-  
-  $('btn-add-manual').classList.toggle('hidden', tab === 'aktif');
   
   if (tab === 'kpra') {
     tableHead.innerHTML = `<tr>${th('NO RM')}${th('LAMA RAWAT', 'w-32')}${th('JENIS ANTIBIOTIK')}${th('TOTAL GRAM', 'w-32')}${th('KSM')}${th('RUANGAN')}${th('APT')}${th('LPD')}${th('DONE')}${thAksi}</tr>`;
@@ -630,7 +627,109 @@ async function sendToGSheet(p, btnElement) {
 }
 
 
-/* ---------- Event Listeners ---------- */
+/* ---------- Event Listeners (Table & UI) ---------- */
+$('btn-reset-dashboard').addEventListener('click', () => { $('upload-section').classList.remove('hidden'); $('dashboard-section').classList.add('hidden'); });
+['aktif', 'krs', 'kpra', 'kualitatif'].forEach(t => $('tab-' + t).addEventListener('click', () => switchTab(t)));
+searchInput.addEventListener('input', refresh);
+
+/* ========================================================================================= */
+/* ======================== BLOK KODE UPLOAD HTML YANG HILANG (RESTORED) =================== */
+/* ========================================================================================= */
+
+$('btn-upload-trigger').addEventListener('click', () => $('file-upload').click());
+
+$('file-upload').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const btn = $('btn-upload-trigger');
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Membaca File...';
+  
+  try {
+    const text = await file.text();
+    const doc = new DOMParser().parseFromString(text, 'text/html');
+    let newCount = 0, updateCount = 0;
+    
+    // Parser Cerdas SIMRS Medify
+    const rows = doc.querySelectorAll('tr');
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length < 4) return;
+      
+      const textContent = row.innerText.replace(/\s+/g, ' ');
+      // Regex pintar pencari Nomor RM
+      const rmMatch = textContent.match(/(\d{2}-\d{2}-\d{2}-\d{2}-\d{2}|\d{2}-\d{2}-\d{2}|\b\d{6,8}\b)/);
+      
+      if (rmMatch) {
+        let rmCellIdx = -1;
+        cells.forEach((c, idx) => { if(c.innerText.includes(rmMatch[0])) rmCellIdx = idx; });
+        
+        if (rmCellIdx !== -1) {
+          const rm = rmMatch[0];
+          // Mencari Nama
+          let nama = cells[rmCellIdx+1] && cells[rmCellIdx+1].innerText.trim().length > 3 
+                     ? cells[rmCellIdx+1].innerText.trim() 
+                     : cells[rmCellIdx].innerText.replace(rm, '').replace(/[0-9-]/g, '').trim();
+          
+          // Mencari Bed
+          let bedName = cells[0].innerText.trim();
+          if (bedName.length > 20 || bedName.length < 2) bedName = cells[1]?.innerText.trim() || 'Kamar Ekstra';
+          
+          // Mencari Tgl MRS
+          let tglMRS = '';
+          cells.forEach(c => {
+             if (c.innerText.match(/\d{1,2}\s+(Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)/i)) {
+                 tglMRS = c.innerText.trim();
+             }
+          });
+
+          if (rm && nama) {
+            const existing = patients.find(p => p.rm === rm && !p.krs);
+            if (existing) {
+              existing.nama = nama;
+              if (bedName && bedName !== 'Kamar Ekstra') existing.bedName = bedName;
+              persist(existing.id, existing);
+              updateCount++;
+            } else {
+              const newId = Math.random().toString(36).slice(2, 11);
+              const newP = { id: newId, rm, nama, bedName, tglMRS, krs: false };
+              patients.push(newP);
+              persist(newId, newP);
+              newCount++;
+            }
+          }
+        }
+      }
+    });
+    
+    ensureBeds(); refresh();
+    showToast(`Berhasil! ${newCount} pasien baru, ${updateCount} nama/bed diperbarui.`, 'success');
+    $('upload-section').classList.add('hidden');
+    $('dashboard-section').classList.remove('hidden');
+    
+  } catch (err) {
+    console.error(err);
+    showToast('Gagal memproses file. Pastikan format HTML benar.', 'error');
+  } finally {
+    btn.innerHTML = originalHtml;
+    e.target.value = ''; 
+  }
+});
+
+// Tombol Tambah Manual (Restored)
+$('btn-add-manual').addEventListener('click', async () => {
+  const newId = Math.random().toString(36).slice(2, 11);
+  const newPatient = { id: newId, rm: '00-00-00', nama: 'Pasien Manual', bedName: 'Bed Ekstra', krs: (currentTab === 'krs') };
+  if(currentTab === 'kpra' || currentTab === 'kualitatif') { newPatient.kpra = true; newPatient.krs = true; }
+  patients.push(newPatient);
+  await persist(newId, newPatient);
+  ensureBeds(); refresh();
+  showToast('Baris pasien ditambahkan', 'success');
+});
+
+/* ========================================================================================= */
+
 tableBody.addEventListener('focusout', e => {
   const el = e.target;
   if (el.hasAttribute('contenteditable')) {
@@ -682,10 +781,6 @@ tableBody.addEventListener('click', async e => {
     }
   }
 });
-
-/* Init */
-$('btn-reset-dashboard').addEventListener('click', () => { $('upload-section').classList.remove('hidden'); $('dashboard-section').classList.add('hidden'); });
-['aktif', 'krs', 'kpra', 'kualitatif'].forEach(t => $('tab-' + t).addEventListener('click', () => switchTab(t)));
 
 async function initFirebase() {
   const btnLogin = $('btn-login');

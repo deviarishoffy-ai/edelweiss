@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -8,7 +7,8 @@
 <link rel="icon" href="https://i.postimg.cc/Z5nV96Bs/IMG-20261105-211548.jpg" type="image/jpeg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- LINK IKON YANG LEBIH KUAT (ANTI BLOKIR) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
 <script>
 tailwind.config = { theme: { extend: {
   fontFamily: { sans: ['Quicksand', 'sans-serif'] },
@@ -140,7 +140,7 @@ tailwind.config = { theme: { extend: {
           </div>
         </div>
       </div>
-      <div class="flex-1 overflow-auto table-container print:overflow-visible bg-white/60">
+      <div class="flex-1 overflow-auto table-container print:overflow-visible bg-white/60 relative">
         <table class="w-full text-left border-collapse min-w-[1300px] print:min-w-full">
           <thead id="table-head" class="bg-white/90 backdrop-blur-md sticky top-0 z-10 shadow-sm print:static"></thead>
           <tbody id="table-body" class="divide-y divide-slate-200/50"></tbody>
@@ -313,31 +313,10 @@ const parseIdnDate = (dStr, mStr, yStr) => {
     return new Date(y, mi, parseInt(dStr)).getTime();
 };
 
+/* ===== PERBAIKAN Z-INDEX PADA TOMBOL AKSI ===== */
 const TH = 'px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider border-y border-slate-200/60';
 const th = (t, extra = '') => `<th class="${TH} ${extra}">${t}</th>`;
-const thAksi = `<th class="${TH} text-center sticky right-0 bg-white/90 backdrop-blur-md print:hidden">Aksi</th>`;
-
-function switchTab(tab) {
-  currentTab = tab;
-  const on = 'py-2.5 px-6 bg-white/95 backdrop-blur-xl border-t-2 border-medify-500 text-medify-700 font-bold transition-all whitespace-nowrap shadow-sm';
-  const off = 'py-2.5 px-6 bg-white/75 backdrop-blur-md border-t-2 border-transparent text-slate-700 hover:bg-white/90 font-bold transition-all whitespace-nowrap shadow-sm';
-  
-  ['aktif', 'krs', 'kpra', 'kualitatif'].forEach(t => {
-    const el = $('tab-' + t);
-    if(t === 'kualitatif' && tab !== t) el.className = `rounded-t-xl ${off} text-purple-700 border-b-2 border-purple-500`;
-    else el.className = `rounded-t-xl ${t === tab ? on : off}`;
-  });
-  
-  if (tab === 'kpra') {
-    tableHead.innerHTML = `<tr>${th('NO RM')}${th('LAMA RAWAT', 'w-32')}${th('JENIS ANTIBIOTIK')}${th('TOTAL GRAM', 'w-32')}${th('KSM')}${th('RUANGAN')}${th('APT')}${th('LPD')}${th('DONE')}${thAksi}</tr>`;
-  } else if (tab === 'kualitatif') {
-    tableHead.innerHTML = `<tr>${th('NO')}${th('NO.RM')}${th('NAMA PASIEN')}${th('LAMA PEMBERIAN AB')}${th('JENIS ANTIBIOTIK')}${th('REGIMEN ANTIBIOTIK')}${th('RUTE')}${th('TIPE TERAPI')}${th('INDIKASI AB')}${th('KSM')}${th('RUANGAN')}${thAksi}</tr>`;
-  } else {
-    const kpra = tab === 'krs' ? th('KPRA', 'text-center bg-medify-50/50') : '';
-    tableHead.innerHTML = `<tr>${th('Bed')}${th('Tgl MRS')}${th('Tgl KRS', 'w-40')}${th('R/E/T')}${th('PTO')}${th('KRS')}${kpra}${th('RM')}${th('Nama Pasien')}${th('Diagnosa')}${th('KSM')}${th('AB')}${th('Jumlah')}${thAksi}</tr>`;
-  }
-  refresh();
-}
+const thAksi = `<th class="${TH} text-center sticky right-0 z-20 bg-white/90 backdrop-blur-md print:hidden min-w-[140px]">Aksi</th>`;
 
 const ce = (p, field, val, cls = '', ph = '') => `<div contenteditable="true" data-id="${esc(p.id)}" data-field="${field}" class="${cls}" placeholder="${ph}">${esc(val)}</div>`;
 const chk = (p, field, color, title = '') => `<input type="checkbox" class="w-4 h-4 text-${color} rounded cursor-pointer" ${p[field] ? 'checked' : ''} data-id="${esc(p.id)}" data-field="${field}">`;
@@ -347,7 +326,7 @@ const actionBtns = p => {
   const sendBtn = (currentTab === 'kpra' || currentTab === 'kualitatif') 
     ? `<button type="button" data-id="${esc(p.id)}" class="btn-send-gsheet text-emerald-500 hover:bg-emerald-100 p-1.5 rounded-full transition-colors" title="Copy Data & Kirim ke G-Sheets"><i class="fa-brands fa-google-drive text-lg"></i></button>` : '';
     
-  return `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 bg-white/80 backdrop-blur-md group-hover:bg-slate-50/90 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden">
+  return `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 z-10 bg-white/90 backdrop-blur-md group-hover:bg-slate-50/90 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden min-w-[140px]">
   <div class="flex items-center justify-center gap-1">
     ${sendBtn}
     <button type="button" data-id="${esc(p.id)}" class="btn-magic text-purple-500 hover:bg-purple-100 p-1.5 rounded-full transition-colors" title="Hitung Gram Billing"><i class="fa-solid fa-wand-magic-sparkles text-lg"></i></button>
@@ -356,6 +335,7 @@ const actionBtns = p => {
   </div>
 </td>`;
 }
+/* =============================================== */
 
 const bedCell = p => td(`<i class="fa-solid fa-bed text-slate-400 mr-1.5"></i>${esc(p.bedName)}`, 'whitespace-nowrap font-bold text-medify-700 bg-medify-50/50');
 

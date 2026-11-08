@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
+<html lang="id"><head><script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.etOqPKhAhvg.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo-l5JrVgGKVELwC844E6riBHX86-w/cb=gapi.loaded_0?le=scs" async=""></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edelweiss Symbiosis - Medify Dashboard</title>
 <link rel="icon" href="https://i.postimg.cc/Z5nV96Bs/IMG-20261105-211548.jpg" type="image/jpeg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- LINK IKON YANG LEBIH KUAT (ANTI BLOKIR) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
+<!-- Link FontAwesome yang anti-blokir -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <script>
 tailwind.config = { theme: { extend: {
   fontFamily: { sans: ['Quicksand', 'sans-serif'] },
@@ -30,7 +29,7 @@ tailwind.config = { theme: { extend: {
 [contenteditable="true"]:focus { border-color: #0ea5e9; background: #fff; box-shadow: 0 0 0 2px rgba(14,165,233,.2) }
 [contenteditable="true"]:empty:before { content: attr(placeholder); color: #94a3b8; pointer-events: none; display: block }
 </style>
-</head>
+<script src="https://apis.google.com/js/api.js?onload=__iframefcb357518" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
 <body class="bg-[url('https://i.postimg.cc/bvCK4q7V/1793889711112.jpg')] bg-cover bg-center bg-fixed min-h-screen text-slate-800 antialiased font-sans flex flex-col before:content-[''] before:absolute before:inset-0 before:bg-white/30 before:-z-10 relative z-0">
 
 <nav class="bg-white/80 backdrop-blur-md border-b border-white/50 sticky top-0 z-30 shadow-sm print:hidden">
@@ -45,9 +44,9 @@ tailwind.config = { theme: { extend: {
       </div>
       <div class="flex items-center">
         <span id="mode-badge" class="bg-medify-100/80 text-medify-700 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-2">
-          <span id="mode-dot" class="w-2 h-2 rounded-full inline-block bg-amber-500"></span> <span id="mode-text">Menyiapkan...</span>
+          <span id="mode-dot" class="w-2 h-2 rounded-full inline-block bg-green-500"></span> <span id="mode-text">Cloud Terhubung</span>
         </span>
-        <button id="btn-logout" type="button" class="hidden inline-flex items-center gap-2 ml-3 text-sm font-medium text-slate-500 hover:text-slate-800 border border-slate-300 rounded-lg px-3 py-1.5 transition-colors bg-white/50"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+        <button id="btn-logout" type="button" class="inline-flex items-center gap-2 ml-3 text-sm font-medium text-slate-500 hover:text-slate-800 border border-slate-300 rounded-lg px-3 py-1.5 transition-colors bg-white/50"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
       </div>
     </div>
   </div>
@@ -56,7 +55,7 @@ tailwind.config = { theme: { extend: {
 <main class="flex-1 max-w-[95%] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col justify-center">
 
   <!-- Login -->
-  <section id="login-section" class="my-auto fade-in w-full">
+  <section id="login-section" class="my-auto fade-in w-full hidden">
     <div class="bg-white/70 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full mx-auto overflow-hidden border border-white/60 p-8">
       <div class="text-center mb-6">
         <img src="https://i.postimg.cc/Z5nV96Bs/IMG-20261105-211548.jpg" alt="Logo" class="w-20 h-20 mx-auto mb-4 object-cover drop-shadow-sm rounded-full bg-white/50 p-1">
@@ -67,17 +66,15 @@ tailwind.config = { theme: { extend: {
       <form id="login-form" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Email</label>
-          <input id="login-email" type="email" required class="w-full px-3 py-2 border border-white/60 bg-white/80 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-medify-400">
+          <input id="login-email" type="email" required="" class="w-full px-3 py-2 border border-white/60 bg-white/80 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-medify-400">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
-          <input id="login-pass" type="password" required class="w-full px-3 py-2 border border-white/60 bg-white/80 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-medify-400">
+          <input id="login-pass" type="password" required="" class="w-full px-3 py-2 border border-white/60 bg-white/80 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-medify-400">
         </div>
         <div id="login-error" class="hidden p-3 rounded-md bg-red-50/90 text-red-700 text-xs font-bold border border-red-200"></div>
         <div class="pt-3 flex justify-center">
-          <button id="btn-login" type="submit" disabled class="bg-slate-400 text-white font-bold py-2.5 px-6 rounded-full shadow-md transition-all flex items-center justify-center gap-2 text-sm w-full cursor-not-allowed">
-            <i class="fa-solid fa-spinner fa-spin"></i> Memuat Sistem...
-          </button>
+          <button id="btn-login" type="submit" class="bg-medify-500 hover:bg-medify-600 text-white font-bold py-2.5 px-6 rounded-full shadow-md transition-all flex items-center justify-center gap-2 text-sm w-full cursor-pointer" disabled=""><i class="fa-solid fa-spinner fa-spin"></i> Loading...</button>
         </div>
       </form>
       <hr class="my-6 border-slate-300/50">
@@ -90,7 +87,7 @@ tailwind.config = { theme: { extend: {
   <!-- Upload -->
   <section id="upload-section" class="mb-8 hidden">
     <div id="drop-zone" class="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/60 p-8 text-center transition-all duration-200">
-      <input type="file" id="file-upload" accept=".html,.htm" class="hidden">
+      <input type="file" id="file-upload" accept=".html,.htm,.mhtml" class="hidden">
       <div class="max-w-md mx-auto">
         <div class="w-20 h-20 bg-medify-100/80 text-medify-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm"><i class="fa-solid fa-file-code text-3xl"></i></div>
         <h2 class="text-lg font-bold text-slate-800 mb-2">Upload Web File Medify</h2>
@@ -104,7 +101,7 @@ tailwind.config = { theme: { extend: {
   </section>
 
   <!-- Dashboard -->
-  <section id="dashboard-section" class="hidden fade-in">
+  <section id="dashboard-section" class="fade-in">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 print:hidden">
       <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 p-6 flex items-center gap-4">
         <div class="w-14 h-14 rounded-xl bg-blue-100/80 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fa-solid fa-bed"></i></div>
@@ -120,12 +117,12 @@ tailwind.config = { theme: { extend: {
       </div>
     </div>
 
-    <!-- TABS -->
+    <!-- TABS NAVIGATION -->
     <div class="flex space-x-2 mb-4 border-b border-white/50 print:hidden overflow-x-auto pb-1">
-      <button id="tab-aktif" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl text-slate-700 font-bold px-6 py-2.5 shadow-sm transition-all"><i class="fa-solid fa-bed mr-2"></i> Lembar Kerja Aktif</button>
-      <button id="tab-krs" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl text-slate-700 font-bold px-6 py-2.5 shadow-sm transition-all"><i class="fa-solid fa-clipboard-check mr-2"></i> Lembar KRS</button>
-      <button id="tab-kpra" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl text-slate-700 font-bold px-6 py-2.5 shadow-sm transition-all"><i class="fa-solid fa-pills mr-2"></i> KPRA Kuantitatif</button>
-      <button id="tab-kualitatif" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl text-slate-700 font-bold px-6 py-2.5 shadow-sm transition-all text-purple-700 border-b-2 border-purple-500"><i class="fa-solid fa-microscope mr-2"></i> KPRA Kualitatif</button>
+      <button id="tab-aktif" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-bed mr-2"></i> Lembar Kerja Aktif</button>
+      <button id="tab-krs" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-clipboard-check mr-2"></i> Lembar KRS</button>
+      <button id="tab-kpra" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-pills mr-2"></i> KPRA Kuantitatif</button>
+      <button id="tab-kualitatif" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-microscope mr-2"></i> KPRA Kualitatif</button>
     </div>
 
     <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg border border-white/60 overflow-hidden flex flex-col h-[600px] print:h-auto print:border-none print:shadow-none print:bg-white">
@@ -155,10 +152,10 @@ tailwind.config = { theme: { extend: {
 </main>
 
 <!-- MODAL AUTO DETECT AB SAJA -->
-<div id="modal-autodetect" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+<div id="modal-autodetect" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center backdrop-blur-sm hidden">
   <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6 mx-4">
     <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
-      <h3 class="text-lg font-bold text-medify-700 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Deteksi Gram & Hari Antibiotik</h3>
+      <h3 class="text-lg font-bold text-medify-700 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Deteksi Gram &amp; Hari Antibiotik</h3>
       <button onclick="closeAutoDetectModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-xl"></i></button>
     </div>
     
@@ -167,7 +164,7 @@ tailwind.config = { theme: { extend: {
       <textarea id="autodetect-text" class="w-full h-56 p-3 border border-slate-300 rounded-lg text-xs font-mono bg-slate-50 focus:ring-2 focus:ring-medify-500 outline-none shadow-inner" placeholder="Paste data Tagihan/Billing di sini untuk mendeteksi Jenis AB, Gram, dan perhitungan Hari (inklusif)..."></textarea>
     </div>
     
-    <input type="hidden" id="autodetect-pid">
+    <input type="hidden" id="autodetect-pid" value="">
     <div class="mt-4 flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-200">
       <p class="text-[10px] text-slate-500 max-w-sm"><i class="fa-solid fa-circle-info text-medify-500"></i> Rute, indikasi, dan regimen tetap harus Anda input secara mandiri demi pemahaman klinis yang tajam.</p>
       <div class="flex gap-2">
@@ -198,7 +195,7 @@ const APP_ID = 'edelweiss-app';
 const LS_KEY = 'edelweiss_patients_v1';
 const LS_BEDS = 'edelweiss_beds_v1';
 
-// URL WEB APP GSHEETS YANG SUDAH ANDA MASUKKAN SEBELUMNYA
+// URL WEB APP GSHEETS 
 const GSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyxPWMIAOAX3zmNSKVZPRc6ep4c7GdnEafNuaKAivMFZ6M5JyBVNgUA_POTjDSTFtyE/exec"; 
 /* ============================================================================ */
 
@@ -220,6 +217,7 @@ function showToast(message, type = 'success') {
   $('toast-container').appendChild(t);
   setTimeout(() => { t.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => t.remove(), 300); }, 3000);
 }
+window.showToast = showToast; // Expose global
 
 function setMode(m) {
   mode = m;
@@ -248,10 +246,6 @@ function ensureBeds() {
   if (changed) saveBeds();
 }
 
-async function removeRecord(id) {
-  patients = patients.filter(p => p.id !== id); saveLocal();
-  if (mode === 'cloud' && fb) { try { await fb.deleteDoc(fb.doc(fb.colRef, id)); } catch (e) {} }
-}
 async function persist(id, data) {
   let p = patients.find(x => x.id === id);
   if (!p) { p = { id }; patients.push(p); }
@@ -268,6 +262,7 @@ function updateCounters() {
   $('count-krs').innerText = krsPatients.toLocaleString('id-ID');
 }
 function refresh() { updateCounters(); renderTable(getFiltered()); }
+window.refresh = refresh; // Expose global
 
 function getFiltered() {
   const term = searchInput.value.toLowerCase();
@@ -313,29 +308,55 @@ const parseIdnDate = (dStr, mStr, yStr) => {
     return new Date(y, mi, parseInt(dStr)).getTime();
 };
 
-/* ===== PERBAIKAN Z-INDEX PADA TOMBOL AKSI ===== */
+const switchTab = function(tabId) {
+  currentTab = tabId;
+  ['aktif', 'krs', 'kpra', 'kualitatif'].forEach(t => {
+    const el = $('tab-' + t);
+    if (t === tabId) {
+      el.classList.add('text-purple-700', 'border-b-2', 'border-purple-500');
+      el.classList.remove('text-slate-700');
+    } else {
+      el.classList.remove('text-purple-700', 'border-b-2', 'border-purple-500');
+      el.classList.add('text-slate-700');
+    }
+  });
+  
+  let thead = '';
+  if (currentTab === 'kpra') {
+    thead = `<tr>${th('No RM & Pasien')}${th('Hari Rawat', 'w-24 text-center')}${th('Antibiotik')}${th('Total (Gram)', 'bg-teal-50')}${th('KSM')}${th('Ruangan')}${th('APT')}${th('LPD', 'text-center')}${th('Print LPD', 'text-center')}${thAksi}</tr>`;
+  } else if (currentTab === 'kualitatif') {
+    thead = `<tr>${th('No', 'text-center')}${th('No RM')}${th('Nama Pasien')}${th('Lama AB', 'bg-purple-50 text-center')}${th('Jenis AB')}${th('Regimen')}${th('Rute', 'text-center')}${th('Tipe Terapi')}${th('Indikasi AB')}${th('KSM', 'text-center')}${th('Ruangan', 'text-center')}${thAksi}</tr>`;
+  } else {
+    thead = `<tr>${th('Bed', 'w-32 bg-medify-50')}${th('Tgl MRS', 'w-32')}${th('Tgl KRS', 'w-40')}${th('RET', 'text-center')}${th('PTO', 'text-center')}${th('KRS', 'text-center')}${currentTab==='krs'?th('KPRA', 'text-center bg-medify-50'):''}${th('No RM')}${th('Nama Pasien')}${th('Diagnosa')}${th('KSM')}${th('AB')}${th('Jumlah')}${thAksi}</tr>`;
+  }
+  tableHead.innerHTML = thead;
+  refresh();
+};
+
 const TH = 'px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider border-y border-slate-200/60';
 const th = (t, extra = '') => `<th class="${TH} ${extra}">${t}</th>`;
-const thAksi = `<th class="${TH} text-center sticky right-0 z-20 bg-white/90 backdrop-blur-md print:hidden min-w-[140px]">Aksi</th>`;
+
+// PERBAIKAN: Background putih solid agar tidak tembus pandang
+const thAksi = `<th class="${TH} text-center sticky right-0 z-20 bg-white print:hidden min-w-[140px]">Aksi</th>`;
 
 const ce = (p, field, val, cls = '', ph = '') => `<div contenteditable="true" data-id="${esc(p.id)}" data-field="${field}" class="${cls}" placeholder="${ph}">${esc(val)}</div>`;
 const chk = (p, field, color, title = '') => `<input type="checkbox" class="w-4 h-4 text-${color} rounded cursor-pointer" ${p[field] ? 'checked' : ''} data-id="${esc(p.id)}" data-field="${field}">`;
 const td = (inner, cls = '') => `<td class="px-3 py-2 text-sm ${cls}">${inner}</td>`;
 
+// PERBAIKAN: Tombol Aksi Langsung Memanggil Fungsi (Hardwired ke window object)
 const actionBtns = p => {
   const sendBtn = (currentTab === 'kpra' || currentTab === 'kualitatif') 
-    ? `<button type="button" data-id="${esc(p.id)}" class="btn-send-gsheet text-emerald-500 hover:bg-emerald-100 p-1.5 rounded-full transition-colors" title="Copy Data & Kirim ke G-Sheets"><i class="fa-brands fa-google-drive text-lg"></i></button>` : '';
+    ? `<button type="button" onclick="sendToGSheetHandler('${esc(p.id)}', this)" class="text-emerald-500 hover:bg-emerald-100 hover:text-emerald-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Copy Data & Kirim ke G-Sheets"><i class="fa-brands fa-google-drive text-lg pointer-events-none"></i></button>` : '';
     
-  return `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 z-10 bg-white/90 backdrop-blur-md group-hover:bg-slate-50/90 shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden min-w-[140px]">
+  return `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 z-10 bg-white shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden min-w-[140px]">
   <div class="flex items-center justify-center gap-1">
     ${sendBtn}
-    <button type="button" data-id="${esc(p.id)}" class="btn-magic text-purple-500 hover:bg-purple-100 p-1.5 rounded-full transition-colors" title="Hitung Gram Billing"><i class="fa-solid fa-wand-magic-sparkles text-lg"></i></button>
-    <button type="button" data-id="${esc(p.id)}" class="btn-add-ab text-medify-500 hover:bg-medify-100 p-1.5 rounded-full transition-colors" title="Tambah Antibiotik (Pasien Sama)"><i class="fa-solid fa-plus text-lg"></i></button>
-    <button type="button" data-id="${esc(p.id)}" class="btn-delete-row text-red-400 hover:bg-red-50 p-1.5 rounded-full transition-colors" title="Hapus"><i class="fa-solid fa-trash text-lg"></i></button>
+    <button type="button" onclick="openMagic('${esc(p.id)}')" class="text-purple-500 hover:bg-purple-100 hover:text-purple-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Hitung Gram Billing"><i class="fa-solid fa-wand-magic-sparkles text-lg pointer-events-none"></i></button>
+    <button type="button" onclick="addAbRow('${esc(p.id)}')" class="text-medify-500 hover:bg-medify-100 hover:text-medify-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Tambah Antibiotik (Pasien Sama)"><i class="fa-solid fa-plus text-lg pointer-events-none"></i></button>
+    <button type="button" onclick="deleteRow('${esc(p.id)}')" class="text-red-400 hover:bg-red-50 hover:text-red-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Hapus"><i class="fa-solid fa-trash text-lg pointer-events-none"></i></button>
   </div>
 </td>`;
 }
-/* =============================================== */
 
 const bedCell = p => td(`<i class="fa-solid fa-bed text-slate-400 mr-1.5"></i>${esc(p.bedName)}`, 'whitespace-nowrap font-bold text-medify-700 bg-medify-50/50');
 
@@ -344,13 +365,12 @@ function renderTable(data) {
   const frag = document.createDocumentFragment();
   data.forEach((p, idx) => {
     const tr = document.createElement('tr');
-    tr.className = `hover:bg-white/80 transition-colors group bg-white/40`;
+    tr.className = `hover:bg-white/80 transition-colors group bg-white/40 border-b border-slate-100`;
     if (p.empty) {
       tr.innerHTML = bedCell(p) + `<td colspan="12" class="px-3 py-2 text-sm text-slate-500 italic font-medium">Bed kosong</td>`;
       frag.appendChild(tr); return;
     }
     
-    // Kalkulasi Lama Rawat Inap secara INKLUSIF (+1 hari)
     let lr = p.lamaRawat;
     if(!lr && p.tglMRS) {
        const mrsMatch = String(p.tglMRS).match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
@@ -412,10 +432,52 @@ function renderTable(data) {
   tableBody.appendChild(frag);
 }
 
-/* ================================= AUTO DETECT ANTIBIOTIK ================================= */
+// ================= GLOBAL BUTTON HANDLERS =================
 window.closeAutoDetectModal = function() {
   $('modal-autodetect').classList.add('hidden');
   $('autodetect-text').value = '';
+}
+
+window.openMagic = function(id) {
+  $('autodetect-pid').value = id; 
+  $('modal-autodetect').classList.remove('hidden');
+}
+
+window.addAbRow = async function(id) {
+  const orig = patients.find(x => x.id === id);
+  if (orig) {
+    const newId = Math.random().toString(36).slice(2, 11);
+    await persist(newId, { ...orig, id: newId, ab: '', jumlah: '', lamaAb: '', regimen: '', rute: '', tambahAbAt: Date.now() });
+    refresh(); 
+    showToast('Baris antibiotik tambahan dibuat', 'success');
+  }
+}
+
+// FUNGSI DELETE SUPER (HARDWIRED)
+window.deleteRow = async function(id) {
+  if (!confirm('Yakin ingin menghapus baris data ini secara permanen?')) return;
+  
+  // 1. Eksekusi Lokal Langsung!
+  patients = patients.filter(p => p.id !== id);
+  saveLocal();
+  
+  // 2. Render ulang UI tanpa peduli Firebase
+  refresh();
+  showToast('Data berhasil dihapus dari layar', 'success');
+  
+  // 3. Informasikan ke Firebase di latar belakang
+  if (mode === 'cloud' && fb) {
+    try { 
+      await fb.deleteDoc(fb.doc(fb.colRef, id)); 
+    } catch (err) { 
+      console.error('Gagal hapus dari Firebase:', err); 
+    }
+  }
+}
+
+window.sendToGSheetHandler = function(id, btnElement) {
+   const p = patients.find(x => x.id === id);
+   if (p) sendToGSheet(p, btnElement);
 }
 
 window.processAutoDetect = async function() {
@@ -518,7 +580,6 @@ window.processAutoDetect = async function() {
   showToast(`${finalDetected.length} Antibiotik & Hari Terapi berhasil dideteksi!`, 'success');
 }
 
-/* ================= KIRIM & COPY ================= */
 async function sendToGSheet(p, btnElement) {
   let calculatedLamaRawat = p.lamaRawat;
   if(!calculatedLamaRawat && p.tglMRS) {
@@ -553,20 +614,20 @@ async function sendToGSheet(p, btnElement) {
     const json = await res.json();
     
     if(json.result === 'success') {
-       btnElement.innerHTML = '<i class="fa-solid fa-cat text-xl"></i>';
+       btnElement.innerHTML = '<i class="fa-solid fa-cat text-xl pointer-events-none"></i>';
        btnElement.classList.replace('text-emerald-500', 'text-medify-500'); btnElement.classList.replace('hover:bg-emerald-100', 'hover:bg-medify-100');
        btnElement.title = "Tersubmit & Tercopy!";
-       showToast(`Data ${p.nama || p.rm} berhasil disubmit & disalin!`, 'success');
+       showToast(`Data ${p.nama || p.rm} masuk ke Sheet ${json.sheet}!`, 'success');
     } else {
-       btnElement.innerHTML = '<i class="fa-brands fa-google-drive text-lg"></i>'; showToast('Gagal: ' + json.message, 'error');
+       btnElement.innerHTML = '<i class="fa-brands fa-google-drive text-lg pointer-events-none"></i>'; showToast('Gagal: ' + json.message, 'error');
     }
   } catch(err) {
-    btnElement.innerHTML = '<i class="fa-brands fa-google-drive text-lg"></i>';
+    btnElement.innerHTML = '<i class="fa-brands fa-google-drive text-lg pointer-events-none"></i>';
     showToast('Error koneksi ke G-Sheets. Pastikan akses di-set ke Siapa Saja (Anyone).', 'error');
   }
 }
+// ==========================================================
 
-/* ================== UPLOAD FILE MEDIFY (ALGORITMA X-RAY KHUSUS KARTU) ================== */
 $('btn-reset-dashboard').addEventListener('click', () => { $('upload-section').classList.remove('hidden'); $('dashboard-section').classList.add('hidden'); });
 ['aktif', 'krs', 'kpra', 'kualitatif'].forEach(t => $('tab-' + t).addEventListener('click', () => switchTab(t)));
 searchInput.addEventListener('input', refresh);
@@ -589,11 +650,13 @@ $('file-upload').addEventListener('change', async e => {
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Membaca File...';
   
   try {
-    const text = await file.text();
+    let text = await file.text();
+    const htmlMatch = text.match(/<html[\s\S]*<\/html>/i);
+    if (htmlMatch) { text = htmlMatch[0]; }
+    
     const doc = new DOMParser().parseFromString(text, 'text/html');
     let newCount = 0, updateCount = 0;
     
-    // FUNGSI UTAMA PENYIMPANAN PASIEN
     const processPatient = (rm, nama, bedName, tglMRS, diag) => {
         const existing = patients.find(p => p.rm === rm && !p.krs);
         if (existing) {
@@ -612,8 +675,6 @@ $('file-upload').addEventListener('change', async e => {
         }
     };
 
-    // 0. EKSTRAK SEMUA KAMAR (Bahkan yang KOSONG tidak ada pasiennya!)
-    // Ini agar statistik "Bed Kosong / Terisi" di Dashboard jadi 100% akurat.
     const bedHeaders = doc.querySelectorAll('h5.mb-0');
     let newBedsFound = false;
     bedHeaders.forEach(h5 => {
@@ -621,15 +682,11 @@ $('file-upload').addEventListener('change', async e => {
         const bedEl = h5.querySelector('.bed');
         if(ruanganEl && bedEl) {
             const bedNameText = ruanganEl.innerText.trim() + " - " + bedEl.innerText.trim();
-            if(!beds.includes(bedNameText)) {
-                beds.push(bedNameText);
-                newBedsFound = true;
-            }
+            if(!beds.includes(bedNameText)) { beds.push(bedNameText); newBedsFound = true; }
         }
     });
-    if(newBedsFound) saveBeds(); // Simpan jika ada kamar tipe/nomor baru
+    if(newBedsFound) saveBeds(); 
 
-    // 1. ALGORITMA X-RAY (Untuk Tampilan Kartu / List di Medify Baru)
     const rmElements = doc.querySelectorAll('.no_rm');
     if (rmElements.length > 0) {
         rmElements.forEach(rmEl => {
@@ -643,11 +700,8 @@ $('file-upload').addEventListener('change', async e => {
             const ruanganEl = container.querySelector('.ruangan');
             const bedEl = container.querySelector('.bed');
             let bedName = 'Kamar Ekstra';
-            if (ruanganEl && bedEl) {
-                bedName = ruanganEl.innerText.trim() + " - " + bedEl.innerText.trim();
-            } else if (ruanganEl || bedEl) {
-                bedName = ruanganEl ? ruanganEl.innerText.trim() : bedEl.innerText.trim();
-            }
+            if (ruanganEl && bedEl) { bedName = ruanganEl.innerText.trim() + " - " + bedEl.innerText.trim(); }
+            else if (ruanganEl || bedEl) { bedName = ruanganEl ? ruanganEl.innerText.trim() : bedEl.innerText.trim(); }
             
             const diagEl = container.querySelector('.judul_kasus');
             const diag = diagEl ? diagEl.innerText.trim() : "";
@@ -656,18 +710,11 @@ $('file-upload').addEventListener('change', async e => {
             const mrsMatch = container.innerText.match(/MRS\s*:\s*(\d{1,2}\s+[a-zA-Z]+\s+\d{4})/i);
             if(mrsMatch) tglMRS = mrsMatch[1].trim();
             
-            if(rm && rm !== "-" && rm !== "") {
-                processPatient(rm, nama, bedName, tglMRS, diag);
-            }
+            if(rm && rm !== "-" && rm !== "") processPatient(rm, nama, bedName, tglMRS, diag);
         });
-    } 
-    // 2. FALLBACK ALGORITMA TABEL (Jika ada update kembali ke Tabel / File Laporan)
-    else {
+    } else {
         const rows = doc.querySelectorAll('tr');
-        if(rows.length === 0) {
-           showToast('Format data tidak ditemukan di file HTML ini.', 'error');
-           return;
-        }
+        if(rows.length === 0) { showToast('Gagal memproses: Format pasien tidak ditemukan di dalam HTML ini.', 'error'); return; }
 
         rows.forEach(row => {
           const cells = row.querySelectorAll('td, th'); 
@@ -678,18 +725,14 @@ $('file-upload').addEventListener('change', async e => {
           
           if (rmMatch) {
             let rmCellIdx = -1;
-            cells.forEach((c, idx) => { 
-               const txt = c.innerText.trim();
-               if(txt.includes(rmMatch[0])) rmCellIdx = idx; 
-            });
+            cells.forEach((c, idx) => { if(c.innerText.trim().includes(rmMatch[0])) rmCellIdx = idx; });
             
             if (rmCellIdx !== -1) {
               const rm = rmMatch[0];
               let rawNama = cells[rmCellIdx+1] ? cells[rmCellIdx+1].innerText.trim() : "";
               let nama = "Pasien Baru";
-              if (rawNama.length > 3 && rawNama.length < 50) {
-                nama = rawNama;
-              } else {
+              if (rawNama.length > 3 && rawNama.length < 50) { nama = rawNama; } 
+              else {
                 let possibleName = cells[rmCellIdx].innerText.replace(rm, '').replace(/[0-9-.\s]/g, '').trim();
                 if(possibleName.length > 3) nama = possibleName;
               }
@@ -707,7 +750,7 @@ $('file-upload').addEventListener('change', async e => {
     }
     
     ensureBeds(); 
-    switchTab('aktif'); // MEMAKSA KEMBALI KE TAB AKTIF AGAR PASIEN BARU LANGSUNG MUNCUL
+    switchTab('aktif');
     refresh();
     showToast(`Berhasil! ${newCount} pasien baru, ${updateCount} diperbarui.`, 'success');
     $('upload-section').classList.add('hidden');
@@ -720,7 +763,6 @@ $('file-upload').addEventListener('change', async e => {
   }
 });
 
-/* ================= EVENT LISTENER TABEL ================= */
 tableBody.addEventListener('focusout', e => {
   const el = e.target;
   if (el.hasAttribute('contenteditable')) {
@@ -741,30 +783,7 @@ tableBody.addEventListener('change', async e => {
       await persist(id, { [f]: e.target.value }); refresh();
   }
 });
-tableBody.addEventListener('click', async e => {
-  const btnMagic = e.target.closest('.btn-magic');
-  if(btnMagic) { $('autodetect-pid').value = btnMagic.dataset.id; $('modal-autodetect').classList.remove('hidden'); return; }
-  
-  const btnSend = e.target.closest('.btn-send-gsheet');
-  if (btnSend) { const p = patients.find(x => x.id === btnSend.dataset.id); if(p) sendToGSheet(p, btnSend); return; }
-  
-  const btnAddAb = e.target.closest('.btn-add-ab');
-  if (btnAddAb) {
-    const orig = patients.find(x => x.id === btnAddAb.dataset.id);
-    if (orig) {
-      const newId = Math.random().toString(36).slice(2, 11);
-      await persist(newId, { ...orig, id: newId, ab: '', jumlah: '', lamaAb: '', regimen: '', rute: '', tambahAbAt: Date.now() });
-      refresh(); showToast('Baris antibiotik tambahan dibuat', 'success');
-    }
-    return;
-  }
-  const btnDel = e.target.closest('.btn-delete-row');
-  if (btnDel) {
-    if (confirm('Yakin ingin menghapus baris data ini?')) { await removeRecord(btnDel.dataset.id); refresh(); showToast('Data dihapus', 'success'); }
-  }
-});
 
-/* ================= INIT FIREBASE ================= */
 async function initFirebase() {
   const btnLogin = $('btn-login');
   try {
@@ -785,7 +804,8 @@ async function initFirebase() {
           patients = snap.docs.map(d => d.data()).filter(d => !d.isMeta);
           const meta = snap.docs.map(d=>d.data()).find(d=>d.isMeta);
           if(meta && meta.beds) beds = meta.beds;
-          refresh();
+          if(tableHead.innerHTML === '') switchTab('aktif'); 
+          else refresh();
         });
       } else {
         $('login-section').classList.remove('hidden'); $('dashboard-section').classList.add('hidden');
@@ -810,13 +830,13 @@ async function initFirebase() {
     $('login-form').onsubmit = (e) => {
        e.preventDefault(); showToast('Menggunakan Mode Lokal', 'info');
        $('login-section').classList.add('hidden'); $('dashboard-section').classList.remove('hidden');
-       patients = loadLocal(); beds = loadBeds(); ensureBeds(); refresh();
+       patients = loadLocal(); beds = loadBeds(); ensureBeds(); 
+       switchTab('aktif');
     };
   }
 }
 
 initFirebase();
 </script>
-</body>
-</html>
-```
+
+</body></html>

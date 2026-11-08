@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="id"><head><script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.en.etOqPKhAhvg.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo-l5JrVgGKVELwC844E6riBHX86-w/cb=gapi.loaded_0?le=scs" async=""></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edelweiss Symbiosis - Medify Dashboard</title>
+<link rel="icon" href="https://i.postimg.cc/Z5nV96Bs/IMG-20261105-211548.jpg" type="image/jpeg">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Link FontAwesome yang anti-blokir -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+tailwind.config = { theme: { extend: {
+  fontFamily: { sans: ['Quicksand', 'sans-serif'] },
+  colors: { medify: { 50:'#f0f9ff',100:'#e0f2fe',200:'#bae6fd',300:'#7dd3fc',400:'#38bdf8',500:'#0ea5e9',600:'#0284c7',700:'#0369a1',900:'#0c4a6e' } }
+}}};
+</script>
+<style>
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slideInUp { from { transform: translateY(100%); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+@keyframes fadeOut { from { opacity: 1 } to { opacity: 0 } }
+.fade-in { animation: fadeIn .5s ease-out }
+.toast-enter { animation: slideInUp .3s ease-out forwards }
+.toast-exit { animation: fadeOut .3s ease-out forwards }
+.table-container::-webkit-scrollbar { height: 8px; width: 8px }
+.table-container::-webkit-scrollbar-track { background: transparent; border-radius: 4px }
+.table-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px }
+[contenteditable="true"] { padding: 4px 6px; border-radius: 4px; border: 1px solid transparent; min-height: 24px; min-width: 20px; outline: none; transition: all .2s; display: inline-block; width: 100% }
+[contenteditable="true"]:hover { border-color: #cbd5e1; background: rgba(255,255,255,0.7) }
+[contenteditable="true"]:focus { border-color: #0ea5e9; background: #fff; box-shadow: 0 0 0 2px rgba(14,165,233,.2) }
+[contenteditable="true"]:empty:before { content: attr(placeholder); color: #94a3b8; pointer-events: none; display: block }
+</style>
+<script src="https://apis.google.com/js/api.js?onload=__iframefcb357518" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
+<body class="bg-[url('https://i.postimg.cc/bvCK4q7V/1793889711112.jpg')] bg-cover bg-center bg-fixed min-h-screen text-slate-800 antialiased font-sans flex flex-col before:content-[''] before:absolute before:inset-0 before:bg-white/30 before:-z-10 relative z-0">
+
+<nav class="bg-white/80 backdrop-blur-md border-b border-white/50 sticky top-0 z-30 shadow-sm print:hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded bg-medify-600 flex items-center justify-center text-white font-bold text-xl shadow-md"><i class="fa-solid fa-cat"></i></div>
+        <div>
+          <h1 class="text-xl font-bold text-slate-800 leading-tight">Edelweiss Symbiosis</h1>
+          <p class="text-[10px] text-slate-500 font-medium">Dashboard Ekstraksi Data Otomatis</p>
+        </div>
+      </div>
+      <div class="flex items-center">
+        <span id="mode-badge" class="bg-medify-100/80 text-medify-700 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-2">
+          <span id="mode-dot" class="w-2 h-2 rounded-full inline-block bg-green-500"></span> <span id="mode-text">Cloud Terhubung</span>
+        </span>
+        <button id="btn-logout" type="button" class="inline-flex items-center gap-2 ml-3 text-sm font-medium text-slate-500 hover:text-slate-800 border border-slate-300 rounded-lg px-3 py-1.5 transition-colors bg-white/50"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="flex-1 max-w-[95%] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col justify-center">
+
+  <!-- Login -->
+  <section id="login-section" class="my-auto fade-in w-full hidden">
+    <div class="bg-white/70 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full mx-auto overflow-hidden border border-white/60 p-8">
+      <div class="text-center mb-6">
+        <img src="https://i.postimg.cc/Z5nV96Bs/IMG-20261105-211548.jpg" alt="Logo" class="w-20 h-20 mx-auto mb-4 object-cover drop-shadow-sm rounded-full bg-white/50 p-1">
+        <h2 class="text-2xl font-bold text-slate-800 drop-shadow-sm">Edelweiss Symbiosis</h2>
+        <p class="text-xs text-slate-600 mt-2 px-2 leading-relaxed italic font-medium">"PPRA Kualitatif-Kuantitatif. Yo disambati, yo diikhtiari, nek revisi yo dilakoni"</p>
+      </div>
+      
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Email</label>
+          <input id="login-email" type="email" required="" class="w-full px-3 py-2 border border-white/60 bg-white/80 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-medify-400">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+          <input id="login-pass" type="password" required="" class="w-full px-3 py-2 border border-white/60 bg-white/80 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-medify-400">
+        </div>
+        <div id="login-error" class="hidden p-3 rounded-md bg-red-50/90 text-red-700 text-xs font-bold border border-red-200"></div>
+        <div class="pt-3 flex justify-center">
+          <button id="btn-login" type="submit" class="bg-medify-500 hover:bg-medify-600 text-white font-bold py-2.5 px-6 rounded-full shadow-md transition-all flex items-center justify-center gap-2 text-sm w-full cursor-pointer" disabled=""><i class="fa-solid fa-spinner fa-spin"></i> Loading...</button>
+        </div>
+      </form>
+      <hr class="my-6 border-slate-300/50">
+      <div class="text-center">
+        <p class="text-xs text-slate-600 font-semibold mb-2">powered by <span class="font-extrabold text-slate-800 text-sm">Meow<span class="text-medify-500">dive</span></span> 🐱</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upload -->
+  <section id="upload-section" class="mb-8 hidden">
+    <div id="drop-zone" class="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/60 p-8 text-center transition-all duration-200">
+      <input type="file" id="file-upload" accept=".html,.htm,.mhtml" class="hidden">
+      <div class="max-w-md mx-auto">
+        <div class="w-20 h-20 bg-medify-100/80 text-medify-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm"><i class="fa-solid fa-file-code text-3xl"></i></div>
+        <h2 class="text-lg font-bold text-slate-800 mb-2">Upload Web File Medify</h2>
+        <p class="text-sm text-slate-600 mb-6 font-medium">Pilih file .html (Save as Webpage) untuk mengekstrak pasien.</p>
+        <button id="btn-upload-trigger" type="button" class="bg-medify-600 hover:bg-medify-700 text-white font-bold py-2.5 px-6 rounded-full shadow-md transition-colors flex items-center justify-center gap-2 mx-auto">
+          <i class="fa-solid fa-upload"></i> Pilih File HTML
+        </button>
+        <button id="btn-back-dashboard" type="button" class="mt-6 text-sm font-bold text-slate-500 hover:text-slate-800 hidden mx-auto items-center justify-center gap-2">Kembali ke Lembar Kerja</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dashboard-section" class="fade-in">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 print:hidden">
+      <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 p-6 flex items-center gap-4">
+        <div class="w-14 h-14 rounded-xl bg-blue-100/80 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fa-solid fa-bed"></i></div>
+        <div><p class="text-sm font-bold text-slate-500">Total Bed Terdata</p><h3 class="text-3xl font-extrabold text-slate-700" id="count-total">0</h3></div>
+      </div>
+      <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 p-6 flex items-center gap-4">
+        <div class="w-14 h-14 rounded-xl bg-emerald-100/80 text-emerald-600 flex items-center justify-center text-2xl shadow-sm"><i class="fa-solid fa-user-check"></i></div>
+        <div><p class="text-sm font-bold text-slate-500">Bed Terisi</p><h3 class="text-3xl font-extrabold text-slate-700" id="count-aktif">0</h3></div>
+      </div>
+      <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 p-6 flex items-center gap-4">
+        <div class="w-14 h-14 rounded-xl bg-amber-100/80 text-amber-600 flex items-center justify-center text-2xl shadow-sm"><i class="fa-solid fa-door-open"></i></div>
+        <div><p class="text-sm font-bold text-slate-500">Pasien Sudah KRS</p><h3 class="text-3xl font-extrabold text-slate-700" id="count-krs">0</h3></div>
+      </div>
+    </div>
+
+    <!-- TABS NAVIGATION -->
+    <div class="flex space-x-2 mb-4 border-b border-white/50 print:hidden overflow-x-auto pb-1">
+      <button id="tab-aktif" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-bed mr-2"></i> Lembar Kerja Aktif</button>
+      <button id="tab-krs" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-clipboard-check mr-2"></i> Lembar KRS</button>
+      <button id="tab-kpra" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-pills mr-2"></i> KPRA Kuantitatif</button>
+      <button id="tab-kualitatif" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-microscope mr-2"></i> KPRA Kualitatif</button>
+    </div>
+
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg border border-white/60 overflow-hidden flex flex-col h-[600px] print:h-auto print:border-none print:shadow-none print:bg-white">
+      <div class="px-6 py-4 border-b border-slate-200/60 bg-white/50 flex flex-wrap justify-between items-center gap-4 print:hidden">
+        <h3 class="text-lg font-bold flex items-center text-slate-700"><i class="fa-solid fa-table mr-2 text-medify-500"></i> Rekapitulasi Data</h3>
+        <div class="flex items-center gap-3 flex-wrap">
+          <button id="btn-add-manual" type="button" class="bg-medify-100 hover:bg-medify-200 text-medify-700 text-sm font-bold py-2 px-4 rounded-full shadow-sm transition-colors flex items-center gap-2"><i class="fa-solid fa-plus"></i> Tambah Manual</button>
+          
+          <div class="relative">
+            <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="search-input" placeholder="Cari nama, RM..." class="pl-9 pr-4 py-2 border border-slate-300/80 bg-white/80 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-medify-500 w-64 shadow-inner">
+          </div>
+        </div>
+      </div>
+      <div class="flex-1 overflow-auto table-container print:overflow-visible bg-white/60 relative">
+        <table class="w-full text-left border-collapse min-w-[1300px] print:min-w-full">
+          <thead id="table-head" class="bg-white/90 backdrop-blur-md sticky top-0 z-10 shadow-sm print:static"></thead>
+          <tbody id="table-body" class="divide-y divide-slate-200/50"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-4 text-right print:hidden">
+      <button id="btn-reset-dashboard" type="button" class="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-bold text-slate-600 hover:text-slate-800 hover:bg-white shadow-sm transition-all">Upload File Baru</button>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL AUTO DETECT AB SAJA -->
+<div id="modal-autodetect" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center backdrop-blur-sm hidden">
+  <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6 mx-4">
+    <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+      <h3 class="text-lg font-bold text-medify-700 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Deteksi Gram &amp; Hari Antibiotik</h3>
+      <button onclick="closeAutoDetectModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-xl"></i></button>
+    </div>
+    
+    <div>
+      <label class="block text-xs font-bold text-slate-700 mb-2"><i class="fa-solid fa-file-invoice-dollar text-slate-400 mr-1"></i> Teks Tagihan Medify</label>
+      <textarea id="autodetect-text" class="w-full h-56 p-3 border border-slate-300 rounded-lg text-xs font-mono bg-slate-50 focus:ring-2 focus:ring-medify-500 outline-none shadow-inner" placeholder="Paste data Tagihan/Billing di sini untuk mendeteksi Jenis AB, Gram, dan perhitungan Hari (inklusif)..."></textarea>
+    </div>
+    
+    <input type="hidden" id="autodetect-pid" value="">
+    <div class="mt-4 flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-200">
+      <p class="text-[10px] text-slate-500 max-w-sm"><i class="fa-solid fa-circle-info text-medify-500"></i> Rute, indikasi, dan regimen tetap harus Anda input secara mandiri demi pemahaman klinis yang tajam.</p>
+      <div class="flex gap-2">
+        <button onclick="closeAutoDetectModal()" class="px-4 py-2 bg-slate-200 text-slate-700 font-bold rounded-lg hover:bg-slate-300 transition shadow-sm">Batal</button>
+        <button onclick="processAutoDetect()" class="px-5 py-2 bg-medify-600 text-white font-bold rounded-lg hover:bg-medify-700 transition flex items-center gap-2 shadow-sm"><i class="fa-solid fa-calculator"></i> Hitung!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+/* ====================== KONFIGURASI FIREBASE & GSHEETS ====================== */
+const MY_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAerGs2Tb7rhRJRzbWFN5jUfiL6cDTGgX8",
+  authDomain: "rekap-edelweiss.firebaseapp.com",
+  projectId: "rekap-edelweiss",
+  storageBucket: "rekap-edelweiss.firebasestorage.app",
+  messagingSenderId: "65630112521",
+  appId: "1:65630112521:web:8428e72dd5b789aac761d8"
+};
+const APP_ID = 'edelweiss-app';
+const LS_KEY = 'edelweiss_patients_v1';
+const LS_BEDS = 'edelweiss_beds_v1';
+
+// URL WEB APP GSHEETS 
+const GSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyxPWMIAOAX3zmNSKVZPRc6ep4c7GdnEafNuaKAivMFZ6M5JyBVNgUA_POTjDSTFtyE/exec"; 
+/* ============================================================================ */
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let patients = [];
+let beds = [];               
+let currentTab = 'aktif';
+let mode = 'local';          
+let fb = null;               
+
+const tableBody = $('table-body'), tableHead = $('table-head'), searchInput = $('search-input');
+
+function showToast(message, type = 'success') {
+  const t = document.createElement('div');
+  t.className = `${type === 'success' ? 'bg-emerald-500' : (type === 'info' ? 'bg-blue-500' : 'bg-red-500')} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 toast-enter backdrop-blur-md bg-opacity-90`;
+  t.innerHTML = `<i class="fa-solid ${type==='success'?'fa-check':(type==='info'?'fa-spinner fa-spin':'fa-triangle-exclamation')} text-lg"></i><span class="font-bold text-sm">${esc(message)}</span>`;
+  $('toast-container').appendChild(t);
+  setTimeout(() => { t.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => t.remove(), 300); }, 3000);
+}
+window.showToast = showToast; // Expose global
+
+function setMode(m) {
+  mode = m;
+  $('mode-text').innerText = m === 'cloud' ? 'Cloud Terhubung' : 'Mode Lokal';
+  $('mode-dot').className = `w-2 h-2 rounded-full inline-block ${m === 'cloud' ? 'bg-green-500' : 'bg-amber-500'}`;
+}
+
+function saveLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(patients)); } catch (e) {} }
+function loadLocal() { try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch (e) { return []; } }
+function loadBeds() { try { return JSON.parse(localStorage.getItem(LS_BEDS) || '[]'); } catch (e) { return []; } }
+async function saveBeds() {
+  try { localStorage.setItem(LS_BEDS, JSON.stringify(beds)); } catch (e) {}
+  if (fb) { try { await fb.setDoc(fb.doc(fb.colRef, '_beds'), { id: '_beds', isMeta: true, beds }); } catch (e) {} }
+}
+
+function ensureBeds() {
+  if (!patients.length) return;
+  const activeBeds = [...new Set(patients.filter(p => !p.krs && p.bedName).map(p => p.bedName))];
+  let changed = false;
+  activeBeds.forEach(b => {
+    if (!beds.includes(b)) {
+      beds.push(b);
+      changed = true;
+    }
+  });
+  if (changed) saveBeds();
+}
+
+async function persist(id, data) {
+  let p = patients.find(x => x.id === id);
+  if (!p) { p = { id }; patients.push(p); }
+  Object.assign(p, data); saveLocal();                                  
+  if (mode === 'cloud' && fb) { try { await fb.setDoc(fb.doc(fb.colRef, id), { id, ...data }, { merge: true }); } catch (e) {} }
+}
+
+function updateCounters() {
+  const real = p => p.nama || p.rm;
+  const activePatients = new Set(patients.filter(p => !p.krs && real(p)).map(p => (p.rm || p.nama).toLowerCase())).size;
+  const krsPatients = new Set(patients.filter(p => p.krs && real(p)).map(p => (p.rm || p.nama).toLowerCase())).size;
+  $('count-total').innerText = beds.length.toLocaleString('id-ID');
+  $('count-aktif').innerText = activePatients.toLocaleString('id-ID');
+  $('count-krs').innerText = krsPatients.toLocaleString('id-ID');
+}
+function refresh() { updateCounters(); renderTable(getFiltered()); }
+window.refresh = refresh; // Expose global
+
+function getFiltered() {
+  const term = searchInput.value.toLowerCase();
+  const real = p => p.nama || p.rm;
+  let d = [];
+  if (currentTab === 'aktif') {   
+    beds.forEach(b => {
+      const pts = patients.filter(p => !p.krs && real(p) && p.bedName === b);
+      if (pts.length === 0) d.push({ id: 'empty:' + b, bedName: b, empty: true });
+      else d.push(...pts); 
+    });
+  } else {
+    d = patients.filter(p => real(p) && (currentTab === 'krs' ? p.krs : p.kpra));
+  }
+  if (term) d = d.filter(p => ['nama', 'rm', 'diag'].some(k => p[k] && String(p[k]).toLowerCase().includes(term)));
+  
+  if (currentTab === 'aktif') {
+    d.sort((a, b) => {
+       let aPrio = a.bedName.includes('VIP')?1: (a.bedName.includes('TEGOWANGI')?3:5);
+       let bPrio = b.bedName.includes('VIP')?1: (b.bedName.includes('TEGOWANGI')?3:5);
+       if(aPrio !== bPrio) return aPrio - bPrio;
+       let cmp = a.bedName.localeCompare(b.bedName, undefined, { numeric: true });
+       if(cmp !== 0) return cmp;
+       return (a.tambahAbAt||0) - (b.tambahAbAt||0);
+    });
+  } else {          
+    const t = a => (currentTab === 'kpra' || currentTab === 'kualitatif' ? a.kpraAt || a.krsAt : a.krsAt) || 0;
+    d.sort((a, b) => {
+       const timeDiff = t(a) - t(b);
+       if (timeDiff === 0) return (a.tambahAbAt || 0) - (b.tambahAbAt || 0);
+       return timeDiff;
+    });
+  }
+  return d;
+}
+
+const parseIdnDate = (dStr, mStr, yStr) => {
+    const m = String(mStr).toUpperCase().substring(0, 3);
+    const map = {JAN:0, FEB:1, MAR:2, APR:3, MEI:4, MAY:4, JUN:5, JUL:6, AGU:7, AUG:7, SEP:8, OKT:9, OCT:9, NOV:10, DES:11, DEC:11};
+    let mi = map[m];
+    if(mi === undefined) return null;
+    let y = parseInt(yStr); if(y < 100) y += 2000;
+    return new Date(y, mi, parseInt(dStr)).getTime();
+};
+
+const switchTab = function(tabId) {
+  currentTab = tabId;
+  ['aktif', 'krs', 'kpra', 'kualitatif'].forEach(t => {
+    const el = $('tab-' + t);
+    if (t === tabId) {
+      el.classList.add('text-purple-700', 'border-b-2', 'border-purple-500');
+      el.classList.remove('text-slate-700');
+    } else {
+      el.classList.remove('text-purple-700', 'border-b-2', 'border-purple-500');
+      el.classList.add('text-slate-700');
+    }
+  });
+  
+  let thead = '';
+  if (currentTab === 'kpra') {
+    thead = `<tr>${th('No RM & Pasien')}${th('Hari Rawat', 'w-24 text-center')}${th('Antibiotik')}${th('Total (Gram)', 'bg-teal-50')}${th('KSM')}${th('Ruangan')}${th('APT')}${th('LPD', 'text-center')}${th('Print LPD', 'text-center')}${thAksi}</tr>`;
+  } else if (currentTab === 'kualitatif') {
+    thead = `<tr>${th('No', 'text-center')}${th('No RM')}${th('Nama Pasien')}${th('Lama AB', 'bg-purple-50 text-center')}${th('Jenis AB')}${th('Regimen')}${th('Rute', 'text-center')}${th('Tipe Terapi')}${th('Indikasi AB')}${th('KSM', 'text-center')}${th('Ruangan', 'text-center')}${thAksi}</tr>`;
+  } else {
+    thead = `<tr>${th('Bed', 'w-32 bg-medify-50')}${th('Tgl MRS', 'w-32')}${th('Tgl KRS', 'w-40')}${th('RET', 'text-center')}${th('PTO', 'text-center')}${th('KRS', 'text-center')}${currentTab==='krs'?th('KPRA', 'text-center bg-medify-50'):''}${th('No RM')}${th('Nama Pasien')}${th('Diagnosa')}${th('KSM')}${th('AB')}${th('Jumlah')}${thAksi}</tr>`;
+  }
+  tableHead.innerHTML = thead;
+  refresh();
+};
+
+const TH = 'px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider border-y border-slate-200/60';
+const th = (t, extra = '') => `<th class="${TH} ${extra}">${t}</th>`;
+
+// PERBAIKAN: Background putih solid agar tidak tembus pandang
+const thAksi = `<th class="${TH} text-center sticky right-0 z-20 bg-white print:hidden min-w-[140px]">Aksi</th>`;
+
+const ce = (p, field, val, cls = '', ph = '') => `<div contenteditable="true" data-id="${esc(p.id)}" data-field="${field}" class="${cls}" placeholder="${ph}">${esc(val)}</div>`;
+const chk = (p, field, color, title = '') => `<input type="checkbox" class="w-4 h-4 text-${color} rounded cursor-pointer" ${p[field] ? 'checked' : ''} data-id="${esc(p.id)}" data-field="${field}">`;
+const td = (inner, cls = '') => `<td class="px-3 py-2 text-sm ${cls}">${inner}</td>`;
+
+// PERBAIKAN: Tombol Aksi Langsung Memanggil Fungsi (Hardwired ke window object)
+const actionBtns = p => {
+  const sendBtn = (currentTab === 'kpra' || currentTab === 'kualitatif') 
+    ? `<button type="button" onclick="sendToGSheetHandler('${esc(p.id)}', this)" class="text-emerald-500 hover:bg-emerald-100 hover:text-emerald-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Copy Data & Kirim ke G-Sheets"><i class="fa-brands fa-google-drive text-lg pointer-events-none"></i></button>` : '';
+    
+  return `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 z-10 bg-white shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden min-w-[140px]">
+  <div class="flex items-center justify-center gap-1">
+    ${sendBtn}
+    <button type="button" onclick="openMagic('${esc(p.id)}')" class="text-purple-500 hover:bg-purple-100 hover:text-purple-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Hitung Gram Billing"><i class="fa-solid fa-wand-magic-sparkles text-lg pointer-events-none"></i></button>
+    <button type="button" onclick="addAbRow('${esc(p.id)}')" class="text-medify-500 hover:bg-medify-100 hover:text-medify-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Tambah Antibiotik (Pasien Sama)"><i class="fa-solid fa-plus text-lg pointer-events-none"></i></button>
+    <button type="button" onclick="deleteRow('${esc(p.id)}')" class="text-red-400 hover:bg-red-50 hover:text-red-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Hapus"><i class="fa-solid fa-trash text-lg pointer-events-none"></i></button>
+  </div>
+</td>`;
+}
+
+const bedCell = p => td(`<i class="fa-solid fa-bed text-slate-400 mr-1.5"></i>${esc(p.bedName)}`, 'whitespace-nowrap font-bold text-medify-700 bg-medify-50/50');
+
+function renderTable(data) {
+  tableBody.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  data.forEach((p, idx) => {
+    const tr = document.createElement('tr');
+    tr.className = `hover:bg-white/80 transition-colors group bg-white/40 border-b border-slate-100`;
+    if (p.empty) {
+      tr.innerHTML = bedCell(p) + `<td colspan="12" class="px-3 py-2 text-sm text-slate-500 italic font-medium">Bed kosong</td>`;
+      frag.appendChild(tr); return;
+    }
+    
+    let lr = p.lamaRawat;
+    if(!lr && p.tglMRS) {
+       const mrsMatch = String(p.tglMRS).match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
+       if(mrsMatch) {
+           const aTime = parseIdnDate(mrsMatch[1], mrsMatch[2], mrsMatch[3]);
+           if(aTime) {
+               const a = new Date(aTime); a.setHours(0,0,0,0);
+               const b = p.tglKRS ? new Date(p.tglKRS) : new Date(); b.setHours(0,0,0,0);
+               lr = Math.round(Math.abs(b - a) / 86400000) + 1;
+           }
+       }
+    }
+
+    if (currentTab === 'kpra') {
+      tr.innerHTML =
+        td(ce(p, 'rm', p.rm, '', 'No RM...') + `<div class="text-[10px] text-slate-400/80 mt-0.5 truncate max-w-[120px] font-medium">${esc(p.nama)}</div>`, 'whitespace-nowrap text-slate-800 font-bold') +
+        td(ce(p, 'lamaRawat', lr || '', '', 'Lama...'), 'whitespace-nowrap text-slate-700 font-medium text-center') +
+        td(ce(p, 'ab', p.ab, '', 'Jenis AB...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(ce(p, 'jumlah', p.jumlah, '', 'Total (Gram)...'), 'whitespace-nowrap text-slate-700 font-medium bg-teal-50/50') +
+        td(ce(p, 'ksm', (p.ksm || '').toUpperCase(), '', 'KSM...'), 'text-slate-700 font-bold') +
+        td(ce(p, 'ruangan', p.ruangan || 'Edelweiss', '', 'Ruangan...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(ce(p, 'apt', p.apt || 'DEVI', '', 'APT...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        `<td class="px-3 py-2 text-center">${chk(p, 'adaLpd', 'medify-600')}</td>` +
+        `<td class="px-3 py-2 text-center">${chk(p, 'printLpd', 'medify-600')}</td>` +
+        actionBtns(p);
+    } else if (currentTab === 'kualitatif') {
+      tr.innerHTML =
+        td(idx + 1, 'text-center font-bold text-slate-400') +
+        td(ce(p, 'rm', p.rm, '', 'No RM...'), 'whitespace-nowrap text-slate-800 font-bold') +
+        td(ce(p, 'nama', p.nama, '', 'Nama Pasien...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(ce(p, 'lamaAb', p.lamaAb || '', '', 'Hari...'), 'text-slate-700 font-bold text-center bg-purple-50/50') +
+        td(ce(p, 'ab', p.ab, '', 'Jenis AB...'), 'text-slate-700 font-bold') +
+        td(ce(p, 'regimen', p.regimen, '', 'Cth: 3x1g...'), 'text-slate-700 font-medium bg-slate-50/50') +
+        td(ce(p, 'rute', p.rute, '', 'IV/PO...'), 'text-slate-700 font-bold text-center') +
+        td(ce(p, 'tipeTerapi', p.tipeTerapi, '', 'Empiris/Definitif...'), 'text-slate-700 font-medium') +
+        td(ce(p, 'diag', p.diag, '', 'Indikasi/Diagnosa...'), 'text-slate-700 font-medium') +
+        td(ce(p, 'ksm', (p.ksm || '').toUpperCase(), '', 'KSM...'), 'text-slate-700 font-bold text-center') +
+        td(ce(p, 'ruangan', p.ruangan || 'Edelweiss', '', 'Ruangan...'), 'whitespace-nowrap text-slate-700 font-medium text-center') +
+        actionBtns(p);
+    } else {
+      const kpraCol = currentTab === 'krs' ? `<td class="px-3 py-2 text-center bg-medify-50/50">${chk(p, 'kpra', 'medify-600')}</td>` : '';
+      tr.innerHTML =
+        bedCell(p) +
+        td(ce(p, 'tglMRS', p.tglMRS, '', 'Tgl MRS...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(`<input type="date" value="${esc(p.tglKRS)}" data-id="${esc(p.id)}" data-field="tglKRS" class="border border-transparent hover:border-slate-300 rounded px-2 py-1.5 text-sm bg-transparent outline-none w-full text-slate-700 font-medium">`, 'whitespace-nowrap') +
+        `<td class="px-3 py-2 text-center">${chk(p, 'ret', 'medify-600')}</td>` +
+        `<td class="px-3 py-2 text-center">${chk(p, 'pto', 'medify-600')}</td>` +
+        `<td class="px-3 py-2 text-center">${chk(p, 'krs', 'amber-500')}</td>` + kpraCol +
+        td(ce(p, 'rm', p.rm, '', 'No RM...'), 'whitespace-nowrap text-slate-800 font-mono font-bold') +
+        td(ce(p, 'nama', p.nama, '', 'Nama...'), 'font-bold text-slate-800') +
+        td(ce(p, 'diag', p.diag, '', 'Diagnosa...'), 'text-slate-700 font-medium') +
+        td(ce(p, 'ksm', (p.ksm || '').toUpperCase(), 'font-bold', 'KSM...'), 'text-sm text-slate-700') +
+        td(ce(p, 'ab', p.ab, '', 'AB...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(ce(p, 'jumlah', p.jumlah, '', 'Jumlah...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        actionBtns(p);
+    }
+    frag.appendChild(tr);
+  });
+  tableBody.appendChild(frag);
+}
+
+// ================= GLOBAL BUTTON HANDLERS =================
+window.closeAutoDetectModal = function() {
+  $('modal-autodetect').classList.add('hidden');
+  $('autodetect-text').value = '';
+}
+
+window.openMagic = function(id) {
+  $('autodetect-pid').value = id; 
+  $('modal-autodetect').classList.remove('hidden');
+}
+
+window.addAbRow = async function(id) {
+  const orig = patients.find(x => x.id === id);
+  if (orig) {
+    const newId = Math.random().toString(36).slice(2, 11);
+    await persist(newId, { ...orig, id: newId, ab: '', jumlah: '', lamaAb: '', regimen: '', rute: '', tambahAbAt: Date.now() });
+    refresh(); 
+    showToast('Baris antibiotik tambahan dibuat', 'success');
+  }
+}
+
+// FUNGSI DELETE SUPER (HARDWIRED)
+window.deleteRow = async function(id) {
+  if (!confirm('Yakin ingin menghapus baris data ini secara permanen?')) return;
+  
+  // 1. Eksekusi Lokal Langsung!
+  patients = patients.filter(p => p.id !== id);
+  saveLocal();
+  
+  // 2. Render ulang UI tanpa peduli Firebase
+  refresh();
+  showToast('Data berhasil dihapus dari layar', 'success');
+  
+  // 3. Informasikan ke Firebase di latar belakang
+  if (mode === 'cloud' && fb) {
+    try { 
+      await fb.deleteDoc(fb.doc(fb.colRef, id)); 
+    } catch (err) { 
+      console.error('Gagal hapus dari Firebase:', err); 
+    }
+  }
+}
+
+window.sendToGSheetHandler = function(id, btnElement) {
+   const p = patients.find(x => x.id === id);
+   if (p) sendToGSheet(p, btnElement);
+}
+
+window.processAutoDetect = async function() {
+  const text = $('autodetect-text').value;
+  const pId = $('autodetect-pid').value;
+  
+  if(!text) return showToast('Harap isi teks Tagihan Medify', 'error');
+  
+  const orig = patients.find(x => x.id === pId);
+  if(!orig) return;
+
+  const textUpper = text.toUpperCase();
+  
+  const antibiotics = [
+    { key: 'SEFTRIAKSON', std: 'CEFTRIAXONE' }, { key: 'CEFTRIAXON', std: 'CEFTRIAXONE' }, { key: 'CEFTRIAXONE', std: 'CEFTRIAXONE' },
+    { key: 'SEFOTAKSIM', std: 'CEFOTAXIME' }, { key: 'CEFOTAXIM', std: 'CEFOTAXIME' }, { key: 'CEFOTAXIME', std: 'CEFOTAXIME' },
+    { key: 'SEFTAZIDIM', std: 'CEFTAZIDIME' }, { key: 'CEFTAZIDIM', std: 'CEFTAZIDIME' }, { key: 'CEFTAZIDIME', std: 'CEFTAZIDIME' },
+    { key: 'SEFAZOLIN', std: 'CEFAZOLIN' }, { key: 'CEFAZOLIN', std: 'CEFAZOLIN' },
+    { key: 'SEFOPERAZON', std: 'CEFOPERAZONE' }, { key: 'CEFOPERAZON', std: 'CEFOPERAZONE' }, { key: 'CEFOPERAZONE', std: 'CEFOPERAZONE' },
+    { key: 'SEFUROKSIM', std: 'CEFUROXIME' }, { key: 'CEFUROXIM', std: 'CEFUROXIME' }, { key: 'CEFUROXIME', std: 'CEFUROXIME' },
+    { key: 'SEFIKSIM', std: 'CEFIXIME' }, { key: 'CEFIXIM', std: 'CEFIXIME' }, { key: 'CEFIXIME', std: 'CEFIXIME' },
+    { key: 'SEFADROKSIL', std: 'CEFADROXIL' }, { key: 'CEFADROXIL', std: 'CEFADROXIL' },
+    { key: 'AMPISILIN', std: 'AMPICILLIN' }, { key: 'AMPICILLIN', std: 'AMPICILLIN' },
+    { key: 'AMOKSISILIN', std: 'AMOXICILLIN' }, { key: 'AMOXICILLIN', std: 'AMOXICILLIN' },
+    { key: 'PICYN', std: 'AMPICILLIN SULBACTAM' },
+    { key: 'LEVOFLOKSASIN', std: 'LEVOFLOXACIN' }, { key: 'LEVOFLOXACIN', std: 'LEVOFLOXACIN' },
+    { key: 'SIPROFLOKSASIN', std: 'CIPROFLOXACIN' }, { key: 'CIPROFLOXACIN', std: 'CIPROFLOXACIN' },
+    { key: 'METRONIDAZOL', std: 'METRONIDAZOLE' }, { key: 'METRONIDAZOLE', std: 'METRONIDAZOLE' },
+    { key: 'AMIKASIN', std: 'AMIKACIN' }, { key: 'AMIKACIN', std: 'AMIKACIN' },
+    { key: 'GENTAMISIN', std: 'GENTAMICIN' }, { key: 'GENTAMICIN', std: 'GENTAMICIN' },
+    { key: 'AZITROMISIN', std: 'AZITHROMYCIN' }, { key: 'AZITHROMYCIN', std: 'AZITHROMYCIN' },
+    { key: 'MEROPENEM', std: 'MEROPENEM' }
+  ];
+
+  let detectedMap = {};
+  const dateRegex = /(\d{1,2})\s+([a-zA-Z]+)\s+(\d{2,4})/g;
+  
+  for (let ab of antibiotics) {
+     let regex = new RegExp(ab.key + "\\s*([\\d\\.,]+)?\\s*(GRAM|G|MG|ML)?([\\s\\S]{0,800}?)PAJAK\\s*0\\.00\\s*([1-9]\\d*)\\s*RP", "g");
+     let match;
+     let hasMatch = false;
+     
+     while ((match = regex.exec(textUpper)) !== null) {
+         hasMatch = true;
+         let doseVal = parseFloat((match[1] || "1").replace(',', '.'));
+         let unit = match[2] || "G";
+         if(unit === "MG") doseVal = doseVal / 1000;
+         let qty = parseInt(match[4] || "1"); 
+         
+         if(!detectedMap[ab.std]) detectedMap[ab.std] = { billingTotal: 0, dates: [] };
+         detectedMap[ab.std].billingTotal += (doseVal * qty);
+
+         let block = match[3] || "";
+         let dateMatch;
+         while ((dateMatch = dateRegex.exec(block)) !== null) {
+             const t = parseIdnDate(dateMatch[1], dateMatch[2], dateMatch[3]);
+             if(t) detectedMap[ab.std].dates.push(t);
+         }
+     }
+     if(!hasMatch && textUpper.includes(ab.key)) {
+         if(!detectedMap[ab.std]) detectedMap[ab.std] = { billingTotal: 0, dates: [] };
+     }
+  }
+
+  let finalDetected = [];
+  for (let k in detectedMap) {
+      let finalJumlah = detectedMap[k].billingTotal;
+      let lamaABVal = "";
+      let dates = detectedMap[k].dates || [];
+      if(dates.length > 0) {
+         let min = Math.min(...dates);
+         let max = Math.max(...dates);
+         lamaABVal = Math.round((max - min) / 86400000) + 1;
+      }
+      finalDetected.push({
+          ab: k,
+          jumlah: finalJumlah > 0 ? finalJumlah.toFixed(2).replace('.00','') : '',
+          lamaAb: lamaABVal,
+          regimen: orig.regimen || '', rute: orig.rute || '', tipeTerapi: orig.tipeTerapi || '', diag: orig.diag || '', lamaRawat: orig.lamaRawat || ''
+      });
+  }
+
+  if(finalDetected.length === 0) {
+    showToast('Tidak ada pola antibiotik yang dikenali dari tagihan.', 'error');
+    return;
+  }
+
+  await persist(orig.id, { 
+    ab: finalDetected[0].ab, jumlah: finalDetected[0].jumlah, lamaAb: finalDetected[0].lamaAb, regimen: finalDetected[0].regimen, rute: finalDetected[0].rute, tipeTerapi: finalDetected[0].tipeTerapi, diag: finalDetected[0].diag
+  });
+
+  for(let i=1; i<finalDetected.length; i++) {
+    const newId = Math.random().toString(36).slice(2, 11);
+    await persist(newId, {
+      ...orig, id: newId, ab: finalDetected[i].ab, jumlah: finalDetected[i].jumlah, lamaAb: finalDetected[i].lamaAb, regimen: finalDetected[i].regimen, rute: finalDetected[i].rute, tipeTerapi: finalDetected[i].tipeTerapi, diag: finalDetected[i].diag, tambahAbAt: Date.now() + i
+    });
+  }
+
+  closeAutoDetectModal(); refresh();
+  showToast(`${finalDetected.length} Antibiotik & Hari Terapi berhasil dideteksi!`, 'success');
+}
+
+async function sendToGSheet(p, btnElement) {
+  let calculatedLamaRawat = p.lamaRawat;
+  if(!calculatedLamaRawat && p.tglMRS) {
+     const mrsMatch = String(p.tglMRS).match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
+     if(mrsMatch) {
+         const aTime = parseIdnDate(mrsMatch[1], mrsMatch[2], mrsMatch[3]);
+         if(aTime) {
+             const a = new Date(aTime); a.setHours(0,0,0,0);
+             const b = p.tglKRS ? new Date(p.tglKRS) : new Date(); b.setHours(0,0,0,0);
+             calculatedLamaRawat = Math.round(Math.abs(b - a) / 86400000) + 1;
+         }
+     }
+  }
+  
+  let copyData = [];
+  if (currentTab === 'kpra') {
+    copyData = [p.rm, (calculatedLamaRawat || ''), p.ab, p.jumlah, (p.ksm||'').toUpperCase(), (p.ruangan||'Edelweiss'), (p.apt||'DEVI')];
+  } else if (currentTab === 'kualitatif') {
+    copyData = [p.rm, p.nama, (p.lamaAb || ''), p.ab, p.regimen, p.rute, p.tipeTerapi, p.diag, (p.ksm||'').toUpperCase(), (p.ruangan||'Edelweiss')];
+  }
+  
+  try { await navigator.clipboard.writeText(copyData.join('\t')); } catch (err) {}
+  showToast('Mengirim & menyalin baris ini...', 'info');
+  
+  try {
+    btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i>'; 
+    let sendPayload = { ...p, lamaRawat: calculatedLamaRawat };
+    if (currentTab === 'kualitatif') sendPayload.lamaRawat = p.lamaAb || '';
+    
+    const payload = { type: currentTab, data: sendPayload };
+    const res = await fetch(GSHEET_WEBAPP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+    const json = await res.json();
+    
+    if(json.result === 'success') {
+       btnElement.innerHTML = '<i class="fa-solid fa-cat text-xl pointer-events-none"></i>';
+       btnElement.classList.replace('text-emerald-500', 'text-medify-500'); btnElement.classList.replace('hover:bg-emerald-100', 'hover:bg-medify-100');
+       btnElement.title = "Tersubmit & Tercopy!";
+       showToast(`Data ${p.nama || p.rm} masuk ke Sheet ${json.sheet}!`, 'success');
+    } else {
+       btnElement.innerHTML = '<i class="fa-brands fa-google-drive text-lg pointer-events-none"></i>'; showToast('Gagal: ' + json.message, 'error');
+    }
+  } catch(err) {
+    btnElement.innerHTML = '<i class="fa-brands fa-google-drive text-lg pointer-events-none"></i>';
+    showToast('Error koneksi ke G-Sheets. Pastikan akses di-set ke Siapa Saja (Anyone).', 'error');
+  }
+}
+// ==========================================================
+
+$('btn-reset-dashboard').addEventListener('click', () => { $('upload-section').classList.remove('hidden'); $('dashboard-section').classList.add('hidden'); });
+['aktif', 'krs', 'kpra', 'kualitatif'].forEach(t => $('tab-' + t).addEventListener('click', () => switchTab(t)));
+searchInput.addEventListener('input', refresh);
+
+$('btn-upload-trigger').addEventListener('click', () => $('file-upload').click());
+$('btn-add-manual').addEventListener('click', async () => {
+  const newId = Math.random().toString(36).slice(2, 11);
+  const newPatient = { id: newId, rm: '00-00-00', nama: 'Pasien Manual', bedName: 'Bed Ekstra', krs: (currentTab === 'krs') };
+  if(currentTab === 'kpra' || currentTab === 'kualitatif') { newPatient.kpra = true; newPatient.krs = true; }
+  patients.push(newPatient);
+  await persist(newId, newPatient);
+  ensureBeds(); refresh(); showToast('Baris pasien ditambahkan', 'success');
+});
+
+$('file-upload').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const btn = $('btn-upload-trigger');
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Membaca File...';
+  
+  try {
+    let text = await file.text();
+    const htmlMatch = text.match(/<html[\s\S]*<\/html>/i);
+    if (htmlMatch) { text = htmlMatch[0]; }
+    
+    const doc = new DOMParser().parseFromString(text, 'text/html');
+    let newCount = 0, updateCount = 0;
+    
+    const processPatient = (rm, nama, bedName, tglMRS, diag) => {
+        const existing = patients.find(p => p.rm === rm && !p.krs);
+        if (existing) {
+          existing.nama = nama;
+          if (bedName && bedName !== 'Kamar Ekstra') existing.bedName = bedName;
+          if (diag) existing.diag = diag;
+          if (tglMRS) existing.tglMRS = tglMRS;
+          persist(existing.id, existing);
+          updateCount++;
+        } else {
+          const newId = Math.random().toString(36).slice(2, 11);
+          const newP = { id: newId, rm, nama, bedName, tglMRS, diag, krs: false };
+          patients.push(newP);
+          persist(newId, newP);
+          newCount++;
+        }
+    };
+
+    const bedHeaders = doc.querySelectorAll('h5.mb-0');
+    let newBedsFound = false;
+    bedHeaders.forEach(h5 => {
+        const ruanganEl = h5.querySelector('.ruangan');
+        const bedEl = h5.querySelector('.bed');
+        if(ruanganEl && bedEl) {
+            const bedNameText = ruanganEl.innerText.trim() + " - " + bedEl.innerText.trim();
+            if(!beds.includes(bedNameText)) { beds.push(bedNameText); newBedsFound = true; }
+        }
+    });
+    if(newBedsFound) saveBeds(); 
+
+    const rmElements = doc.querySelectorAll('.no_rm');
+    if (rmElements.length > 0) {
+        rmElements.forEach(rmEl => {
+            const container = rmEl.closest('li') || rmEl.closest('.row') || rmEl.closest('.block');
+            if(!container) return;
+            
+            const rm = rmEl.innerText.trim();
+            const namaEl = container.querySelector('.nama');
+            let nama = namaEl ? namaEl.innerText.trim() : "Pasien Baru";
+            
+            const ruanganEl = container.querySelector('.ruangan');
+            const bedEl = container.querySelector('.bed');
+            let bedName = 'Kamar Ekstra';
+            if (ruanganEl && bedEl) { bedName = ruanganEl.innerText.trim() + " - " + bedEl.innerText.trim(); }
+            else if (ruanganEl || bedEl) { bedName = ruanganEl ? ruanganEl.innerText.trim() : bedEl.innerText.trim(); }
+            
+            const diagEl = container.querySelector('.judul_kasus');
+            const diag = diagEl ? diagEl.innerText.trim() : "";
+            
+            let tglMRS = "";
+            const mrsMatch = container.innerText.match(/MRS\s*:\s*(\d{1,2}\s+[a-zA-Z]+\s+\d{4})/i);
+            if(mrsMatch) tglMRS = mrsMatch[1].trim();
+            
+            if(rm && rm !== "-" && rm !== "") processPatient(rm, nama, bedName, tglMRS, diag);
+        });
+    } else {
+        const rows = doc.querySelectorAll('tr');
+        if(rows.length === 0) { showToast('Gagal memproses: Format pasien tidak ditemukan di dalam HTML ini.', 'error'); return; }
+
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('td, th'); 
+          if (cells.length < 3) return; 
+          
+          const textContent = row.innerText.replace(/\s+/g, ' ');
+          const rmMatch = textContent.match(/(\b\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{2}[-.\s]\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{2}[-.\s]\d{2}[-.\s]\d{2}\b|\b\d{6,8}\b)/);
+          
+          if (rmMatch) {
+            let rmCellIdx = -1;
+            cells.forEach((c, idx) => { if(c.innerText.trim().includes(rmMatch[0])) rmCellIdx = idx; });
+            
+            if (rmCellIdx !== -1) {
+              const rm = rmMatch[0];
+              let rawNama = cells[rmCellIdx+1] ? cells[rmCellIdx+1].innerText.trim() : "";
+              let nama = "Pasien Baru";
+              if (rawNama.length > 3 && rawNama.length < 50) { nama = rawNama; } 
+              else {
+                let possibleName = cells[rmCellIdx].innerText.replace(rm, '').replace(/[0-9-.\s]/g, '').trim();
+                if(possibleName.length > 3) nama = possibleName;
+              }
+              
+              let bedName = cells[0].innerText.trim();
+              if (bedName.length > 30 || bedName.length < 2) bedName = cells[1]?.innerText.trim() || 'Kamar Ekstra';
+              
+              let tglMRS = '';
+              cells.forEach(c => { if (c.innerText.match(/\d{1,2}\s+(Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)/i)) tglMRS = c.innerText.trim(); });
+
+              processPatient(rm, nama, bedName, tglMRS, "");
+            }
+          }
+        });
+    }
+    
+    ensureBeds(); 
+    switchTab('aktif');
+    refresh();
+    showToast(`Berhasil! ${newCount} pasien baru, ${updateCount} diperbarui.`, 'success');
+    $('upload-section').classList.add('hidden');
+    $('dashboard-section').classList.remove('hidden');
+    
+  } catch (err) {
+    console.error(err); showToast('Gagal memproses file. Pastikan format HTML benar.', 'error');
+  } finally {
+    btn.innerHTML = originalHtml; e.target.value = ''; 
+  }
+});
+
+tableBody.addEventListener('focusout', e => {
+  const el = e.target;
+  if (el.hasAttribute('contenteditable')) {
+    const p = patients.find(x => x.id === el.dataset.id);
+    const val = el.innerText.trim();
+    if (p && String(p[el.dataset.field] ?? '') !== val) persist(el.dataset.id, { [el.dataset.field]: val });
+  }
+});
+tableBody.addEventListener('change', async e => {
+  if (e.target.tagName !== 'INPUT') return;
+  const f = e.target.dataset.field, id = e.target.dataset.id;
+  if (e.target.type === 'checkbox') {
+    await persist(id, f === 'krs' ? { krs: e.target.checked, ...(e.target.checked ? { krsAt: Date.now() } : {}) }
+      : f === 'kpra' ? { kpra: e.target.checked, ...(e.target.checked ? { kpraAt: Date.now() } : {}) }
+      : { [f]: e.target.checked });
+    refresh();
+  } else if (e.target.type === 'date') {
+      await persist(id, { [f]: e.target.value }); refresh();
+  }
+});
+
+async function initFirebase() {
+  const btnLogin = $('btn-login');
+  try {
+    const app = initializeApp(MY_FIREBASE_CONFIG);
+    const authInst = getAuth(app); 
+    const dbInst = getFirestore(app);
+    
+    btnLogin.disabled = false; btnLogin.innerHTML = 'Gass in';
+    btnLogin.className = 'bg-medify-500 hover:bg-medify-600 text-white font-bold py-2.5 px-6 rounded-full shadow-md transition-all flex items-center justify-center gap-2 text-sm w-full cursor-pointer';
+
+    onAuthStateChanged(authInst, user => {
+      if(user) {
+        $('login-section').classList.add('hidden'); $('btn-logout').classList.remove('hidden');
+        fb = { setDoc: setDoc, doc: doc, deleteDoc: deleteDoc, colRef: collection(dbInst, 'artifacts', APP_ID, 'users', user.uid, 'patients') };
+        setMode('cloud'); $('dashboard-section').classList.remove('hidden');
+        
+        onSnapshot(fb.colRef, snap => {
+          patients = snap.docs.map(d => d.data()).filter(d => !d.isMeta);
+          const meta = snap.docs.map(d=>d.data()).find(d=>d.isMeta);
+          if(meta && meta.beds) beds = meta.beds;
+          if(tableHead.innerHTML === '') switchTab('aktif'); 
+          else refresh();
+        });
+      } else {
+        $('login-section').classList.remove('hidden'); $('dashboard-section').classList.add('hidden');
+      }
+    });
+
+    $('login-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      btnLogin.disabled = true; btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+      try { await signInWithEmailAndPassword(authInst, $('login-email').value, $('login-pass').value); }
+      catch(err) { $('login-error').innerText = 'Email atau password salah!'; $('login-error').classList.remove('hidden'); btnLogin.disabled = false; btnLogin.innerHTML = 'Gass in'; }
+    });
+    
+    $('btn-logout').addEventListener('click', async () => { if(confirm('Keluar dari akun?')) await signOut(authInst); });
+
+  } catch (e) {
+    console.error('Firebase Blocked:', e);
+    setMode('local'); $('login-section').classList.remove('hidden'); $('dashboard-section').classList.add('hidden');
+    btnLogin.disabled = false; btnLogin.innerHTML = 'Masuk Mode Lokal';
+    btnLogin.className = 'bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 px-6 rounded-full shadow-md transition-all flex items-center justify-center gap-2 text-sm w-full cursor-pointer';
+    
+    $('login-form').onsubmit = (e) => {
+       e.preventDefault(); showToast('Menggunakan Mode Lokal', 'info');
+       $('login-section').classList.add('hidden'); $('dashboard-section').classList.remove('hidden');
+       patients = loadLocal(); beds = loadBeds(); ensureBeds(); 
+       switchTab('aktif');
+    };
+  }
+}
+
+initFirebase();
+</script>
+
+</body></html>

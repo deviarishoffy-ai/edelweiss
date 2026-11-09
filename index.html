@@ -8,7 +8,6 @@
 <link rel="icon" href="https://i.postimg.cc/Z5nV96Bs/IMG-20261105-211548.jpg" type="image/jpeg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- Menggunakan CDN Cloudflare terbaru untuk FontAwesome agar Ikon Anti-Hilang -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <script>
 tailwind.config = { theme: { extend: {
@@ -30,9 +29,9 @@ tailwind.config = { theme: { extend: {
 [contenteditable="true"]:hover { border-color: #cbd5e1; background: rgba(255,255,255,0.7) }
 [contenteditable="true"]:focus { border-color: #0ea5e9; background: #fff; box-shadow: 0 0 0 2px rgba(14,165,233,.2) }
 [contenteditable="true"]:empty:before { content: attr(placeholder); color: #94a3b8; pointer-events: none; display: block; text-transform: none; }
-/* Membuat text terlihat kapital secara visual tanpa merusak data asli (Hanya untuk Diagnosa) */
 .force-upper { text-transform: uppercase; }
 </style>
+<script src="https://apis.google.com/js/api.js?onload=__iframefcb572883" type="text/javascript" charset="UTF-8" gapi_processed="true"></script>
 </head>
 <body class="bg-[url('https://i.postimg.cc/bvCK4q7V/1793889711112.jpg')] bg-cover bg-center bg-fixed min-h-screen text-slate-800 antialiased font-sans flex flex-col before:content-[''] before:absolute before:inset-0 before:bg-white/30 before:-z-10 relative z-0">
 
@@ -48,7 +47,7 @@ tailwind.config = { theme: { extend: {
       </div>
       <div class="flex items-center">
         <span id="mode-badge" class="bg-medify-100/80 text-medify-700 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-2">
-          <span id="mode-dot" class="w-2 h-2 rounded-full inline-block bg-green-500"></span> <span id="mode-text">Cloud Terhubung</span>
+          <span id="mode-dot" class="w-2 h-2 rounded-full inline-block bg-green-500"></span> <span id="mode-text">CLOUD TERHUBUNG</span>
         </span>
         <button id="btn-logout" type="button" class="inline-flex items-center gap-2 ml-3 text-sm font-medium text-slate-500 hover:text-slate-800 border border-slate-300 rounded-lg px-3 py-1.5 transition-colors bg-white/50"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
       </div>
@@ -57,7 +56,6 @@ tailwind.config = { theme: { extend: {
 </nav>
 
 <main class="flex-1 max-w-[95%] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col justify-center">
-
   <!-- Login -->
   <section id="login-section" class="my-auto fade-in w-full hidden">
     <div class="bg-white/70 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full mx-auto overflow-hidden border border-white/60 p-8">
@@ -66,7 +64,6 @@ tailwind.config = { theme: { extend: {
         <h2 class="text-2xl font-bold text-slate-800 drop-shadow-sm">Edelweiss Symbiosis</h2>
         <p class="text-xs text-slate-600 mt-2 px-2 leading-relaxed italic font-medium">"PPRA Kualitatif-Kuantitatif. Yo disambati, yo diikhtiari, nek revisi yo dilakoni"</p>
       </div>
-      
       <form id="login-form" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Email</label>
@@ -105,7 +102,7 @@ tailwind.config = { theme: { extend: {
   </section>
 
   <!-- Dashboard -->
-  <section id="dashboard-section" class="fade-in">
+  <section id="dashboard-section" class="fade-in hidden">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 print:hidden">
       <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 p-6 flex items-center gap-4">
         <div class="w-14 h-14 rounded-xl bg-blue-100/80 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fa-solid fa-bed"></i></div>
@@ -126,7 +123,7 @@ tailwind.config = { theme: { extend: {
       <button id="tab-aktif" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-bed mr-2"></i> Lembar Kerja Aktif</button>
       <button id="tab-krs" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-clipboard-check mr-2"></i> Lembar KRS</button>
       <button id="tab-kpra" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-pills mr-2"></i> KPRA Kuantitatif</button>
-      <button id="tab-kualitatif" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-slate-700"><i class="fa-solid fa-microscope mr-2"></i> KPRA Kualitatif</button>
+      <button id="tab-kualitatif" type="button" class="bg-white/75 backdrop-blur-md rounded-t-xl font-bold px-6 py-2.5 shadow-sm transition-all text-purple-700 border-b-2 border-purple-500"><i class="fa-solid fa-microscope mr-2"></i> KPRA Kualitatif</button>
     </div>
 
     <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg border border-white/60 overflow-hidden flex flex-col h-[600px] print:h-auto print:border-none print:shadow-none print:bg-white">
@@ -159,21 +156,23 @@ tailwind.config = { theme: { extend: {
 <div id="modal-autodetect" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center backdrop-blur-sm hidden">
   <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6 mx-4">
     <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
-      <h3 class="text-lg font-bold text-medify-700 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Deteksi Gram &amp; Hari Antibiotik</h3>
+      <h3 id="modal-magic-title" class="text-lg font-bold text-medify-700 flex items-center gap-2"></h3>
       <button onclick="closeAutoDetectModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-xl"></i></button>
     </div>
     
     <div>
-      <label class="block text-xs font-bold text-slate-700 mb-2"><i class="fa-solid fa-file-invoice-dollar text-slate-400 mr-1"></i> Teks Tagihan / Rekapan Tabel Medify</label>
-      <textarea id="autodetect-text" class="w-full h-56 p-3 border border-slate-300 rounded-lg text-xs font-mono bg-slate-50 focus:ring-2 focus:ring-medify-500 outline-none shadow-inner force-upper" placeholder="PASTE DATA TAGIHAN ATAU TABEL REKAPAN DI SINI..."></textarea>
+      <label class="block text-xs font-bold text-slate-700 mb-2"><i class="fa-solid fa-file-invoice-dollar text-slate-400 mr-1"></i> Paste Teks Di Sini</label>
+      <textarea id="autodetect-text" class="w-full h-56 p-3 border border-slate-300 rounded-lg text-xs font-mono bg-slate-50 focus:ring-2 focus:ring-medify-500 outline-none shadow-inner force-upper"></textarea>
     </div>
     
     <input type="hidden" id="autodetect-pid" value="">
+    <input type="hidden" id="autodetect-tab" value="">
+    
     <div class="mt-4 flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-200">
-      <p class="text-[10px] text-slate-500 max-w-sm"><i class="fa-solid fa-circle-info text-medify-500"></i> Mendukung format billing dan tabel rekapan (tgl-ab-jumlah). Satuan MG di atas 100 otomatis dikonversi ke Gram.</p>
+      <p id="modal-magic-hint" class="text-[10px] text-slate-500 max-w-sm"></p>
       <div class="flex gap-2">
         <button onclick="closeAutoDetectModal()" class="px-4 py-2 bg-slate-200 text-slate-700 font-bold rounded-lg hover:bg-slate-300 transition shadow-sm">Batal</button>
-        <button onclick="processAutoDetect()" class="px-5 py-2 bg-medify-600 text-white font-bold rounded-lg hover:bg-medify-700 transition flex items-center gap-2 shadow-sm"><i class="fa-solid fa-calculator"></i> Hitung!</button>
+        <button onclick="processAutoDetect()" class="px-5 py-2 bg-medify-600 text-white font-bold rounded-lg hover:bg-medify-700 transition flex items-center gap-2 shadow-sm"><i class="fa-solid fa-calculator"></i> Eksekusi!</button>
       </div>
     </div>
   </div>
@@ -354,13 +353,17 @@ const th = (t, extra = '') => `<th class="${TH} ${extra}">${t}</th>`;
 const thAksi = `<th class="${TH} text-center sticky right-0 z-20 bg-white min-w-[140px] print:hidden">Aksi</th>`;
 
 const ce = (p, field, val, cls = '', ph = '', forceUpper = false) => `<div contenteditable="true" data-id="${esc(p.id)}" data-field="${field}" class="${cls} ${forceUpper ? 'force-upper' : ''}" placeholder="${ph}">${esc(val)}</div>`;
+
+// Input text dikonfigurasi untuk Autocomplete Kustom (Bukan Native Datalist)
+const inputAb = (p) => `<input type="text" data-id="${esc(p.id)}" data-field="ab" value="${esc(p.ab)}" autocomplete="off" class="input-ab w-48 min-w-[160px] px-1.5 py-1 bg-transparent hover:bg-white/70 focus:bg-white border border-transparent focus:border-medify-400 rounded outline-none force-upper transition-colors" placeholder="JENIS AB...">`;
+const inputTipeTerapi = (p) => `<input type="text" data-id="${esc(p.id)}" data-field="tipeTerapi" value="${esc(p.tipeTerapi)}" autocomplete="off" class="input-tipe w-32 min-w-[120px] px-1.5 py-1 bg-transparent hover:bg-white/70 focus:bg-white border border-transparent focus:border-medify-400 rounded outline-none force-upper transition-colors" placeholder="TIPE TERAPI...">`;
+
 const chk = (p, field, color) => `<input type="checkbox" class="chk-field w-4 h-4 text-${color} rounded cursor-pointer" data-field="${field}" data-id="${esc(p.id)}" ${p[field] ? 'checked' : ''}>`;
 const td = (inner, cls = '') => `<td class="px-3 py-2 text-sm ${cls}">${inner}</td>`;
 
 const actionBtns = p => {
   let firstBtn = '';
   if (currentTab === 'kpra' || currentTab === 'kualitatif') {
-    // Memisah ingatan apakah sudah di-submit di Lembar Kuantitatif atau Kualitatif
     const isSubmittedNow = currentTab === 'kpra' ? p.isSubmittedKuantitatif : p.isSubmittedKualitatif;
     
     if (isSubmittedNow) {
@@ -373,7 +376,7 @@ const actionBtns = p => {
   return `<td class="px-3 py-2 whitespace-nowrap text-sm text-center sticky right-0 z-10 bg-white shadow-[-4px_0_6px_-1px_rgba(0,0,0,0.05)] print:hidden min-w-[140px]">
   <div class="flex items-center justify-center gap-1">
     ${firstBtn}
-    <button type="button" data-id="${esc(p.id)}" class="btn-magic text-purple-500 hover:bg-purple-100 hover:text-purple-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Hitung Gram Billing"><i class="fa-solid fa-wand-magic-sparkles text-lg pointer-events-none"></i></button>
+    <button type="button" data-id="${esc(p.id)}" class="btn-magic text-purple-500 hover:bg-purple-100 hover:text-purple-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Tongkat Ajaib!"><i class="fa-solid fa-wand-magic-sparkles text-lg pointer-events-none"></i></button>
     <button type="button" data-id="${esc(p.id)}" class="btn-add-ab text-medify-500 hover:bg-medify-100 hover:text-medify-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Tambah Antibiotik (Pasien Sama)"><i class="fa-solid fa-plus text-lg pointer-events-none"></i></button>
     <button type="button" data-id="${esc(p.id)}" class="btn-delete text-red-400 hover:bg-red-50 hover:text-red-700 p-1.5 rounded-full transition-colors cursor-pointer" title="Hapus"><i class="fa-solid fa-trash text-lg pointer-events-none"></i></button>
   </div>
@@ -410,7 +413,7 @@ function renderTable(data) {
       tr.innerHTML =
         td(ce(p, 'rm', p.rm, '', 'NO RM...') + `<div class="text-[10px] text-slate-400/80 mt-0.5 truncate max-w-[120px] font-medium uppercase">${esc(p.nama)}</div>`, 'whitespace-nowrap text-slate-800 font-bold') +
         td(ce(p, 'lamaRawat', lr || '', '', 'LAMA...'), 'whitespace-nowrap text-slate-700 font-medium text-center') +
-        td(ce(p, 'ab', p.ab, '', 'JENIS AB...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(inputAb(p), 'whitespace-nowrap text-slate-700 font-medium') +
         td(ce(p, 'jumlah', p.jumlah, '', 'TOTAL (GRAM)...'), 'whitespace-nowrap text-slate-700 font-medium bg-teal-50/50') +
         td(ce(p, 'ksm', (p.ksm || ''), '', 'KSM...'), 'text-slate-700 font-bold') +
         td(ce(p, 'ruangan', p.ruangan || 'EDELWEISS', '', 'RUANGAN...', true), 'whitespace-nowrap text-slate-700 font-medium') +
@@ -424,10 +427,10 @@ function renderTable(data) {
         td(ce(p, 'rm', p.rm, '', 'NO RM...'), 'whitespace-nowrap text-slate-800 font-bold') +
         td(ce(p, 'nama', p.nama, '', 'NAMA PASIEN...'), 'whitespace-nowrap text-slate-700 font-medium') +
         td(ce(p, 'lamaAb', p.lamaAb || '', '', 'HARI...'), 'text-slate-700 font-bold text-center bg-purple-50/50') +
-        td(ce(p, 'ab', p.ab, '', 'JENIS AB...'), 'text-slate-700 font-bold') +
+        td(inputAb(p), 'text-slate-700 font-bold') +
         td(ce(p, 'regimen', p.regimen, '', 'CTH: 3X1G...'), 'text-slate-700 font-medium bg-slate-50/50') +
         td(ce(p, 'rute', p.rute, '', 'IV/PO...'), 'text-slate-700 font-bold text-center') +
-        td(ce(p, 'tipeTerapi', p.tipeTerapi, '', 'EMPIRIS/DEFINITIF...'), 'text-slate-700 font-medium') +
+        td(inputTipeTerapi(p), 'text-slate-700 font-medium') +
         td(ce(p, 'diag', p.diag, '', 'INDIKASI/DIAGNOSA...', true), 'text-slate-700 font-medium') +
         td(ce(p, 'ksm', (p.ksm || ''), '', 'KSM...'), 'text-slate-700 font-bold text-center') +
         td(ce(p, 'ruangan', p.ruangan || 'EDELWEISS', '', 'RUANGAN...', true), 'whitespace-nowrap text-slate-700 font-medium text-center') +
@@ -445,7 +448,7 @@ function renderTable(data) {
         td(ce(p, 'nama', p.nama, '', 'NAMA...'), 'font-bold text-slate-800') +
         td(ce(p, 'diag', p.diag, '', 'DIAGNOSA...', true), 'text-slate-700 font-medium') +
         td(ce(p, 'ksm', (p.ksm || ''), 'font-bold', 'KSM...'), 'text-sm text-slate-700') +
-        td(ce(p, 'ab', p.ab, '', 'AB...'), 'whitespace-nowrap text-slate-700 font-medium') +
+        td(inputAb(p), 'whitespace-nowrap text-slate-700 font-medium') +
         td(ce(p, 'jumlah', p.jumlah, '', 'JUMLAH...'), 'whitespace-nowrap text-slate-700 font-medium') +
         actionBtns(p);
     }
@@ -453,6 +456,144 @@ function renderTable(data) {
   });
   tableBody.appendChild(frag);
 }
+
+
+/* ================= AUTOCOMPLETE KUSTOM (MENGATASI BUG KEYBOARD ANDROID) ================= */
+const AB_LIST = ["CEFTRIAXONE", "CEFOTAXIME", "CEFTAZIDIME", "CEFAZOLIN", "CEFOPERAZONE", "CEFUROXIME", "CEFIXIME", "CEFADROXIL", "AMPICILLIN", "AMOXICILLIN", "AMPICILLIN SULBACTAM", "LEVOFLOXACIN", "CIPROFLOXACIN", "METRONIDAZOLE", "AMIKACIN", "GENTAMICIN", "AZITHROMYCIN", "MEROPENEM"];
+const TIPE_LIST = ["EMPIRIS", "EXTENDED EMPIRIS", "PROFILAKSIS", "DEFINITIF"];
+
+let currentAutocompleteTarget = null;
+let autocompleteSelectedIndex = -1;
+let autocompleteOptions = [];
+
+// Buat elemen penampung dropdown di Body agar tidak terpengaruh table cell (Tampil Sempurna)
+const autocompleteContainer = document.createElement('ul');
+autocompleteContainer.id = 'custom-autocomplete';
+autocompleteContainer.className = 'hidden fixed z-50 bg-white border border-slate-300 shadow-2xl rounded-md max-h-60 overflow-y-auto text-sm py-1';
+document.body.appendChild(autocompleteContainer);
+
+function showAutocomplete(inputEl, type) {
+    const list = type === 'ab' ? AB_LIST : TIPE_LIST;
+    const val = inputEl.value.toUpperCase();
+    // Jika ada ketikan, saring daftarnya. Jika kosong, tampilkan semua.
+    autocompleteOptions = val ? list.filter(item => item.includes(val)) : list;
+    
+    if(autocompleteOptions.length === 0) {
+        hideAutocomplete();
+        return;
+    }
+    renderAutocomplete(inputEl);
+}
+
+function renderAutocomplete(inputEl) {
+    const rect = inputEl.getBoundingClientRect();
+    const ac = autocompleteContainer;
+    ac.style.top = (rect.bottom + 2) + 'px';
+    ac.style.left = rect.left + 'px';
+    ac.style.width = Math.max(rect.width, 220) + 'px';
+
+    ac.innerHTML = autocompleteOptions.map((opt, idx) => {
+        const isSelected = idx === autocompleteSelectedIndex;
+        return `<li class="px-3 py-2 cursor-pointer transition-colors ${isSelected ? 'bg-medify-100 text-medify-700 font-bold' : 'text-slate-700 hover:bg-slate-50'}" data-index="${idx}">${opt}</li>`;
+    }).join('');
+
+    ac.classList.remove('hidden');
+    currentAutocompleteTarget = inputEl;
+    
+    // Auto scroll layar kecil ke item yang sedang disorot panah
+    if(autocompleteSelectedIndex >= 0) {
+        const selectedLi = ac.children[autocompleteSelectedIndex];
+        if(selectedLi) selectedLi.scrollIntoView({ block: 'nearest' });
+    }
+}
+
+function hideAutocomplete() {
+    autocompleteContainer.classList.add('hidden');
+    currentAutocompleteTarget = null;
+    autocompleteSelectedIndex = -1;
+}
+
+// Pantau ketikan untuk Auto-Search
+tableBody.addEventListener('input', (e) => {
+    if (e.target.classList.contains('input-ab')) {
+        autocompleteSelectedIndex = -1;
+        showAutocomplete(e.target, 'ab');
+    } else if (e.target.classList.contains('input-tipe')) {
+        autocompleteSelectedIndex = -1;
+        showAutocomplete(e.target, 'tipe');
+    }
+});
+
+// Pantau saat kotak di-klik (Focus) untuk menampilkan seluruh daftar
+tableBody.addEventListener('focusin', (e) => {
+     if (e.target.classList.contains('input-ab')) {
+        autocompleteSelectedIndex = -1;
+        showAutocomplete(e.target, 'ab');
+    } else if (e.target.classList.contains('input-tipe')) {
+        autocompleteSelectedIndex = -1;
+        showAutocomplete(e.target, 'tipe');
+    }
+});
+
+// Sembunyikan saat pengguna klik keluar kotak
+tableBody.addEventListener('focusout', (e) => {
+     if (e.target.classList.contains('input-ab') || e.target.classList.contains('input-tipe')) {
+         setTimeout(hideAutocomplete, 200); // Tunggu sebentar agar klik mouse sempat tercatat
+     }
+});
+
+// KENDALI KEYBOARD MURNI (PANAH ATAS, BAWAH, ENTER)
+tableBody.addEventListener('keydown', async (e) => {
+    if (!currentAutocompleteTarget) return;
+    
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        autocompleteSelectedIndex = Math.min(autocompleteSelectedIndex + 1, autocompleteOptions.length - 1);
+        renderAutocomplete(currentAutocompleteTarget);
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        autocompleteSelectedIndex = Math.max(autocompleteSelectedIndex - 1, 0);
+        renderAutocomplete(currentAutocompleteTarget);
+    } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (autocompleteSelectedIndex >= 0 && autocompleteSelectedIndex < autocompleteOptions.length) {
+            // Pilih dari daftar jika panah digunakan
+            const selectedValue = autocompleteOptions[autocompleteSelectedIndex];
+            currentAutocompleteTarget.value = selectedValue;
+            const f = currentAutocompleteTarget.dataset.field;
+            const id = currentAutocompleteTarget.dataset.id;
+            await persist(id, { [f]: selectedValue });
+            hideAutocomplete();
+        } else {
+            // Simpan apa pun yang diketik jika panah tidak digunakan
+            const f = currentAutocompleteTarget.dataset.field;
+            const id = currentAutocompleteTarget.dataset.id;
+            const val = currentAutocompleteTarget.value.toUpperCase();
+            currentAutocompleteTarget.value = val;
+            await persist(id, { [f]: val });
+            hideAutocomplete();
+        }
+    } else if (e.key === 'Escape') {
+        hideAutocomplete();
+    }
+});
+
+// Kendali klik pada daftar Dropdown Kustom
+document.addEventListener('click', async (e) => {
+    const li = e.target.closest('#custom-autocomplete li');
+    if (li && currentAutocompleteTarget) {
+        const selectedValue = autocompleteOptions[li.dataset.index];
+        currentAutocompleteTarget.value = selectedValue;
+        const f = currentAutocompleteTarget.dataset.field;
+        const id = currentAutocompleteTarget.dataset.id;
+        await persist(id, { [f]: selectedValue });
+        hideAutocomplete();
+    }
+});
+
+// Amankan dropdown agar tidak melayang-layang saat layar di-scroll
+window.addEventListener('scroll', hideAutocomplete, true);
+/* ========================================================================================= */
 
 
 // ================= EVENT DELEGATION (ANTI MACET) =================
@@ -478,7 +619,7 @@ tableBody.addEventListener('click', async (e) => {
     if (orig) {
       const newId = Math.random().toString(36).slice(2, 11);
       // Reset kedua memory submit saat membuat baris baru
-      await persist(newId, { ...orig, id: newId, ab: '', jumlah: '', lamaAb: '', regimen: '', rute: '', isSubmittedKuantitatif: false, isSubmittedKualitatif: false, tambahAbAt: Date.now() });
+      await persist(newId, { ...orig, id: newId, ab: '', jumlah: '', lamaAb: '', regimen: '', rute: '', tipeTerapi: '', isSubmittedKuantitatif: false, isSubmittedKualitatif: false, tambahAbAt: Date.now() });
       refresh(); 
       showToast('BARIS ANTIBIOTIK TAMBAHAN DIBUAT', 'success');
     }
@@ -488,6 +629,24 @@ tableBody.addEventListener('click', async (e) => {
   const btnMagic = e.target.closest('.btn-magic');
   if (btnMagic) {
     $('autodetect-pid').value = btnMagic.dataset.id; 
+    $('autodetect-tab').value = currentTab; 
+    
+    // PEMISAHAN KEPRIBADIAN TONGKAT AJAIB (TERMASUK MODE KOMBO UNTUK KRS)
+    if (currentTab === 'kpra') {
+        $('modal-magic-title').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Deteksi Gram (Billing)';
+        $('autodetect-text').placeholder = 'PASTE TEKS BILLING MEDIFY DI SINI...';
+        $('modal-magic-hint').innerHTML = '<i class="fa-solid fa-circle-info text-medify-500"></i> Membaca format billing. Otomatis mengurangi total jika ada Retur (angka minus). Satuan MG di atas 100 dikonversi ke Gram.';
+    } else if (currentTab === 'kualitatif') {
+        $('modal-magic-title').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Deteksi Hari (Tabel Rekapan)';
+        $('autodetect-text').placeholder = 'PASTE TABEL REKAPAN (TGL - NAMA AB - JUMLAH) DI SINI...';
+        $('modal-magic-hint').innerHTML = '<i class="fa-solid fa-circle-info text-medify-500"></i> Membaca tanggal awal & akhir pemberian untuk menghitung Lama Hari AB secara otomatis.';
+    } else if (currentTab === 'krs') {
+        // MODE KOMBO! BISA PROSES 2 TEKS SEKALIGUS
+        $('modal-magic-title').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Deteksi Kombo (Billing & Rekapan)';
+        $('autodetect-text').placeholder = 'PASTE TEKS BILLING DAN TEKS TABEL REKAPAN SEKALIGUS DI SINI...';
+        $('modal-magic-hint').innerHTML = '<i class="fa-solid fa-circle-info text-medify-500"></i> Akan mengisi Kolom Gram (utk Kuantitatif) DAN Kolom Lama Hari (utk Kualitatif) secara serentak!';
+    }
+    
     $('modal-autodetect').classList.remove('hidden');
     return;
   }
@@ -500,6 +659,7 @@ tableBody.addEventListener('click', async (e) => {
     return;
   }
 });
+
 
 tableBody.addEventListener('change', async e => {
   if (e.target.classList.contains('chk-field')) {
@@ -552,8 +712,9 @@ window.closeAutoDetectModal = function() {
 window.processAutoDetect = async function() {
   const text = $('autodetect-text').value;
   const pId = $('autodetect-pid').value;
+  const modeTab = $('autodetect-tab').value; // 'kpra', 'kualitatif', atau 'krs'
   
-  if(!text) return showToast('HARAP ISI TEKS TAGIHAN MEDIFY', 'error');
+  if(!text) return showToast('HARAP ISI TEKS', 'error');
   
   const orig = patients.find(x => x.id === pId);
   if(!orig) return;
@@ -582,45 +743,31 @@ window.processAutoDetect = async function() {
   ];
 
   let detectedMap = {};
-  const lines = textUpper.split('\n');
-  let isRekapan = false;
-
-  // 1. Cek Mode Rekapan Tabel
-  for (let line of lines) {
-      let lineTrimmed = line.trim();
-      if (!lineTrimmed) continue;
-      
-      let dateMatch = lineTrimmed.match(/(\d{2})[-\/](\d{2})[-\/](\d{4})/);
-      if (dateMatch) {
-          for (let ab of antibiotics) {
-              if (lineTrimmed.includes(ab.key)) {
-                  isRekapan = true;
-                  
-                  let qtyMatch = lineTrimmed.match(/[\s\t]+(\d+(?:[\.,]\d+)?)\s*$/);
-                  let qty = 0;
-                  if (qtyMatch) {
-                      qty = parseFloat(qtyMatch[1].replace(',', '.'));
-                  } else {
-                      let nums = lineTrimmed.match(/\b(\d+(?:[\.,]\d+)?)\b/g);
-                      if (nums) qty = parseFloat(nums[nums.length - 1].replace(',', '.'));
+  
+  // MODE 1: KUALITATIF ATAU KOMBO KRS (HARI REKAPAN)
+  if (modeTab === 'kualitatif' || modeTab === 'krs') {
+      const lines = textUpper.split('\n');
+      for (let line of lines) {
+          let lineTrimmed = line.trim();
+          if (!lineTrimmed) continue;
+          let dateMatch = lineTrimmed.match(/(\d{2})[-\/](\d{2})[-\/](\d{4})/);
+          if (dateMatch) {
+              for (let ab of antibiotics) {
+                  if (lineTrimmed.includes(ab.key)) {
+                      if (!detectedMap[ab.std]) detectedMap[ab.std] = { dates: [], billingTotal: 0 };
+                      let tVal = new Date(dateMatch[3], parseInt(dateMatch[2])-1, dateMatch[1]).getTime();
+                      detectedMap[ab.std].dates.push(tVal);
+                      break; 
                   }
-                  
-                  if (!detectedMap[ab.std]) detectedMap[ab.std] = { billingTotal: 0, dates: [] };
-                  detectedMap[ab.std].billingTotal += qty;
-                  
-                  let tVal = new Date(dateMatch[3], parseInt(dateMatch[2])-1, dateMatch[1]).getTime();
-                  detectedMap[ab.std].dates.push(tVal);
-                  break; 
               }
           }
       }
-  }
-
-  // 2. Jika bukan Rekapan, jalankan Mode Billing Medify (Default Lama)
-  if (!isRekapan) {
-      const dateRegex = /(\d{1,2})\s+([a-zA-Z]+)\s+(\d{2,4})/g;
+  } 
+  
+  // MODE 2: KUANTITATIF ATAU KOMBO KRS (GRAM BILLING)
+  if (modeTab === 'kpra' || modeTab === 'krs') {
       for (let ab of antibiotics) {
-         let regex = new RegExp(ab.key + "\\s*([\\d\\.,]+)?\\s*(GRAM|G|MG|ML)?([\\s\\S]{0,800}?)PAJAK\\s*0\\.00\\s*([1-9]\\d*)\\s*RP", "g");
+         let regex = new RegExp(ab.key + "\\s*([\\d\\.,]+)?\\s*(GRAM|G|MG|ML)?([\\s\\S]{0,800}?)PAJAK\\s*0\\.00\\s*(-?\\d+)\\s*RP", "g");
          let match;
          let hasMatch = false;
          
@@ -629,47 +776,45 @@ window.processAutoDetect = async function() {
              let doseVal = parseFloat((match[1] || "1").replace(',', '.'));
              let unit = match[2] || "G";
              if(unit === "MG") doseVal = doseVal / 1000;
-             let qty = parseInt(match[4] || "1"); 
+             let qty = parseInt(match[4] || "1"); // Menangkap qty dengan minus jika retur
              
-             if(!detectedMap[ab.std]) detectedMap[ab.std] = { billingTotal: 0, dates: [] };
+             if(!detectedMap[ab.std]) detectedMap[ab.std] = { dates: [], billingTotal: 0 };
              detectedMap[ab.std].billingTotal += (doseVal * qty);
-
-             let block = match[3] || "";
-             let dateMatch;
-             while ((dateMatch = dateRegex.exec(block)) !== null) {
-                 const t = parseIdnDate(dateMatch[1], dateMatch[2], dateMatch[3]);
-                 if(t) detectedMap[ab.std].dates.push(t);
-             }
          }
+         
+         // Jika obat terdeteksi di teks tapi regex tidak tembus, simpan key-nya
          if(!hasMatch && textUpper.includes(ab.key)) {
-             if(!detectedMap[ab.std]) detectedMap[ab.std] = { billingTotal: 0, dates: [] };
+             if(!detectedMap[ab.std]) detectedMap[ab.std] = { dates: [], billingTotal: 0 };
          }
       }
-  }
-
-  // 3. Konversi Jika Angka terlalu besar (Diasumsikan Miligram dan diubah ke Gram)
-  for (let k in detectedMap) {
-      if (detectedMap[k].billingTotal > 100) {
-          detectedMap[k].billingTotal = detectedMap[k].billingTotal / 1000;
+      
+      // Konversi jika Total Gram di atas 100 (Bisa diasumsikan sebagai Milligram)
+      for (let k in detectedMap) {
+          if (detectedMap[k].billingTotal > 100) {
+              detectedMap[k].billingTotal = detectedMap[k].billingTotal / 1000;
+          }
       }
   }
 
   let finalDetected = [];
   for (let k in detectedMap) {
-      let finalJumlah = detectedMap[k].billingTotal;
-      let lamaABVal = "";
+      let finalObj = { ...orig, ab: k.toUpperCase() };
+      
+      // Jika mendeteksi dates (Kualitatif/Kombo)
       let dates = detectedMap[k].dates || [];
       if(dates.length > 0) {
          let min = Math.min(...dates);
          let max = Math.max(...dates);
-         lamaABVal = Math.round((max - min) / 86400000) + 1;
+         finalObj.lamaAb = Math.round((max - min) / 86400000) + 1;
       }
-      finalDetected.push({
-          ab: k.toUpperCase(),
-          jumlah: finalJumlah > 0 ? finalJumlah.toFixed(2).replace('.00','') : '',
-          lamaAb: lamaABVal,
-          regimen: (orig.regimen || ''), rute: (orig.rute || ''), tipeTerapi: (orig.tipeTerapi || ''), diag: (orig.diag || ''), lamaRawat: orig.lamaRawat || ''
-      });
+      
+      // Jika mendeteksi total billing (Kuantitatif/Kombo)
+      let total = detectedMap[k].billingTotal || 0;
+      if (total !== 0) {
+          finalObj.jumlah = total.toFixed(2).replace('.00','');
+      }
+      
+      finalDetected.push(finalObj);
   }
 
   if(finalDetected.length === 0) {
@@ -677,20 +822,18 @@ window.processAutoDetect = async function() {
     return;
   }
 
-  await persist(orig.id, { 
-    ab: finalDetected[0].ab, jumlah: finalDetected[0].jumlah, lamaAb: finalDetected[0].lamaAb, regimen: finalDetected[0].regimen, rute: finalDetected[0].rute, tipeTerapi: finalDetected[0].tipeTerapi, diag: finalDetected[0].diag
-  });
+  // Update original row
+  await persist(orig.id, finalDetected[0]);
 
+  // Clone untuk sisanya jika ada AB tambahan
   for(let i=1; i<finalDetected.length; i++) {
     const newId = Math.random().toString(36).slice(2, 11);
-    // Reset status submit pada baris kloningan baru
-    await persist(newId, {
-      ...orig, id: newId, ab: finalDetected[i].ab, jumlah: finalDetected[i].jumlah, lamaAb: finalDetected[i].lamaAb, regimen: finalDetected[i].regimen, rute: finalDetected[i].rute, tipeTerapi: finalDetected[i].tipeTerapi, diag: finalDetected[i].diag, isSubmittedKuantitatif: false, isSubmittedKualitatif: false, tambahAbAt: Date.now() + i
-    });
+    let clone = { ...finalDetected[i], id: newId, isSubmittedKuantitatif: false, isSubmittedKualitatif: false, tambahAbAt: Date.now() + i };
+    await persist(newId, clone);
   }
 
   closeAutoDetectModal(); refresh();
-  showToast(`${finalDetected.length} ANTIBIOTIK & HARI TERAPI BERHASIL DIDETEKSI!`, 'success');
+  showToast(`${finalDetected.length} ANTIBIOTIK BERHASIL DIDETEKSI & DIHITUNG!`, 'success');
 }
 
 async function sendToGSheet(p, btnElement) {
@@ -975,5 +1118,5 @@ async function initFirebase() {
 
 initFirebase();
 </script>
-
-</body></html>
+</body>
+</html>
